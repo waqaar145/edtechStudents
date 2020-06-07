@@ -11,10 +11,15 @@ const useStyles = makeStyles((theme) => ({
   loginContainer: {
     boxShadow: theme.shadows[2],
     padding: theme.spacing(2)
+  },
+  cursor: {
+    cursor: 'pointer'
   }
 }));
 
 const Login = () => {
+
+  const [showLogin, setShowLogin] = useState(false);
 
   const classes = useStyles();
 
@@ -24,9 +29,16 @@ const Login = () => {
         <Grid item xs={12} sm={4}></Grid>
         <Grid item xs={12} sm={4}>
           <div className={classes.loginContainer}>
-            <center><h3>Login</h3></center>
+            <span className={classes.cursor} onClick={() => setShowLogin(!showLogin)}>Switch</span>
+            <center><h3>{showLogin ? 'Register' : 'Login'}</h3></center>
             <br />
-            <Signin />
+            {
+              showLogin
+                ?
+              <Register />
+                :
+              <Signin />
+            }
           </div>
         </Grid>
         <Grid item xs={12} sm={4}></Grid>

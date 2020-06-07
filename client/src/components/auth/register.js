@@ -68,6 +68,7 @@ const Register = () => {
 
   const [values, setValues] = useState(INITIAL_STATE);
   const [error, setError] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const checkError = ({name, value, object}) => {
     const error_obj = handleError({name, value, object});
@@ -111,6 +112,7 @@ const Register = () => {
     e.preventDefault();
     const errors = validate()
     if (errors) {
+      setLoading(true)
       console.log('VALIDATION PASSED')
     } else {
       console.log('VALIDATION FAILED')
@@ -159,6 +161,7 @@ const Register = () => {
         variant="contained"
         color="primary"
         size="medium"
+        loading={loading}
         />
     </form>
   )
