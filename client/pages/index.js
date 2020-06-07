@@ -1,9 +1,8 @@
 import Link from 'next/link'
-import Navbar from '../src/components/Navbar';
 import {contentActionTypes} from './../src/store/content/content.actiontype'
 import {connect} from 'react-redux'
-import { makeStyles } from '@material-ui/core/styles';
 import {Button} from '@material-ui/core';
+import SimpleLayout from '../src/components/layouts/SimpleLayout'
 
 const Index = (props) => {
 
@@ -12,17 +11,11 @@ const Index = (props) => {
   } = props;
 
   return (
-    <div>
-      <Navbar />
-      <h3>Hello World test this is super fast. is it now so?</h3>
-      <Button variant="contained" color="primary">
-        Primary
-      </Button>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
-      <Link href='/about'>
-        <a>About again</a>
-      </Link>
-    </div>
+    <SimpleLayout>
+      <div>
+        Home page
+      </div>
+    </SimpleLayout>
   )
 }
 
