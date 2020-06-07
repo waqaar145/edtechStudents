@@ -4,9 +4,14 @@ const SimpleLayout = ({children}) => {
 
   return (
     <div>
-      <SimpleNavbar />
-      <div>
+      <div className="header">
+        <SimpleNavbar />
+      </div>
+      <div className="main-area">
         {children}
+      </div>
+      <div className="footer">
+        This is footer
       </div>
     </div>
   )
