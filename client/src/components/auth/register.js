@@ -4,6 +4,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import InputText from './../forms/InputText';
 import CustomButton from './../buttons/customButton'
 import {handleError} from './../../utils/validations/inputError'
+import {authService} from './../../services/apis/auth.service'
 
 const INITIAL_STATE = {
   first_name: {
@@ -113,7 +114,20 @@ const Register = () => {
     const errors = validate()
     if (errors) {
       setLoading(true)
-      console.log('VALIDATION PASSED')
+      let data = {
+        first_name: values.first_name.input_val,
+        last_name: values.last_name.input_val,
+        email: values.email.input_val,
+        password: values.password.input_val,
+      }
+
+      authService.Signup(data)
+        .then(response => {
+          console.log(response)
+        }).catch(error => {
+          setLoading(false)
+          console.log(error)
+        })
     } else {
       console.log('VALIDATION FAILED')
     }
