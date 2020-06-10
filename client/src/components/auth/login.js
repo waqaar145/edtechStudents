@@ -3,11 +3,13 @@ import {Container, Grid} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import InputText from './../forms/InputText';
 import CustomButton from './../buttons/customButton'
-import {handleError} from './../../utils/validations/inputError'
+import {handleError} from './../../utils/validations/inputError';
+import {authService} from './../../services/apis/auth.service';
+import Router from 'next/router'
 
 const INITIAL_STATE = {
   email: {
-    input_val: '',
+    input_val: 'waqaar145@gmail.com',
     required: true,
     type: {
       main: 'Email'
@@ -18,7 +20,7 @@ const INITIAL_STATE = {
     }
   },
   password: {
-    input_val: '',
+    input_val: 'qwerty',
     required: true,
     type: {
       main: 'String'
@@ -86,10 +88,22 @@ const Signing = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true)
     const errors = validate()
     if (errors) {
-      console.log('VALIDATION PASSED')
+      setLoading(true)
+      let data = {
+        email: values.email.input_val,
+        password: values.password.input_val,
+      }
+
+      authService.Signin(data)
+        .then(response => {
+          setLoading(false)
+          Router.push('/');
+        }).catch(error => {
+          setLoading(false)
+          console.log(error)
+        })
     } else {
       setLoading(false)
       console.log('VALIDATION FAILED')

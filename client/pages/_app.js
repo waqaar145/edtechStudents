@@ -4,6 +4,7 @@ import { CssBaseline } from '@material-ui/core';
 import { MuiThemeProvider } from '@material-ui/core/styles'
 import { wrapper } from '../src/store/index'
 import theme from '../src/utils/theme'
+import { authActionTypes } from './../src/store/auth/auth.actiontype'
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -14,6 +15,7 @@ class MyApp extends App {
     }
 
     if (ctx.req) {
+      ctx.store.dispatch({type: authActionTypes.WATCH_LOGGED_IN_USER, headers: ctx.req.headers.cookie ? ctx.req.headers.cookie : ''});
       ctx.store.dispatch(END)
       await ctx.store.sagaTask.toPromise()
     }

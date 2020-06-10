@@ -16,8 +16,8 @@ const instanceCreator = ($axios) => ({
     delete $axios.defaults.headers.common[key];
   },
   get(url, params) {
-    return $axios.get(url, { params });
-  } ,
+    return $axios.get(url, params);
+  },
   post(resource, data) {
     return $axios.post(resource, data);
   },

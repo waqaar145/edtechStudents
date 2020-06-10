@@ -6,16 +6,18 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(async function(user, done) {
-  let user1 = await knex('ed_admins').where('a_id', user.uid).first();
+  console.log('PASSPORT LOCAL', user);
+  let user1 = await knex('ed_users').where('u_id', user.uid).first();
   if (!user1) {
     done(null, false)
   }
   let obj = {
     uid: user.uid,
     uuid: user.uuid,
-    user_name: user.user_name,
-    user_email: user.user_email,
-    user_slug: user.user_slug
+    first_name: user.first_name,
+    last_name: user.last_name,
+    username: user.username,
+    email: user.email
   }
   done(null, obj)
 });

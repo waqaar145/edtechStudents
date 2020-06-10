@@ -7,7 +7,7 @@ const { isLoggedIn } = require('./../../../helpers/auth');
 
 routes.post('/auth/signup', [signupValidation], signUp);
 routes.post('/auth/signin', [signinValidation], signIn);
-routes.get('/auth/logged-in', isLoggedIn, loggedIn);
+routes.get('/auth/logged-in', loggedIn);
 routes.get('/auth/logout', isLoggedIn, logOut);
 
 module.exports = routes;

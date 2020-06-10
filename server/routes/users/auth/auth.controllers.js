@@ -15,10 +15,10 @@ const signUp = async (req, res) => {
   }
   // Validation *******
 
-  const {name, email, password} = req.body;
-  let email_exists = await knex('ed_admins').where('a_email', email).returning(['a_email', 'a_id']).first();
+  const { first_name, last_name, email, password } = req.body;
+  let email_exists = await knex('ed_users').where('u_email', email).returning(['u_email', 'u_id']).first();
   if (email_exists) {
-    return res.status(422).send(
+    return res.status(400).send(
       unExpectedError(
         'Can\'t signup',
         'This email already exists',
@@ -28,30 +28,39 @@ const signUp = async (req, res) => {
   }
 
   bcrypt.hash(password, 8, async function(err, hash){
-     if (err) return res.status(500).send({message: 'something went wrong'})
-     let slug = slugify(name, {
-                          replacement: '-',
+     if (err) return res.status(422).send(
+      unExpectedError(
+        'Can\'t signup',
+        'Something went wrong!',
+        'email'
+      )
+    );
+     let username = slugify(email.split('@')[0], {
+                          replacement: '',
                           remove: /[*+~.(][)'"!:@, .:;`~!@#$%^&{}]/g,
                           lower: true
                         });
 
-     let count = await knex('ed_admins').where('a_slug', 'like', `%${slug}%`).count('').first();
+     let count = await knex('ed_users').where('u_username', 'like', `%${username}%`).count('').first();
      count = parseInt(count.count);
      if (count > 0) {
-       slug = slug + '-' + ( count + 1 );
+      username = username + '-' + ( count + 1 );
      }
 
-     knex('ed_admins')
-       .insert({a_name: name, a_slug: slug, a_email: email, a_password: hash})
-       .returning(['a_id', 'a_uuid', 'a_name', 'a_slug', 'a_email'])
+     username = '@' + username;
+
+     knex('ed_users')
+       .insert({u_first_name: first_name, u_last_name: last_name, u_username: username, u_email: email, u_password: hash})
+       .returning(['u_id', 'u_uuid', 'u_first_name', 'u_last_name', 'u_username', 'u_email'])
        .then(function(user) {
          let user_obj = user[0];
          let obj = {
-           uid: user_obj.a_id,
-           uuid: user_obj.a_uuid,
-           user_name: user_obj.a_name,
-           user_email: user_obj.a_email,
-           user_slug: user_obj.a_slug
+           uid: user_obj.u_id,
+           uuid: user_obj.u_uuid,
+           first_name: user_obj.u_first_name,
+           last_name: user_obj.u_last_name,
+           username: user_obj.u_username,
+           email: user_obj.u_email
          }
          req.logIn(obj, function (err) {
            return res.status(200).send(obj);
@@ -62,7 +71,7 @@ const signUp = async (req, res) => {
           return res.status(422).send(
             unExpectedError(
               'Can\'t signup',
-              'User can not be signed up, please try again later.',
+              'Student can not be signed up, please try again later.',
               'email'
             )
           );
@@ -72,8 +81,6 @@ const signUp = async (req, res) => {
 }
 
 const signIn = async (req, res, next) => {
-
-  console.log(req.body)
   // Validation *******
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -85,9 +92,9 @@ const signIn = async (req, res, next) => {
   // Validation *******
   try {
     const { email, password } = req.body;
-    let user_obj = await knex('ed_admins').where('a_email', email).first();
+    let user_obj = await knex('ed_users').where('u_email', email).first();
     if (!user_obj) {
-      return res.status(422).send(
+      return res.status(400).send(
         unExpectedError(
           'Can\'t signin',
           'This email does not exists',
@@ -95,7 +102,7 @@ const signIn = async (req, res, next) => {
         )
       );
     }
-    bcrypt.compare(password, user_obj.a_password, function(err, result){
+    bcrypt.compare(password, user_obj.u_password, function(err, result){
          if(err) {
            return res.status(401).send(
              unExpectedError(
@@ -106,17 +113,18 @@ const signIn = async (req, res, next) => {
          }
          if (result) {
            let obj = {
-             uid: user_obj.a_id,
-             uuid: user_obj.a_uuid,
-             user_name: user_obj.a_name,
-             user_email: user_obj.a_email,
-             user_slug: user_obj.a_slug
-           }
+              uid: user_obj.u_id,
+              uuid: user_obj.u_uuid,
+              first_name: user_obj.u_first_name,
+              last_name: user_obj.u_last_name,
+              username: user_obj.u_username,
+              email: user_obj.u_email
+            }
            req.logIn(obj, function (err) {
              res.status(200).send(obj);
            });
          } else {
-           return res.status(422).send(
+           return res.status(400).send(
              unExpectedError(
                'Can\'t signin',
                'Password did not match',

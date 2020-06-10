@@ -8,7 +8,7 @@ import {authService} from './../../services/apis/auth.service'
 
 const INITIAL_STATE = {
   first_name: {
-    input_val: '',
+    input_val: 'Waqaar',
     required: true,
     type: {
       main: 'String',
@@ -20,7 +20,7 @@ const INITIAL_STATE = {
     }
   },
   last_name: {
-    input_val: '',
+    input_val: 'Aslam',
     required: true,
     type: {
       main: 'String',
@@ -32,7 +32,7 @@ const INITIAL_STATE = {
     }
   },
   email: {
-    input_val: '',
+    input_val: 'waqaar145@gmail.com',
     required: true,
     type: {
       main: 'Email'
@@ -43,7 +43,7 @@ const INITIAL_STATE = {
     }
   },
   password: {
-    input_val: '',
+    input_val: 'qwerty',
     required: true,
     type: {
       main: 'String'
@@ -123,6 +123,7 @@ const Register = () => {
 
       authService.Signup(data)
         .then(response => {
+          setLoading(false)
           console.log(response)
         }).catch(error => {
           setLoading(false)
