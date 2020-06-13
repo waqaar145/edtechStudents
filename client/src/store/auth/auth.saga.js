@@ -12,12 +12,21 @@ function* handleLoggedInUser ({headers}) {
   }
 }
 
+function* handleLogout () {
+  yield put(actions.setLogout());
+}
+
 export function* getLoggedInUser () {
   yield takeLatest(authActionTypes.WATCH_LOGGED_IN_USER, handleLoggedInUser)
 }
 
+export function* logout () {
+  yield takeLatest(authActionTypes.LOGOUT, handleLogout);
+}
+
 export function* authSaga() {
   yield all([
-    call(getLoggedInUser)
+    call(getLoggedInUser),
+    call(logout)
   ]);
 }

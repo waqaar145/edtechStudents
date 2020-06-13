@@ -17,6 +17,12 @@ export const Auth  = (state = initalState, action = {}) => {
         ...state,
         ...action.data
       }
+    
+    case authActionTypes.LOGOUT:
+      return {
+        ...state,
+        ...initalState
+      };
 
     default:
       return state;

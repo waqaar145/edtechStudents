@@ -1,16 +1,25 @@
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import {Container, Grid} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import Signin from './../src/components/auth/login'
 import Register from './../src/components/auth/register'
+import SimpleAlert from './../src/components/alerts/alert'
 
 const useStyles = makeStyles((theme) => ({
+  error: {
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+  },
   margin: {
     marginTop: '10%'
   },
   loginContainer: {
     boxShadow: theme.shadows[2],
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
+    backgroundColor: theme.palette.background.paper,
+    borderRadius: 5
   },
   cursor: {
     cursor: 'pointer'
@@ -20,8 +29,17 @@ const useStyles = makeStyles((theme) => ({
 const Login = () => {
 
   const [showLogin, setShowLogin] = useState(false);
+  const [serverErrors, setServerErrors] = useState([]);
 
   const classes = useStyles();
+
+  const handleServerErros = (data) => {
+    setServerErrors(data)
+  }
+
+  useEffect(() => {
+    setServerErrors([])
+  }, [showLogin])
 
   return (
     <Container>
@@ -31,13 +49,20 @@ const Login = () => {
           <div className={classes.loginContainer}>
             <span className={classes.cursor} onClick={() => setShowLogin(!showLogin)}>Switch</span>
             <center><h3>{showLogin ? 'Register' : 'Login'}</h3></center>
+            <div className={classes.error}>
+              {
+                Array.isArray(serverErrors) && serverErrors.length > 0
+                  &&
+                <SimpleAlert color="error" errors={serverErrors}/>
+              }
+            </div>
             <br />
             {
               showLogin
                 ?
-              <Register />
+              <Register handleServerErros={handleServerErros}/>
                 :
-              <Signin />
+              <Signin handleServerErros={handleServerErros}/>
             }
           </div>
         </Grid>

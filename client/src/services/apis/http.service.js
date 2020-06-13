@@ -37,8 +37,8 @@ const instanceCreator = ($axios) => ({
     return response;
   },
   errorHandler(error) {
-    // const {response} = error;
-    // const {data:{status}} = response
+    const {response} = error;
+    const {data:{status}} = response
     // if (status.code === 401 && status.message === 'Token Expired'){
     //   store.dispatch(logoutStart());
     // }
@@ -47,7 +47,7 @@ const instanceCreator = ($axios) => ({
     // } else {
     //   store.dispatch(appConstOnError({type: 'error', message: 'Something went wrong'}));
     // }
-    // return Promise.reject(response);
+    return Promise.reject(response);
   },
   interceptorRef: null,
   mountResponseInterceptor() {

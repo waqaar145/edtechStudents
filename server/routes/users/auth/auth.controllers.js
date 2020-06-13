@@ -21,7 +21,7 @@ const signUp = async (req, res) => {
     return res.status(400).send(
       unExpectedError(
         'Can\'t signup',
-        'This email already exists',
+        'This email already exists, please try logging in!',
         'email'
       )
     );
@@ -97,7 +97,7 @@ const signIn = async (req, res, next) => {
       return res.status(400).send(
         unExpectedError(
           'Can\'t signin',
-          'This email does not exists',
+          'This email does not exists. please create a new account!',
           'email'
         )
       );
@@ -127,7 +127,7 @@ const signIn = async (req, res, next) => {
            return res.status(400).send(
              unExpectedError(
                'Can\'t signin',
-               'Password did not match',
+               'Password did not match.',
                'password'
              )
            )
@@ -159,14 +159,7 @@ const loggedIn = async (req, res) => {
 
 const logOut = async (req, res, next) => {
   req.session.destroy(function (err) {
-    return res.status(200)
-              .send({
-                uid: '',
-                uuid: '',
-                name: '',
-                email: '',
-                slug: ''
-              });
+    return res.status(200).send('logged-out')
   });
 }
 

@@ -6,7 +6,7 @@ export const authService = {
       const result = await HTTPClient.post('/api/v1/auth/signup', data);
       return result;
     } catch(error) {
-      throw error;
+      throw error
     }
   },
   async Signin(data) {
@@ -20,6 +20,14 @@ export const authService = {
   async getLoggedInUser (cookie) {
     try {
       const result = await HTTPClient.get(process.env.API_URL + '/api/v1/auth/logged-in', {headers: {Cookie: cookie}});
+      return result;
+    } catch(error) {
+      throw error;
+    }
+  },
+  async logout () {
+    try {
+      const result = await HTTPClient.get('/api/v1/auth/logout');
       return result;
     } catch(error) {
       throw error;

@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Signing = () => {
+const Signing = ({handleServerErros}) => {
 
   const [values, setValues] = useState(INITIAL_STATE);
   const [error, setError] = useState({});
@@ -99,14 +99,11 @@ const Signing = () => {
       authService.Signin(data)
         .then(response => {
           setLoading(false)
-          Router.push('/');
+          window.location.assign('/');
         }).catch(error => {
           setLoading(false)
-          console.log(error)
+          handleServerErros(error.data.data)
         })
-    } else {
-      setLoading(false)
-      console.log('VALIDATION FAILED')
     }
   }
 

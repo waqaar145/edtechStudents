@@ -26,13 +26,14 @@ const CustomButton = ({name, variant, color, small, loading, ...restProps}) => {
       color={color}
       size={small}
       {...restProps}
+      disabled={loading}
       >
       {name}
       {
         loading
           &&
         <span>
-          &nbsp;&nbsp;<CircularProgress color="secondary" size="1.5rem" style={{marginTop: '5px'}} />
+          &nbsp;&nbsp;<CircularProgress size="1.5rem" style={{marginTop: '5px', color: '#fff'}} />
         </span>
       }
     </Button>

@@ -8,7 +8,7 @@ import {authService} from './../../services/apis/auth.service'
 
 const INITIAL_STATE = {
   first_name: {
-    input_val: 'Waqaar',
+    input_val: '',
     required: true,
     type: {
       main: 'String',
@@ -20,7 +20,7 @@ const INITIAL_STATE = {
     }
   },
   last_name: {
-    input_val: 'Aslam',
+    input_val: '',
     required: true,
     type: {
       main: 'String',
@@ -32,7 +32,7 @@ const INITIAL_STATE = {
     }
   },
   email: {
-    input_val: 'waqaar145@gmail.com',
+    input_val: '',
     required: true,
     type: {
       main: 'Email'
@@ -43,7 +43,7 @@ const INITIAL_STATE = {
     }
   },
   password: {
-    input_val: 'qwerty',
+    input_val: '',
     required: true,
     type: {
       main: 'String'
@@ -65,7 +65,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Register = () => {
+const Register = ({handleServerErros}) => {
 
   const [values, setValues] = useState(INITIAL_STATE);
   const [error, setError] = useState({});
@@ -123,14 +123,12 @@ const Register = () => {
 
       authService.Signup(data)
         .then(response => {
-          setLoading(false)
           console.log(response)
+          setLoading(false)
         }).catch(error => {
           setLoading(false)
-          console.log(error)
+          handleServerErros(error.data.data)
         })
-    } else {
-      console.log('VALIDATION FAILED')
     }
   }
 
