@@ -9,7 +9,6 @@ import {authActionTypes} from './../../store/auth/auth.actiontype'
 import {authService} from './../../services'
 
 const useStyles = makeStyles((theme) => {
-  console.log(theme)
   return {
     root: {
       flexGrow: 1,

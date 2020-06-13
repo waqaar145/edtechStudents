@@ -97,7 +97,7 @@ const signIn = async (req, res, next) => {
       return res.status(400).send(
         unExpectedError(
           'Can\'t signin',
-          'This email does not exists. please create a new account!',
+          'This email does not exist. please create a new account!',
           'email'
         )
       );

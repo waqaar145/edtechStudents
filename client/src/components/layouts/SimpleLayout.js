@@ -11,7 +11,7 @@ const SimpleLayout = ({children}) => {
         {children}
       </div>
       <div className="footer">
-        This is footer
+        {/* This is footer */}
       </div>
     </div>
   )
