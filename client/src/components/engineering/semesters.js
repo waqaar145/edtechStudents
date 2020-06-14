@@ -4,8 +4,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import Divider from '@material-ui/core/Divider';
-import ImageIcon from '@material-ui/icons/Image';
 
 const useStyles = makeStyles((theme) => ({
   root: {

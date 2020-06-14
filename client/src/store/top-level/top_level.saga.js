@@ -14,12 +14,30 @@ function* handleEnggPageData ({data}) {
   }
 }
 
+function* handleSubjectsBySemster ({data}) {
+  yield put(actions.setSubjectsBySemster(data))
+}
+
+function* handleSearchSubjects ({data}) {
+  yield put(actions.setSearchedSubjects(data))
+}
+
 export function* getEnggPageData () {
   yield takeLatest(topLevelActionTypes.WATCH_ENGG_PAGE_CHANGES, handleEnggPageData)
 }
 
+export function* showSubjectsBySemster () {
+  yield takeLatest(topLevelActionTypes.WATCH_SEMESTER_CHANGE, handleSubjectsBySemster)
+}
+
+export function* searchSubjects () {
+  yield takeLatest(topLevelActionTypes.WATCH_SEARCH_SUBJECTS, handleSearchSubjects)
+}
+
 export function* topLevelSaga() {
   yield all([
-    call(getEnggPageData)
+    call(getEnggPageData),
+    call(showSubjectsBySemster),
+    call(searchSubjects)
   ]);
 }

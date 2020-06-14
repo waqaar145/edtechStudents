@@ -29,7 +29,20 @@ export const TopLevel  = (state = initalState, action = {}) => {
     return {
       ...state,
       semesters,
-      subjects
+      subjects,
+      current_subjects: subjects.filter(subject => subject.semester_id === semesters[0].id)
+    }
+
+  case topLevelActionTypes.SET_SUBJECTS_BY_SEMESTER:
+    return {
+      ...state,
+      current_subjects: state.subjects.filter(subject => subject.semester_id === action.data)
+    }
+
+  case topLevelActionTypes.SET_SEARCHED_SUBJECTS:
+    return {
+      ...state,
+      current_subjects: state.subjects.filter(subject => subject.name.toLowerCase().includes(action.data.toLowerCase()))
     }
 
     default:
