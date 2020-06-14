@@ -17,6 +17,9 @@ const theme = createMuiTheme({
 // const theme = createMuiTheme({
 //   palette: {
 //     type: 'dark',
+//     background: {
+//       default: "#282828"
+//     }
 //   },
 //   typography: {
 //     button: {
