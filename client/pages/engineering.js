@@ -12,13 +12,14 @@ import { fade, makeStyles } from '@material-ui/core/styles';
 import MenuIcon from '@material-ui/icons/Menu';
 import SearchIcon from '@material-ui/icons/Search';
 import PropTypes from 'prop-types';
+import Router from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: '3%'
   },
   semestersContainer: {
-    boxShadow: theme.shadows[2],
+    boxShadow: theme.shadows[1],
     backgroundColor: theme.palette.background.paper,
     borderRadius: theme.shape.borderRadius
   },
@@ -26,9 +27,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     borderBottom: `1px solid ${theme.palette.grey['300']}`
   },
-  headerSeacrh : {
+  headerSearch : {
     padding: theme.spacing(2),
-    borderBottom: `1px solid ${theme.palette.grey['300']}`,
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
@@ -93,7 +93,7 @@ const Engineering = (props) => {
     searchSubjects
   } = props;
 
-  const [search, setSearch] = useState('')
+  const [lastActiveSemester, setLastActiveSemester] = useState(null);
   const [activeSemester, setActiveSemester] = useState(semesters.length > 0 ? semesters[0]['id'] : null);
 
   const handleCurrentSemester = (id) => {
@@ -105,12 +105,21 @@ const Engineering = (props) => {
     const {value} = e.target;
     if (value) {
       searchSubjects(value);
+      setLastActiveSemester(activeSemester)
       setActiveSemester(null)
     } else {
-      showSubjectsBySemester(semesters[0]['id'])
-      setActiveSemester(semesters[0]['id'])
+      if (semesters.length > 0) {
+        showSubjectsBySemester(semesters[0]['id'])
+        setActiveSemester(lastActiveSemester ? lastActiveSemester : semesters[0]['id'])
+      }
     }
   } 
+
+  const redirectToSubject = (slug) => {
+    Router.push({
+      pathname: `/subject/${slug}`
+    })
+  }
 
   const classes = useStyles();
 
@@ -145,7 +154,7 @@ const Engineering = (props) => {
             </Grid>
             <Grid item xs={9}>
               <div className={classes.semestersContainer}>
-                <div className={classes.headerSeacrh}>
+                <div className={classes.headerSearch}>
                   <div className={classes.subjectHeaderText}>
                     {activeSemester ? semesters.filter(semester => semester.id === activeSemester)[0].name : ''}
                   </div>
@@ -154,7 +163,7 @@ const Engineering = (props) => {
                       <SearchIcon />
                     </div>
                     <InputBase
-                      placeholder="Search…"
+                      placeholder="Subject..."
                       classes={{
                         root: classes.inputRoot,
                         input: classes.inputInput,
@@ -175,7 +184,10 @@ const Engineering = (props) => {
                         current_subjects.map((subject, index) => {
                           return (
                             <Grid item xs={3} key={index} >
-                              <Subjects subject={subject}/>
+                              <Subjects 
+                                subject={subject}
+                                redirectToSubject={redirectToSubject}
+                                />
                             </Grid>
                             
                           )
@@ -222,6 +234,7 @@ Engineering.propTypes = {
     PropTypes.shape({
       id: PropTypes.number.isRequired,
       name: PropTypes.string.isRequired,
+      slug: PropTypes.string.isRequired,
       thumbnail: PropTypes.string.isRequired,
       semester_id: PropTypes.number.isRequired
     })

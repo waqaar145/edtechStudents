@@ -17,12 +17,12 @@ const useStyles = makeStyles({
   },
 });
 
-const Subjects = ({subject: {id, name, slug, thumbnail}}) => {
+const Subjects = ({subject: {id, name, slug, thumbnail}, redirectToSubject}) => {
 
   const classes = useStyles();
 
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} onClick={() => redirectToSubject(slug)}>
       <CardActionArea>
         <CardMedia
           className={classes.media}
@@ -30,7 +30,7 @@ const Subjects = ({subject: {id, name, slug, thumbnail}}) => {
           title={name}
         />
         <CardContent>
-          <Typography gutterBottom variant="h6" component="h3">
+          <Typography gutterBottom variant="subtitle1" component="h3">
             {name}
           </Typography>
         </CardContent>
