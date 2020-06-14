@@ -1,9 +1,11 @@
+import SimpleLayout from '../../src/components/layouts/SimpleLayout'
+
 const SubjectPage = () => {
 
   return (
-    <div>
+    <SimpleLayout>
       This is where big subject is gonna be
-    </div>
+    </SimpleLayout>
   )
 }
 
