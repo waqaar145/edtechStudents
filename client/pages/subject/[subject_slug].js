@@ -3,6 +3,7 @@ import { Container, Grid } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 import ChaptersList from './../../src/components/subject/chapters'
+import InputMaterialSearch from './../../src/components/forms/InputMaterialSearch'
 
 const SubjectPage = () => {
 
@@ -35,6 +36,38 @@ const SubjectPage = () => {
     content: {
       borderRight: `1px solid ${theme.palette.grey['200']}`,
       overflowY: 'scroll'
+    },
+    contentContainer: {
+      // padding: '10px'
+    },
+    contentHeader: {
+      padding: theme.spacing(2),
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      backgroundColor: theme.palette.background.paper
+    },
+    subjectHeaderText: {
+      ...theme.typography.h6,
+    },
+    contentBody: {
+      padding: theme.spacing(2)
+    },
+    internalCustomTab: {
+      backgroundColor: theme.palette.background.paper,
+      paddingLeft: '10px',
+      paddingTop: '10px',
+      paddingRight: '10px',
+      display: 'flex',
+      alignItems: 'flex-start',
+      marginBottom: '10px',
+      ...theme.typography.subtitle1
+    },
+    singleTab: {
+      cursor: 'pointer',
+      paddingBottom: '5px',
+      marginRight: '15px',
+      borderBottom: `2px solid ${theme.palette.primary.main}`
     }
   }));
 
@@ -44,11 +77,13 @@ const SubjectPage = () => {
   useEffect(() => {
     const el = document.getElementsByClassName('header')[0]
     setHeight(el.offsetHeight)
-  }, [])
+  }, []);
 
   const handleCurrentChapter = (id) => {
     setActiveChapter(id)
   }
+
+  const handleSearchContent = (data) => {}
 
   const classes = useStyles();
 
@@ -67,15 +102,38 @@ const SubjectPage = () => {
           }
         </Grid>
         <Grid item xs={9} className={`${classes.content} ${classes.main}`}>
-          {
-            Array.from(Array(200), (e, i) => {
-              return (
-                <div key={i}>
-                  This is content area This is content area This is content area This is content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area <br />
+          <div className={classes.contentContainer}>
+            <div className={classes.contentHeader}>
+              <div className={classes.subjectHeaderText}>
+                This is current chapter selected
+              </div>
+              <InputMaterialSearch
+                handleSearch={handleSearchContent}
+              />
+            </div>
+            <div className={classes.contentBody}>
+              <div className={classes.internalCustomTab}>
+                <div className={classes.singleTab}>
+                  All
                 </div>
-              )
-            })
-          }
+                <div className={classes.singleTab}>
+                  Questions
+                </div>
+                <div className={classes.singleTab}>
+                  Theory
+                </div>
+              </div>
+              {
+                Array.from(Array(200), (e, i) => {
+                  return (
+                    <div key={i}>
+                      This is content area This is content area This is content area This is content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area <br />
+                    </div>
+                  )
+                })
+              }
+            </div>
+          </div>
         </Grid>
       </Grid>
     </SimpleLayout>
