@@ -3,6 +3,7 @@ import SimpleLayout from '../src/components/layouts/SimpleLayout'
 import { Container, Grid } from '@material-ui/core';
 import {topLevelActionTypes} from './../src/store/top-level/top_level.actiontype'
 import {topLevelService} from './../src/services'
+import {contentService} from './../src/services'
 import {connect} from 'react-redux';
 import Semesters from './../src/components/engineering/semesters'
 import Subjects from './../src/components/engineering/subjects'
@@ -77,10 +78,20 @@ const Engineering = (props) => {
     }
   } 
 
-  const redirectToSubject = (slug) => {
-    Router.push({
-      pathname: `/subject/${slug}`
-    })
+  const redirectToSubject = async (slug) => {
+    try {
+      let res = await contentService.getFirstChaptersBySubjectSlug(slug)
+      if (res.data.data.length > 0) {
+        let data = res.data.data[0];
+        Router.push(`/subject/subject_slug?subject_slug=${slug}&chapter_slug=${data.slug}&content_type=all`, `/subject/${slug}/chapter/${data.slug}/all`);
+        console.log(data)
+      } else {
+        console.log('Did not get anything')
+      }
+    } catch (err) {
+
+    }
+    // Router.push(`/subject/subject_slug?=${slug}`, `/subject/${slug}`);
   }
 
   const classes = useStyles();
@@ -135,7 +146,8 @@ const Engineering = (props) => {
                         current_subjects.map((subject, index) => {
                           return (
                             <Grid item xs={3} key={index} >
-                              <Subjects 
+                              <Subjects
+                                component="a" 
                                 subject={subject}
                                 redirectToSubject={redirectToSubject}
                                 />

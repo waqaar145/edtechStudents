@@ -27,7 +27,7 @@
     "es6-promise": "^4.2.8",
     "express": "^4.17.1",
     "http-proxy-middleware": "1.0.3",
-    "next": "^9.3.4",
+    "next": "9.4.4",
     "next-compose-plugins": "^2.2.0",
     "next-i18next": "^4.2.1",
     "next-images": "^1.4.0",

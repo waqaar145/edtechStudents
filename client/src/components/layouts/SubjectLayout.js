@@ -1,11 +1,13 @@
-import SimpleLayout from '../../src/components/layouts/SimpleLayout'
+import SimpleLayout from './SimpleLayout'
 import { Container, Grid } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
-import ChaptersList from './../../src/components/subject/chapters'
-import InputMaterialSearch from './../../src/components/forms/InputMaterialSearch'
+import ChaptersList from './../subject/chapters'
+import InputMaterialSearch from './../forms/InputMaterialSearch';
+import Link from 'next/link';
+import { useRouter } from 'next/router'
 
-const SubjectPage = () => {
+const SubjectLayout = (props) => {
 
   const useStyles = makeStyles((theme) => ({
     root: {
@@ -67,16 +69,42 @@ const SubjectPage = () => {
       cursor: 'pointer',
       paddingBottom: '5px',
       marginRight: '15px',
-      borderBottom: `2px solid ${theme.palette.primary.main}`
+      '& a': {
+        color: theme.palette.text.primary,
+        textDecoration: 'none'
+      }
+    },
+    tabActive: {
+      cursor: 'pointer',
+      paddingBottom: '5px',
+      marginRight: '15px',
+      borderBottom: `2px solid ${theme.palette.primary.main}`,
+      '& a': {
+        textDecoration: 'none',
+        color: theme.palette.primary.main,
+      }
     }
   }));
+
+  const router = useRouter()
+  const [activeTab, setActiveTab] = useState('');
+
 
   const [height, setHeight] = useState(null);
   const [activeChapter, setActiveChapter] = useState(1);
 
   useEffect(() => {
     const el = document.getElementsByClassName('header')[0]
-    setHeight(el.offsetHeight)
+    setHeight(el.offsetHeight);
+    if (router.pathname.split('/').length === 3) {
+      setActiveTab('all')
+    } else {
+      if (router.pathname.split('/')[3] === 'sums') {
+        setActiveTab('sums')
+      } else if (router.pathname.split('/')[3] === 'theories'){
+        setActiveTab('theories')
+      }
+    }
   }, []);
 
   const handleCurrentChapter = (id) => {
@@ -113,25 +141,29 @@ const SubjectPage = () => {
             </div>
             <div className={classes.contentBody}>
               <div className={classes.internalCustomTab}>
-                <div className={classes.singleTab}>
-                  All
+                <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
+                  <Link href="/subject/name" passHref>
+                    <a>
+                      All <span style={{fontSize: '14px'}}>(26)</span>
+                    </a>
+                  </Link>
                 </div>
-                <div className={classes.singleTab}>
-                  Questions
+                <div className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
+                  <Link href="/subject/name/theories" passHref>
+                    <a>
+                      Theories <span style={{fontSize: '14px'}}>(10)</span>
+                    </a>
+                  </Link>
                 </div>
-                <div className={classes.singleTab}>
-                  Theory
+                <div className={`${activeTab === 'sums' ? classes.tabActive : classes.singleTab}`}>
+                  <Link href="/subject/name/sums" passHref>
+                    <a>
+                      Questions <span style={{fontSize: '14px'}}>(16)</span>
+                    </a>
+                  </Link>
                 </div>
               </div>
-              {
-                Array.from(Array(200), (e, i) => {
-                  return (
-                    <div key={i}>
-                      This is content area This is content area This is content area This is content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area  content area This is content area This is content area <br />
-                    </div>
-                  )
-                })
-              }
+              {props.children}
             </div>
           </div>
         </Grid>
@@ -140,4 +172,4 @@ const SubjectPage = () => {
   )
 }
 
-export default SubjectPage;
+export default SubjectLayout;
