@@ -50,7 +50,7 @@ module.exports.getFirstChapterSlugBySubjectSlug = async (req, res) => { // this 
   }
 }
 
-module.exports.getChaptersBySubjectSlug = async (req, res) => {
+module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all chapters of a subject slug
   try {
     await check('subject_slug').isLength({min: 1, max: 500}).withMessage('Subject slug is required.').run(req);
     const errors = validationResult(req);
@@ -85,4 +85,84 @@ module.exports.getChaptersBySubjectSlug = async (req, res) => {
       'semester'
     ))
   }
+}
+
+module.exports.getContentByChapterSlug = async (req, res) => {
+
+  await check('chapter_slug').isLength({min: 1, max: 500}).withMessage('Subject slug is required.').run(req);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).send({
+      message: 'Subject slug is required',
+      data: errors.array()
+    });
+  }
+
+  if (!(req.query.content_type === 'all' || req.query.content_type === 'theory' || req.query.content_type === 'sum')) {
+    return res.status(422).send(unExpectedError(
+      'Content type could be only of these i.e all, thoery or sum',
+      'Content type could be only of these i.e all, thoery or sum',
+      'content_type'
+    ))
+  }
+
+  const {chapter_slug} = req.params;
+  const content_type = req.query.content_type;
+
+  let content_type_arr = [];
+  if (content_type === 'all') {
+    content_type_arr = [1, 2]
+  } else if (content_type === 'thoery') {
+    content_type_arr = [1];
+  } else {
+    content_type_arr = [2];
+  }
+
+  // try {
+    let result = await knex.select(
+                              'ed_contents.cn_id as id',
+                              'ed_contents.cn_type as content_type',
+                              'ed_contents.cn_difficulty_level as difficulty_level',
+                              'ed_contents.cn_name as name',
+                              'ed_contents.cn_slug as slug',
+                              'ed_contents.cn_description as description',
+                              'ed_contents.cn_is_active as is_active'
+                            ).from('ed_contents')
+                            .innerJoin('ed_chapters', 'ed_chapters.cp_id', 'ed_contents.cn_chapter_id')
+                            .where('ed_contents.cn_is_deleted', false)
+                            .where('ed_chapters.cp_slug', chapter_slug)
+                            .whereIn('ed_contents.cn_type', content_type_arr)
+                            .orderBy('ed_contents.cn_id', 'DESC');
+    
+    let ids = []
+    for (let cn of result) {
+      ids.push(cn.id) 
+    }
+
+    let tags = await knex('ed_content_years').whereIn('cy_content_id', ids);
+    console.log('====================', tags)
+
+    let tag_ids = [];
+    for (let t_id of tags) {
+      tag_ids.push(t_id.cy_year_id);
+    }
+
+    let years = await knex('ed_years').whereIn('y_id', tag_ids);
+    console.log(years)
+
+
+    return res.status(200).send({
+      message: 'Content list have been fetched',
+      data: result
+    })
+
+  // } catch (err) {
+  //   return res.status(422).send(
+  //     unExpectedError(
+  //       'Years list could not be fetched',
+  //       'Years list could not be fetched',
+  //       'year'
+  //     )
+  //   )
+  // }
 }
