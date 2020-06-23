@@ -119,36 +119,45 @@ module.exports.getContentByChapterSlug = async (req, res) => {
   }
 
   // try {
-    let result = await knex.select(
-                              'ed_contents.cn_id as id',
-                              'ed_contents.cn_type as content_type',
-                              'ed_contents.cn_difficulty_level as difficulty_level',
-                              'ed_contents.cn_name as name',
-                              'ed_contents.cn_slug as slug',
-                              'ed_contents.cn_description as description',
-                              'ed_contents.cn_is_active as is_active'
-                            ).from('ed_contents')
-                            .innerJoin('ed_chapters', 'ed_chapters.cp_id', 'ed_contents.cn_chapter_id')
-                            .where('ed_contents.cn_is_deleted', false)
-                            .where('ed_chapters.cp_slug', chapter_slug)
-                            .whereIn('ed_contents.cn_type', content_type_arr)
-                            .orderBy('ed_contents.cn_id', 'DESC');
+    // let result = await knex.select(
+    //                           'ed_contents.cn_id as id',
+    //                           'ed_contents.cn_type as content_type',
+    //                           'ed_contents.cn_difficulty_level as difficulty_level',
+    //                           'ed_contents.cn_name as name',
+    //                           'ed_contents.cn_slug as slug',
+    //                           'ed_contents.cn_description as description',
+    //                           'ed_contents.cn_is_active as is_active'
+    //                         ).from('ed_contents')
+    //                         .innerJoin('ed_chapters', 'ed_chapters.cp_id', 'ed_contents.cn_chapter_id')
+    //                         .where('ed_contents.cn_is_deleted', false)
+    //                         .where('ed_chapters.cp_slug', chapter_slug)
+    //                         .whereIn('ed_contents.cn_type', content_type_arr)
+    //                         .orderBy('ed_contents.cn_id', 'DESC');
     
-    let ids = []
-    for (let cn of result) {
-      ids.push(cn.id) 
-    }
+    // let ids = []
+    // for (let cn of result) {
+    //   ids.push(cn.id) 
+    // }
 
-    let tags = await knex('ed_content_years').whereIn('cy_content_id', ids);
-    console.log('====================', tags)
+    // let tags = await knex('ed_content_years').whereIn('cy_content_id', ids);
+    // console.log('====================', tags)
 
-    let tag_ids = [];
-    for (let t_id of tags) {
-      tag_ids.push(t_id.cy_year_id);
-    }
+    // let tag_ids = [];
+    // for (let t_id of tags) {
+    //   tag_ids.push(t_id.cy_year_id);
+    // }
 
-    let years = await knex('ed_years').whereIn('y_id', tag_ids);
-    console.log(years)
+    // let years = await knex('ed_years').whereIn('y_id', tag_ids);
+    // console.log(years)
+
+
+    let result = await knex.raw(
+      "select json_agg(json_build_object('cn_id', ed_contents.cn_id, 'content_type', ed_contents.cn_type, 'cn_difficulty_level', ed_contents.cn_difficulty_level, 'name', ed_contents.cn_name, 'tags', (select json_agg(json_build_obj(ed_years.y_id)) FROM ed_years JOIN ed_content_years ON ed_years.y_id=ed_content_years.cy_year_id WHERE ed_content_years.cy_content_id=ed_contents.cn_id))) from ed_contents"
+    );
+
+
+    
+    console.log('---', result)
 
 
     return res.status(200).send({
