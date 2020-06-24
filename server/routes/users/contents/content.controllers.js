@@ -62,6 +62,17 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
     }
 
     let sub_slug = req.params.subject_slug;
+
+    let subject = await knex.select(
+                                  'ed_subjects.sb_id as id',
+                                  'ed_subjects.sb_name as subject_name',
+                                  'ed_subjects.sb_description as description',
+                                  'ed_subjects.sb_thumbnail as thumbnail'
+                                )
+                                .from('ed_subjects')
+                                .where('sb_slug', sub_slug)
+                                .first();
+
     let result = await knex.select(
                             'ed_chapters.cp_id as id',
                             'ed_chapters.cp_name as chapter_name',
@@ -76,7 +87,10 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
 
     return res.status(200).send({
       message: 'Chapters list has been fetched',
-      data: result
+      data: {
+        subject,
+        chapters: result
+      }
     })
   } catch (err) {
     return res.status(422).send(unExpectedError(
@@ -118,60 +132,79 @@ module.exports.getContentByChapterSlug = async (req, res) => {
     content_type_arr = [2];
   }
 
-  // try {
-    // let result = await knex.select(
-    //                           'ed_contents.cn_id as id',
-    //                           'ed_contents.cn_type as content_type',
-    //                           'ed_contents.cn_difficulty_level as difficulty_level',
-    //                           'ed_contents.cn_name as name',
-    //                           'ed_contents.cn_slug as slug',
-    //                           'ed_contents.cn_description as description',
-    //                           'ed_contents.cn_is_active as is_active'
-    //                         ).from('ed_contents')
-    //                         .innerJoin('ed_chapters', 'ed_chapters.cp_id', 'ed_contents.cn_chapter_id')
-    //                         .where('ed_contents.cn_is_deleted', false)
-    //                         .where('ed_chapters.cp_slug', chapter_slug)
-    //                         .whereIn('ed_contents.cn_type', content_type_arr)
-    //                         .orderBy('ed_contents.cn_id', 'DESC');
+  try {
+    let result = await knex.select(
+                              'ed_contents.cn_id as id',
+                              'ed_contents.cn_type as content_type',
+                              'ed_contents.cn_difficulty_level as difficulty_level',
+                              'ed_contents.cn_name as name',
+                              'ed_contents.cn_slug as slug',
+                              'ed_contents.cn_description as description',
+                              'ed_contents.cn_is_active as is_active'
+                            ).from('ed_contents')
+                            .innerJoin('ed_chapters', 'ed_chapters.cp_id', 'ed_contents.cn_chapter_id')
+                            .where('ed_contents.cn_is_deleted', false)
+                            .where('ed_chapters.cp_slug', chapter_slug)
+                            .whereIn('ed_contents.cn_type', content_type_arr)
+                            .orderBy('ed_contents.cn_id', 'DESC');
+
+    let ids = [] // collecting all content_ids
+    for (let cn of result) {
+      ids.push(cn.id) 
+    }
+
+    let tags = await knex('ed_content_years').whereIn('cy_content_id', ids);
+
+    let tag_ids = []; // collecting year ids 
+    for (let t_id of tags) {
+      tag_ids.push(t_id.cy_year_id);
+    }
+    let years = await knex('ed_years').whereIn('y_id', tag_ids);
     
-    // let ids = []
-    // for (let cn of result) {
-    //   ids.push(cn.id) 
-    // }
+    let year_object = {}; // creating object with year's id and value
+    for (let year of years) {
+      year_object = {
+        ...year_object,
+        [year.y_id]: {
+          id: year.y_id,
+          month: year.y_month,
+          year: year.y_year
+        }
+      }
+    }
 
-    // let tags = await knex('ed_content_years').whereIn('cy_content_id', ids);
-    // console.log('====================', tags)
+    let tag_object = {}; // creating object with content id as key and value as related tags array
+    for (let tag of tags) {
+      if (tag.cy_content_id in tag_object) {
+        tag_object[tag.cy_content_id].push(year_object[tag.cy_year_id])
+      } else {
+        tag_object = {
+          ...tag_object,
+          [tag.cy_content_id]: [year_object[tag.cy_year_id]]
+        }
+      }
+    }
 
-    // let tag_ids = [];
-    // for (let t_id of tags) {
-    //   tag_ids.push(t_id.cy_year_id);
-    // }
-
-    // let years = await knex('ed_years').whereIn('y_id', tag_ids);
-    // console.log(years)
-
-
-    let result = await knex.raw(
-      "select json_agg(json_build_object('cn_id', ed_contents.cn_id, 'content_type', ed_contents.cn_type, 'cn_difficulty_level', ed_contents.cn_difficulty_level, 'name', ed_contents.cn_name, 'tags', (select json_agg(json_build_obj(ed_years.y_id)) FROM ed_years JOIN ed_content_years ON ed_years.y_id=ed_content_years.cy_year_id WHERE ed_content_years.cy_content_id=ed_contents.cn_id))) from ed_contents"
-    );
-
-
-    
-    console.log('---', result)
-
+    let contents = [];
+    for (let content of result) {
+      contents.push({
+        ...content,
+        years_asked: tag_object[content.id]
+      })
+    }
 
     return res.status(200).send({
       message: 'Content list have been fetched',
-      data: result
-    })
+      data: contents
+    });
 
-  // } catch (err) {
-  //   return res.status(422).send(
-  //     unExpectedError(
-  //       'Years list could not be fetched',
-  //       'Years list could not be fetched',
-  //       'year'
-  //     )
-  //   )
-  // }
+  } catch (err) {
+    return res.status(422).send(
+      unExpectedError(
+        'Years list could not be fetched',
+        'Years list could not be fetched',
+        'year'
+      )
+    )
+  }
 }
