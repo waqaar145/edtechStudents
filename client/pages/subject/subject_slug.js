@@ -1,3 +1,4 @@
+import {useState, useEffect} from 'react';
 import SubjectLayout from "../../src/components/layouts/SubjectLayout";
 import {contentService} from './../../src/services'
 import { contentActionTypes } from "./../../src/store/content/content.actiontype";
@@ -24,8 +25,20 @@ const useStyles = makeStyles((theme) => ({
   root1: {
     textAlign: 'center'
   },
-  li: {
-    listStyle: 'none'  
+  stickySidebar: {
+    '& ul': {
+      listStyleType: 'none',
+      margin: '0px',
+    },
+    '& li': {
+      paddingLeft: '5px',
+      paddingRight: '5px',
+      textDecoration: 'none',
+      '&:hover': {
+        cursor: 'pointer',
+        background: theme.palette.background.paper
+      }
+    },
   }
 }));
 
@@ -35,6 +48,13 @@ const AllContent = (props) => {
     contents,
     router: {asPath}
   } = props;
+
+  const [height, setHeight] = useState(null);
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const classes = useStyles();
 
   return (
@@ -70,8 +90,8 @@ const AllContent = (props) => {
               </div>
             }
           </Grid>
-          <Grid item xs={4}>
-            <div className={classes.stickySidebar}>
+          <Grid item xs={4}  style={{position: 'relative'}} >
+            <div className={classes.stickySidebar} style={{position: 'fixed'}}>
               <ul>
                 {
                   contents.map((content, i) => {
