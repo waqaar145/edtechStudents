@@ -7,6 +7,10 @@ import Grid from '@material-ui/core/Grid';
 import Content from './../../src/components/subject/content';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EmptyData from './../../src/components/404/emptyData';
+import { Link as ReactScrollLink, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
+import ReactHtmlParser from 'react-html-parser';
+import Link from 'next/link';
+import { withRouter } from 'next/router'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,14 +24,17 @@ const useStyles = makeStyles((theme) => ({
   root1: {
     textAlign: 'center'
   },
+  li: {
+    listStyle: 'none'  
+  }
 }));
 
 const AllContent = (props) => {
   const {
     loading,
-    contents
+    contents,
+    router: {asPath}
   } = props;
-
   const classes = useStyles();
 
   return (
@@ -64,7 +71,19 @@ const AllContent = (props) => {
             }
           </Grid>
           <Grid item xs={4}>
-            Right
+            <div className={classes.stickySidebar}>
+              <ul>
+                {
+                  contents.map((content, i) => {
+                    return (
+                      <li key={i}>
+                        {ReactHtmlParser(content.name)}
+                      </li>
+                    )
+                  })
+                }
+              </ul>
+            </div>
           </Grid>
         </Grid>
       </div>
@@ -102,4 +121,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllContent);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AllContent));

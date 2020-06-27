@@ -9,15 +9,80 @@ import { useRouter } from 'next/router'
 import {connect} from 'react-redux';
 import { withRouter } from 'next/router'
 
+let fixedStyle = (theme) => ({
+  root: {
+    marginTop: '3%'
+  },
+  contentContainer: {
+    // padding: '10px'
+  },
+  contentHeader: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.palette.background.paper
+  },
+  subjectHeaderText: {
+    ...theme.typography.h6,
+  },
+  contentBody: {
+    padding: theme.spacing(2)
+  },
+  internalCustomTab: {
+    backgroundColor: theme.palette.background.paper,
+    paddingLeft: '10px',
+    paddingTop: '10px',
+    paddingRight: '10px',
+    display: 'flex',
+    alignItems: 'flex-start',
+    marginBottom: '10px',
+    ...theme.typography.subtitle1
+  },
+  singleTab: {
+    cursor: 'pointer',
+    paddingBottom: '5px',
+    marginRight: '15px',
+    '& a': {
+      color: theme.palette.text.primary,
+      textDecoration: 'none'
+    }
+  },
+  tabActive: {
+    cursor: 'pointer',
+    paddingBottom: '5px',
+    marginRight: '15px',
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
+    '& a': {
+      textDecoration: 'none',
+      color: theme.palette.primary.main,
+    }
+  },
+  chapterNumber: {
+    background: theme.palette.grey['300'],
+    height: '40px',
+    width: '40px',
+    borderRadius: '50%',
+    lineHeight: '40px',
+    textAlign: 'center'
+  },
+  separator: {
+    borderRight: '2px solid grey',
+    paddingRight: '5px'
+  }
+});
+
 const SubjectLayout = (props) => {
 
   const useStyles = makeStyles((theme) => ({
-    root: {
-      marginTop: '3%'
-    },
+    ...fixedStyle(theme),
     main: {
       marginTop: '3px',
       height: `calc(100vh - ${height}px - 3px)`
+    },
+    content: {
+      borderRight: `1px solid ${theme.palette.grey['200']}`,
+      overflowY: 'scroll'
     },
     sidebar: {
       borderRight: `1px solid ${theme.palette.grey['200']}`,
@@ -37,67 +102,6 @@ const SubjectLayout = (props) => {
         borderRadius: '10px'
       }
     },
-    content: {
-      borderRight: `1px solid ${theme.palette.grey['200']}`,
-      overflowY: 'scroll'
-    },
-    contentContainer: {
-      // padding: '10px'
-    },
-    contentHeader: {
-      padding: theme.spacing(2),
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: theme.palette.background.paper
-    },
-    subjectHeaderText: {
-      ...theme.typography.h6,
-    },
-    contentBody: {
-      padding: theme.spacing(2)
-    },
-    internalCustomTab: {
-      backgroundColor: theme.palette.background.paper,
-      paddingLeft: '10px',
-      paddingTop: '10px',
-      paddingRight: '10px',
-      display: 'flex',
-      alignItems: 'flex-start',
-      marginBottom: '10px',
-      ...theme.typography.subtitle1
-    },
-    singleTab: {
-      cursor: 'pointer',
-      paddingBottom: '5px',
-      marginRight: '15px',
-      '& a': {
-        color: theme.palette.text.primary,
-        textDecoration: 'none'
-      }
-    },
-    tabActive: {
-      cursor: 'pointer',
-      paddingBottom: '5px',
-      marginRight: '15px',
-      borderBottom: `2px solid ${theme.palette.primary.main}`,
-      '& a': {
-        textDecoration: 'none',
-        color: theme.palette.primary.main,
-      }
-    },
-    chapterNumber: {
-      background: theme.palette.grey['300'],
-      height: '40px',
-      width: '40px',
-      borderRadius: '50%',
-      lineHeight: '40px',
-      textAlign: 'center'
-    },
-    separator: {
-      borderRight: '2px solid grey',
-      paddingRight: '5px'
-    }
   }));
 
   const {
@@ -192,9 +196,7 @@ const SubjectLayout = (props) => {
                     </a>
                   </Link>
                 </div>
-                <Link href="">
-                  <a disabled>|</a>
-                </Link>
+                <a disabled>|</a>
                 <div style={{marginLeft: '10px'}} className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}>
                     <a>
