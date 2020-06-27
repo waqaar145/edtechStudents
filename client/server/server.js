@@ -24,6 +24,33 @@ app.prepare()
       server.use(context, createProxyMiddleware(devProxy[context]))
     })
   }
+
+  // ******************** PAGES ROUTES START
+
+  server.get('/', (req, res) => {
+    return app.render(req, res, '/index', req.query)
+  })
+
+  server.get('/engineering', (req, res) => {
+    return app.render(req, res, '/engineering', req.query)
+  })
+
+  server.get('/channels', (req, res) => {
+    return app.render(req, res, '/channels', req.query)
+  })
+
+  server.get('/blogs', (req, res) => {
+    return app.render(req, res, '/blogs', req.query)
+  })
+
+  server.get('/login', (req, res) => {
+    return app.render(req, res, '/login', req.query)
+  })
+
+  server.get('/subject/:subject_slug/chapter/:chapter_slug/:content_type', (req, res) => {
+    return app.render(req, res, '/subject/subject_slug', { subject_slug: req.params.subject_slug, chapter_slug: req.params.chapter_slug, content_type: req.params.content_type })
+  });
+
     
   server.get('*', (req, res) => {
     return handle(req, res)

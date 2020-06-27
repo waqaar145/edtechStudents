@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.background.paper,
     marginTop: '20px',
     textAlign: 'center',
-    boxShadow: theme.shadows[2],
+    // boxShadow: theme.shadows[2],
     borderRadius: theme.shape.borderRadius
   },
   emptyDataContent: {

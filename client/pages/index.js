@@ -20,7 +20,6 @@ const Index = (props) => {
 }
 
 Index.getInitialProps = async ({store}) => {
-  await store.dispatch({type: contentActionTypes.WATCH_GET_CONTENT});
   return {}
 }
 

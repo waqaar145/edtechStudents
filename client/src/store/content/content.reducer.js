@@ -1,19 +1,56 @@
 import {contentActionTypes} from './content.actiontype';
 
 const initalState = {
+  loading: false,
+  subject: {
+    id: null,
+    subject_name: '',
+    description: '',
+    thumbnail: '',
+  },
+  chapters: [],
   contents: []
 }
 
 export const Content  = (state = initalState, action = {}) => {
   switch(action.type){
 
-    case contentActionTypes.GET_CONTENT:
-      return {
-        ...state,
-        contents: action.data
-      }
+    
+  case contentActionTypes.REQUEST:
+    return {
+      ...state,
+      loading: true
+    }
 
-    default:
-      return state;
+  case contentActionTypes.COMPLETE:
+    return {
+      ...state,
+      loading: false
+    }
+
+  case contentActionTypes.GET_SUBJECT:
+    return {
+      ...state,
+      subject: {
+        ...state.subject,
+        ...action.data
+      }
+    }
+
+  case contentActionTypes.GET_CHAPTERS:
+    return {
+      ...state,
+      chapters: action.data
+    }
+
+  case contentActionTypes.GET_CONTENTS:
+    return {
+      ...state,
+      contents: action.data
+    }
+    
+
+  default:
+    return state;
   }
 }
