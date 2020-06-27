@@ -103,16 +103,16 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
 
 module.exports.getContentByChapterSlug = async (req, res) => {
 
-  await check('chapter_slug').isLength({min: 1, max: 500}).withMessage('Subject slug is required.').run(req);
+  await check('chapter_slug').isLength({min: 1, max: 500}).withMessage('Chapter slug is required.').run(req);
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).send({
-      message: 'Subject slug is required',
+      message: 'Chapter slug is required',
       data: errors.array()
     });
   }
 
-  if (!(req.query.content_type === 'all' || req.query.content_type === 'theory' || req.query.content_type === 'sum')) {
+  if (!(req.query.content_type === 'all' || req.query.content_type === 'theories' || req.query.content_type === 'sums')) {
     return res.status(422).send(unExpectedError(
       'Content type could be only of these i.e all, thoery or sum',
       'Content type could be only of these i.e all, thoery or sum',
@@ -126,10 +126,16 @@ module.exports.getContentByChapterSlug = async (req, res) => {
   let content_type_arr = [];
   if (content_type === 'all') {
     content_type_arr = [1, 2]
-  } else if (content_type === 'thoery') {
+  } else if (content_type === 'theories') {
     content_type_arr = [1];
-  } else {
+  } else if (content_type === 'sums') {
     content_type_arr = [2];
+  } else {
+    return res.status(404).send(unExpectedError(
+      'Content type does not exist',
+      'Content type does not exist',
+      'content_type'
+    ))
   }
 
   try {
@@ -140,8 +146,15 @@ module.exports.getContentByChapterSlug = async (req, res) => {
                               'ed_contents.cn_name as name',
                               'ed_contents.cn_slug as slug',
                               'ed_contents.cn_description as description',
-                              'ed_contents.cn_is_active as is_active'
+                              'ed_contents.cn_is_active as is_active',
+                              'ed_contents.cn_created_at as created_at',
+                              'ed_contents.cn_updated_at as updated_at',
+
+                              'ed_admins.a_name as admin_name',
+                              'ed_admins.a_slug as admin_slug',
+                      
                             ).from('ed_contents')
+                            .innerJoin('ed_admins', 'ed_admins.a_id', 'ed_contents.cn_admin_id')
                             .innerJoin('ed_chapters', 'ed_chapters.cp_id', 'ed_contents.cn_chapter_id')
                             .where('ed_contents.cn_is_deleted', false)
                             .where('ed_chapters.cp_slug', chapter_slug)

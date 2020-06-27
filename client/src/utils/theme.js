@@ -12,7 +12,7 @@ const theme = createMuiTheme({
       textTransform: "none"
     }
   }
-})
+});
 
 // const theme = createMuiTheme({
 //   palette: {

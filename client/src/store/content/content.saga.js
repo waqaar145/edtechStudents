@@ -3,13 +3,16 @@ import { contentActionTypes } from './content.actiontype';
 import { contentService } from '../../services';
 import { actions } from './content.action';
 
-function* handleGetContents () {
+function* handleGetContents ({data: {chapters: {chapters, subject}, contents}}) {
   try {
-    let result  = yield contentService.getContents();
-    yield put(actions.getContentsAction(result.data))
-    return result
+    yield put(actions.request())
+    yield put(actions.setSubject(subject))
+    yield put(actions.setChapters(chapters))
+    yield put(actions.setContents(contents))
   } catch (error) {
-    console.log(error)
+    console.log('Error', error);
+  } finally {
+    yield put(actions.complete())
   }
 }
 

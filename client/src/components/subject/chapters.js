@@ -3,6 +3,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import Link from 'next/link';
 
 const useStyles = makeStyles((theme) => {
   return ({
@@ -29,20 +30,22 @@ const useStyles = makeStyles((theme) => {
   })
 });
 
-const ChaptersList = ({id, handleCurrentChapter, activeChapter}) => {
+const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type}) => {
 
   const classes = useStyles();
 
   return (
-    <List className={`${classes.root} ${activeChapter === id ? `${classes.active}` : ''}`} onClick={() => handleCurrentChapter(id)}>
-      <ListItem>
-        <ListItemIcon>
-          <div className={classes.chapterNumber}>
-            {id}
-          </div>
-        </ListItemIcon>
-        <ListItemText primary="Understand the theory of laplace theorem" />
-      </ListItem>
+    <List className={`${classes.root} ${chapter.slug === chapter_slug ? `${classes.active}` : ''}`}>
+      <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter.slug}&content_type=${content_type}`} as={`/subject/${subject_slug}/chapter/${chapter.slug}/${content_type}`}>
+        <ListItem component="a">
+          <ListItemIcon>
+            <div className={classes.chapterNumber}>
+              {chapter.chapter_number}
+            </div>
+          </ListItemIcon>
+          <ListItemText primary={chapter.chapter_name} />
+        </ListItem>
+      </Link>
     </List>
   )
 }

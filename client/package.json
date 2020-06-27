@@ -36,6 +36,7 @@
     "node-sass": "^4.14.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-html-parser": "^2.0.2",
     "react-redux": "^7.2.0",
     "redux-saga": "^1.1.3",
     "spdy": "^4.0.2"

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const InputMaterialSearch = ({handleSearch}) => {
+const InputMaterialSearch = ({handleSearch, placeholder}) => {
 
   const classes = useStyles();
 
@@ -55,7 +55,7 @@ const InputMaterialSearch = ({handleSearch}) => {
         <SearchIcon />
       </div>
       <InputBase
-        placeholder="Subject..."
+        placeholder={placeholder}
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput,

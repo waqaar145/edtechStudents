@@ -1,11 +1,13 @@
 import SimpleLayout from './SimpleLayout'
-import { Container, Grid } from '@material-ui/core';
+import { Container, Grid, ListItemIcon } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
 import { useEffect, useState } from 'react';
 import ChaptersList from './../subject/chapters'
 import InputMaterialSearch from './../forms/InputMaterialSearch';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
+import {connect} from 'react-redux';
+import { withRouter } from 'next/router'
 
 const SubjectLayout = (props) => {
 
@@ -83,47 +85,76 @@ const SubjectLayout = (props) => {
         textDecoration: 'none',
         color: theme.palette.primary.main,
       }
+    },
+    chapterNumber: {
+      background: theme.palette.grey['300'],
+      height: '40px',
+      width: '40px',
+      borderRadius: '50%',
+      lineHeight: '40px',
+      textAlign: 'center'
+    },
+    separator: {
+      borderRight: '2px solid grey',
+      paddingRight: '5px'
     }
   }));
 
+  const {
+    chapters,
+    router: {query: {chapter_slug, subject_slug, content_type}}
+  } = props;
+
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('');
-
+  const [activeChapter, setActiveChapter] = useState({});
 
   const [height, setHeight] = useState(null);
-  const [activeChapter, setActiveChapter] = useState(1);
 
   useEffect(() => {
     const el = document.getElementsByClassName('header')[0]
     setHeight(el.offsetHeight);
-    if (router.pathname.split('/').length === 3) {
-      setActiveTab('all')
-    } else {
-      if (router.pathname.split('/')[3] === 'sums') {
-        setActiveTab('sums')
-      } else if (router.pathname.split('/')[3] === 'theories'){
-        setActiveTab('theories')
-      }
-    }
   }, []);
 
-  const handleCurrentChapter = (id) => {
-    setActiveChapter(id)
-  }
+  useEffect(() => {
+    if (content_type) {
+      if (content_type === 'all' || content_type === 'theories' || content_type === 'sums') {
+        setActiveTab(content_type)
+      }
+    }
+  }, [router])
+
+  useEffect(() => {
+    if (chapter_slug) {
+      setActiveChapter(chapters.filter(chapter => chapter.slug === chapter_slug)[0])
+    }
+  }, [chapter_slug])
 
   const handleSearchContent = (data) => {}
 
   const classes = useStyles();
 
+  
   return (
     <SimpleLayout>
       <Grid container>
         <Grid item xs={3} className={`${classes.sidebar} ${classes.main}`}>
+          <div style={{paddingTop: '5px'}}>
+          <InputMaterialSearch
+            handleSearch={handleSearchContent}
+            placeholder="Search Chapter"
+          />
+          </div>
           {
-            Array.from(Array(22), (e, i) => {
+            chapters.map((chapter, i) => {
               return (
                 <div key={i}>
-                  <ChaptersList id={i+1} handleCurrentChapter={handleCurrentChapter} activeChapter={activeChapter}/>
+                  <ChaptersList 
+                    chapter={chapter} 
+                    subject_slug={subject_slug} 
+                    chapter_slug={chapter_slug}
+                    content_type={content_type}
+                    />
                 </div>
               )
             })
@@ -133,32 +164,50 @@ const SubjectLayout = (props) => {
           <div className={classes.contentContainer}>
             <div className={classes.contentHeader}>
               <div className={classes.subjectHeaderText}>
-                This is current chapter selected
+                <div>
+                  <span>
+                  <ListItemIcon>
+                    <div className={classes.chapterNumber}>
+                      {(activeChapter && Object.keys(activeChapter).length > 0) ? activeChapter.chapter_number : ''}
+                    </div>
+                  </ListItemIcon>
+                  </span>
+                  <span>
+                    {(activeChapter && Object.keys(activeChapter).length > 0) ? activeChapter.chapter_name : ''}
+                  </span>
+                </div>
               </div>
               <InputMaterialSearch
                 handleSearch={handleSearchContent}
+                placeholder="Search Subject"
               />
             </div>
             <div className={classes.contentBody}>
               <div className={classes.internalCustomTab}>
                 <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
-                  <Link href="/subject/name" passHref>
+                  <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
                     <a>
-                      All <span style={{fontSize: '14px'}}>(26)</span>
+                      All 
+                      {/* <span style={{fontSize: '14px'}}>(26)</span> */}
                     </a>
                   </Link>
                 </div>
-                <div className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
-                  <Link href="/subject/name/theories" passHref>
+                <Link href="">
+                  <a disabled>|</a>
+                </Link>
+                <div style={{marginLeft: '10px'}} className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
+                  <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}>
                     <a>
-                      Theories <span style={{fontSize: '14px'}}>(10)</span>
+                      Theories 
+                      {/* <span style={{fontSize: '14px'}}>(10)</span> */}
                     </a>
                   </Link>
                 </div>
                 <div className={`${activeTab === 'sums' ? classes.tabActive : classes.singleTab}`}>
-                  <Link href="/subject/name/sums" passHref>
+                  <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}>
                     <a>
-                      Questions <span style={{fontSize: '14px'}}>(16)</span>
+                      Questions 
+                      {/* <span style={{fontSize: '14px'}}>(16)</span> */}
                     </a>
                   </Link>
                 </div>
@@ -172,4 +221,10 @@ const SubjectLayout = (props) => {
   )
 }
 
-export default SubjectLayout;
+function mapStateToProps (state) {
+  return {
+    chapters: state.Content.chapters
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(SubjectLayout));
