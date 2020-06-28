@@ -34,9 +34,14 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: '5px',
       paddingRight: '5px',
       textDecoration: 'none',
-      '&:hover': {
-        cursor: 'pointer',
-        background: theme.palette.background.paper
+      margin: '-10px',
+      '& a': {
+        textDecoration: 'none',
+        color: theme.palette.grey['600'],
+        '&:hover': {
+          cursor: 'pointer',
+          background: theme.palette.background.paper
+        }
       }
     },
   }
@@ -50,10 +55,21 @@ const AllContent = (props) => {
   } = props;
 
   const [height, setHeight] = useState(null);
+
+  const handleScroll = (e) => {
+    console.log(e)
+  }
+
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (asPath) {
+      console.log(asPath)
+    }
+  }, [asPath])
 
   const classes = useStyles();
 
@@ -67,7 +83,9 @@ const AllContent = (props) => {
                 &&
               contents.map((content, index) => {
                 return (
-                  <Content key={index} content={content}/>
+                  <div key={index} id={content.slug}>
+                    <Content content={content}/>
+                  </div>
                 )
               })
             }
@@ -90,14 +108,16 @@ const AllContent = (props) => {
               </div>
             }
           </Grid>
-          <Grid item xs={4}  style={{position: 'relative'}} >
+          <Grid item xs={4}  style={{position: 'relative', paddingLeft: 'none'}} >
             <div className={classes.stickySidebar} style={{position: 'fixed'}}>
               <ul>
                 {
                   contents.map((content, i) => {
                     return (
                       <li key={i}>
-                        {ReactHtmlParser(content.name)}
+                        <a href={`#${content.slug}`}>
+                          {ReactHtmlParser(content.name)}
+                        </a>
                       </li>
                     )
                   })
