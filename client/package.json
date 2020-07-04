@@ -39,6 +39,8 @@
     "react-html-parser": "^2.0.2",
     "react-redux": "^7.2.0",
     "react-scroll": "^1.7.16",
+    "react-scrollspy": "^3.4.2",
+    "react-sticky-el": "^2.0.5",
     "redux-saga": "^1.1.3",
     "spdy": "^4.0.2"
   },

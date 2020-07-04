@@ -7,9 +7,12 @@ const initalState = {
     subject_name: '',
     description: '',
     thumbnail: '',
+    total: '',
+    theories: '',
+    sums: ''
   },
   chapters: [],
-  contents: []
+  contents: [],
 }
 
 export const Content  = (state = initalState, action = {}) => {
@@ -43,12 +46,20 @@ export const Content  = (state = initalState, action = {}) => {
       chapters: action.data
     }
 
+  case contentActionTypes.GET_COUNTS:
+    return {
+      ...state,
+      subject: {
+        ...state.subject,
+        ...action.data
+      }
+    }
+
   case contentActionTypes.GET_CONTENTS:
     return {
       ...state,
-      contents: action.data
+      contents: action.data.contents
     }
-    
 
   default:
     return state;

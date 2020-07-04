@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, useRef} from 'react';
 import SubjectLayout from "../../src/components/layouts/SubjectLayout";
 import {contentService} from './../../src/services'
 import { contentActionTypes } from "./../../src/store/content/content.actiontype";
@@ -8,10 +8,9 @@ import Grid from '@material-ui/core/Grid';
 import Content from './../../src/components/subject/content';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EmptyData from './../../src/components/404/emptyData';
-import { Link as ReactScrollLink, DirectLink, Element, Events, animateScroll as scroll, scrollSpy, scroller } from 'react-scroll'
 import ReactHtmlParser from 'react-html-parser';
-import Link from 'next/link';
-import { withRouter } from 'next/router'
+import { withRouter } from 'next/router';
+import Scrollspy from 'react-scrollspy';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,22 +55,29 @@ const AllContent = (props) => {
 
   const [height, setHeight] = useState(null);
 
-  const handleScroll = (e) => {
-    console.log(e)
+  const classes = useStyles();
+
+  let contentSlugArr = [];
+  for (let c of contents) {
+    contentSlugArr.push(c.slug)
   }
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    if (asPath) {
-      console.log(asPath)
+  const [isSticky, setSticky] = useState(false);
+  const ref = useRef(null);
+  const handleScroll = () => {
+    if (ref.current) {
+      setSticky(ref.current.getBoundingClientRect().top <= 0);
     }
-  }, [asPath])
+  };
 
-  const classes = useStyles();
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', () => handleScroll);
+    };
+  }, []);
+  
 
   return (
     <SubjectLayout>
@@ -83,9 +89,9 @@ const AllContent = (props) => {
                 &&
               contents.map((content, index) => {
                 return (
-                  <div key={index} id={content.slug}>
+                  <section key={index} id={content.slug}>
                     <Content content={content}/>
-                  </div>
+                  </section>
                 )
               })
             }
@@ -109,8 +115,8 @@ const AllContent = (props) => {
             }
           </Grid>
           <Grid item xs={4}  style={{position: 'relative', paddingLeft: 'none'}} >
-            <div className={classes.stickySidebar} style={{position: 'fixed'}}>
-              <ul>
+            <div className={classes.stickySidebar} >
+              <Scrollspy items={contentSlugArr} currentClassName="is-current">
                 {
                   contents.map((content, i) => {
                     return (
@@ -122,7 +128,7 @@ const AllContent = (props) => {
                     )
                   })
                 }
-              </ul>
+              </Scrollspy>
             </div>
           </Grid>
         </Grid>
@@ -136,12 +142,13 @@ AllContent.getInitialProps = async ({store, req, query}) => {
     const isServer = !!req;
     await store.dispatch({type: contentActionTypes.REQUEST});
     if (isServer || store.getState().Content.contents.length === 0) {
-      let chapters = await contentService.getChaptersBySubjectSlug(query.subject_slug, isServer);
+      let chapters = await contentService.getChaptersBySubjectSlug(query.subject_slug, query.chapter_slug, isServer);
       await store.dispatch({type: contentActionTypes.GET_SUBJECT, data: chapters.data.data.subject});
       await store.dispatch({type: contentActionTypes.GET_CHAPTERS, data: chapters.data.data.chapters});
+      await store.dispatch({type: contentActionTypes.GET_COUNTS, data: chapters.data.data.counts});
     }
     const contents = await contentService.getContentByChapterSlug(query.chapter_slug, query.content_type, isServer);
-    await store.dispatch({type: contentActionTypes.GET_CONTENTS, data: contents.data.data});
+    await store.dispatch({type: contentActionTypes.GET_CONTENTS, data: contents.data.data.contents});
     return {};
   } catch (err) {
     return {}

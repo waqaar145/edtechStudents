@@ -53,6 +53,8 @@ module.exports.getFirstChapterSlugBySubjectSlug = async (req, res) => { // this 
 module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all chapters of a subject slug
   try {
     await check('subject_slug').isLength({min: 1, max: 500}).withMessage('Subject slug is required.').run(req);
+    await check('chapter_slug').isLength({min: 1, max: 500}).withMessage('Chapter slug is required.').run(req);
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).send({
@@ -61,8 +63,7 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
       });
     }
 
-    let sub_slug = req.params.subject_slug;
-
+    let {subject_slug, chapter_slug} = req.params;
     let subject = await knex.select(
                                   'ed_subjects.sb_id as id',
                                   'ed_subjects.sb_name as subject_name',
@@ -70,8 +71,29 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
                                   'ed_subjects.sb_thumbnail as thumbnail'
                                 )
                                 .from('ed_subjects')
-                                .where('sb_slug', sub_slug)
+                                .where('sb_slug', subject_slug)
                                 .first();
+                                
+    let chapter = await knex.select(
+                                  'ed_chapters.cp_id as id'
+                                )
+                                .from('ed_chapters')
+                                .where('cp_slug', chapter_slug)
+                                .first();
+
+    let counts = {};
+    let total = '';
+    if (chapter && subject) {
+      counts = await knex.raw('select  sum(case when cn_type = 1 then 1 else 0 end) as theories, sum(case when cn_type = 2 then 1 else 0 end) as sums FROM ed_contents where cn_chapter_id = ?', [chapter.id]);
+      total = await knex.raw('select count(*) from ed_contents where cn_chapter_id = ?', [chapter.id])
+    } else {
+      return res.status(404).send(
+        unExpectedError(
+          'Subject or Chapter does not exist',
+          'Subject or Chapter does not exist',
+          'subject'
+        ))
+    }
 
     let result = await knex.select(
                             'ed_chapters.cp_id as id',
@@ -82,12 +104,16 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
                           ).from('ed_chapters')
                           .innerJoin('ed_subjects', 'ed_subjects.sb_id', 'ed_chapters.cp_subject_id')
                           .where('ed_chapters.cp_is_deleted', false)
-                          .where('ed_subjects.sb_slug', sub_slug)
+                          .where('ed_subjects.sb_slug', subject_slug)
                           .orderBy('ed_chapters.cp_number', 'ASC')
 
     return res.status(200).send({
       message: 'Chapters list has been fetched',
       data: {
+        counts: {
+          ...counts.rows[0],
+          total: total.rows[0].count
+        },
         subject,
         chapters: result
       }
@@ -208,7 +234,11 @@ module.exports.getContentByChapterSlug = async (req, res) => {
 
     return res.status(200).send({
       message: 'Content list have been fetched',
-      data: contents
+      data: {
+        contents: {
+          contents
+        }
+      }
     });
 
   } catch (err) {

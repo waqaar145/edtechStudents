@@ -7,7 +7,8 @@ import InputMaterialSearch from './../forms/InputMaterialSearch';
 import Link from 'next/link';
 import { useRouter } from 'next/router'
 import {connect} from 'react-redux';
-import { withRouter } from 'next/router'
+import { withRouter } from 'next/router';
+import Sticky from 'react-sticky-el';
 
 let fixedStyle = (theme) => ({
   root: {
@@ -106,6 +107,9 @@ const SubjectLayout = (props) => {
 
   const {
     chapters,
+    total,
+    theories,
+    sums,
     router: {query: {chapter_slug, subject_slug, content_type}}
   } = props;
 
@@ -191,8 +195,8 @@ const SubjectLayout = (props) => {
                 <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
                     <a>
-                      All 
-                      {/* <span style={{fontSize: '14px'}}>(26)</span> */}
+                      All&nbsp; 
+                      <span style={{fontSize: '13px'}}>({total})</span>
                     </a>
                   </Link>
                 </div>
@@ -200,16 +204,16 @@ const SubjectLayout = (props) => {
                 <div style={{marginLeft: '10px'}} className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}>
                     <a>
-                      Theories 
-                      {/* <span style={{fontSize: '14px'}}>(10)</span> */}
+                      Theories&nbsp;
+                      <span style={{fontSize: '13px'}}>({theories})</span>
                     </a>
                   </Link>
                 </div>
                 <div className={`${activeTab === 'sums' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}>
                     <a>
-                      Questions 
-                      {/* <span style={{fontSize: '14px'}}>(16)</span> */}
+                      Questions&nbsp; 
+                      <span style={{fontSize: '13px'}}>({sums})</span>
                     </a>
                   </Link>
                 </div>
@@ -225,7 +229,10 @@ const SubjectLayout = (props) => {
 
 function mapStateToProps (state) {
   return {
-    chapters: state.Content.chapters
+    chapters: state.Content.chapters,
+    total: state.Content.subject.total,
+    theories: state.Content.subject.theories,
+    sums: state.Content.subject.sums
   }
 }
 
