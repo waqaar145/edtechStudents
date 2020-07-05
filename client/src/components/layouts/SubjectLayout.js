@@ -153,12 +153,6 @@ const SubjectLayout = (props) => {
     <SimpleLayout>
       <Grid container>
         <Grid item xs={3} className={`${classes.sidebar} ${classes.main}`}>
-          <div style={{paddingTop: '5px'}}>
-          <InputMaterialSearch
-            handleSearch={handleSearchContent}
-            placeholder="Search Chapter"
-          />
-          </div>
           {
             chapters.map((chapter, i) => {
               return (
