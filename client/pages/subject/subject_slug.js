@@ -10,41 +10,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import EmptyData from './../../src/components/404/emptyData';
 import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from 'next/router';
-import Scrollspy from 'react-scrollspy';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  root1: {
-    textAlign: 'center'
-  },
-  stickySidebar: {
-    '& ul': {
-      listStyleType: 'none',
-      margin: '0px',
-    },
-    '& li': {
-      paddingLeft: '5px',
-      paddingRight: '5px',
-      textDecoration: 'none',
-      margin: '-10px',
-      '& a': {
-        textDecoration: 'none',
-        color: theme.palette.grey['600'],
-        '&:hover': {
-          cursor: 'pointer',
-          background: theme.palette.background.paper
-        }
-      }
-    },
-  }
-}));
 
 const AllContent = (props) => {
   const {
@@ -55,29 +20,54 @@ const AllContent = (props) => {
 
   const [height, setHeight] = useState(null);
 
-  const classes = useStyles();
-
   let contentSlugArr = [];
   for (let c of contents) {
     contentSlugArr.push(c.slug)
   }
 
-  const [isSticky, setSticky] = useState(false);
-  const ref = useRef(null);
-  const handleScroll = () => {
-    if (ref.current) {
-      setSticky(ref.current.getBoundingClientRect().top <= 0);
-    }
-  };
-
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-
-    return () => {
-      window.removeEventListener('scroll', () => handleScroll);
-    };
+    const el = document.getElementById('internal-subject-link-tab');
+    setHeight(el.offsetHeight);
   }, []);
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+    root1: {
+      textAlign: 'center'
+    },
+    stickySidebar: {
+      position: '-webkit-sticky',
+      position: 'sticky',
+      top: height + 5,
+      '& ul': {
+        listStyleType: 'none',
+        margin: '0px',
+      },
+      '& li': {
+        paddingLeft: '5px',
+        paddingRight: '5px',
+        textDecoration: 'none',
+        margin: '-10px',
+        '& a': {
+          textDecoration: 'none',
+          color: theme.palette.grey['600'],
+          '&:hover': {
+            cursor: 'pointer',
+            background: theme.palette.background.paper
+          }
+        }
+      },
+    }
+  }));
   
+  const classes = useStyles();
 
   return (
     <SubjectLayout>
@@ -114,9 +104,9 @@ const AllContent = (props) => {
               </div>
             }
           </Grid>
-          <Grid item xs={4}  style={{position: 'relative', paddingLeft: 'none'}} >
+          <Grid item xs={4}>
             <div className={classes.stickySidebar} >
-              <Scrollspy items={contentSlugArr} currentClassName="is-current">
+              <ul>
                 {
                   contents.map((content, i) => {
                     return (
@@ -128,7 +118,7 @@ const AllContent = (props) => {
                     )
                   })
                 }
-              </Scrollspy>
+              </ul>
             </div>
           </Grid>
         </Grid>

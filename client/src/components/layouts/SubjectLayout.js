@@ -8,7 +8,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router'
 import {connect} from 'react-redux';
 import { withRouter } from 'next/router';
-import Sticky from 'react-sticky-el';
 
 let fixedStyle = (theme) => ({
   root: {
@@ -31,6 +30,9 @@ let fixedStyle = (theme) => ({
     padding: theme.spacing(2)
   },
   internalCustomTab: {
+    position: '-webkit-sticky',
+    position: 'sticky',
+    top: '0',
     backgroundColor: theme.palette.background.paper,
     paddingLeft: '10px',
     paddingTop: '10px',
@@ -191,7 +193,7 @@ const SubjectLayout = (props) => {
               />
             </div>
             <div className={classes.contentBody}>
-              <div className={classes.internalCustomTab}>
+              <div className={classes.internalCustomTab} id="internal-subject-link-tab">
                 <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
                     <a>
