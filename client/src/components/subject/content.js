@@ -116,7 +116,7 @@ const Content = ({content}) => {
                 <SimpleButton 
                   type="submit"
                   name="Discussion"
-                  variant="outlined"
+                  variant="contained"
                   color="primary"
                   size="medium"
                   />
