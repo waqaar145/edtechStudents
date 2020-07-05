@@ -1,3 +1,4 @@
+import {useRef} from 'react';
 import SimpleLayout from './SimpleLayout'
 import { Container, Grid, ListItemIcon } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -5,9 +6,9 @@ import { useEffect, useState } from 'react';
 import ChaptersList from './../subject/chapters'
 import InputMaterialSearch from './../forms/InputMaterialSearch';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
+import { useRouter, withRouter } from 'next/router'
 import {connect} from 'react-redux';
-import { withRouter } from 'next/router';
+import {useScroll} from './../../hooks/useScroll'
 
 let fixedStyle = (theme) => ({
   root: {
@@ -144,7 +145,10 @@ const SubjectLayout = (props) => {
 
   const classes = useStyles();
 
-  
+  const myRef = useRef(null)
+  const { scrollX, scrollY, scrollDirection } = useScroll(typeof window === "undefined" || !window.document ? 0 : document.getElementById('internal-subject-link-tab'));
+  console.log({ scrollX, scrollY, scrollDirection })
+
   return (
     <SimpleLayout>
       <Grid container>
@@ -193,7 +197,7 @@ const SubjectLayout = (props) => {
               />
             </div>
             <div className={classes.contentBody}>
-              <div className={classes.internalCustomTab} id="internal-subject-link-tab">
+              <div className={classes.internalCustomTab} id="internal-subject-link-tab" ref={myRef}>
                 <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
                     <a>

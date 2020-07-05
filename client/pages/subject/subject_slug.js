@@ -45,7 +45,7 @@ const AllContent = (props) => {
     stickySidebar: {
       position: '-webkit-sticky',
       position: 'sticky',
-      top: height + 5,
+      top: height + 10,
       '& ul': {
         listStyleType: 'none',
         margin: '0px',
