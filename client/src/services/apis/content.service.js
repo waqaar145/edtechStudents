@@ -20,7 +20,7 @@ export const contentService = {
       if (isServer) {
         result = await HTTPClient.get(`${process.env.API_URL}/api/v1/content/subject/${subject_slug}/chapter/${chapter_slug}/all`);
       } else {
-        result = await HTTPClient.get(`/api/v1/content/subject/${subject_slug}/all`);
+        result = await HTTPClient.get(`/api/v1/content/subject/${subject_slug}/chapter/${chapter_slug}/all`);
       }
       return result;
     } catch(error) {
