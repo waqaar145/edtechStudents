@@ -1,3 +1,4 @@
+import {useRef} from 'react';
 import SimpleLayout from './SimpleLayout'
 import { Container, Grid, ListItemIcon } from '@material-ui/core';
 import { fade, makeStyles } from '@material-ui/core/styles';
@@ -5,19 +6,87 @@ import { useEffect, useState } from 'react';
 import ChaptersList from './../subject/chapters'
 import InputMaterialSearch from './../forms/InputMaterialSearch';
 import Link from 'next/link';
-import { useRouter } from 'next/router'
+import { useRouter, withRouter } from 'next/router'
 import {connect} from 'react-redux';
-import { withRouter } from 'next/router'
+import {useScroll} from './../../hooks/useScroll'
+
+let fixedStyle = (theme) => ({
+  root: {
+    marginTop: '3%'
+  },
+  contentContainer: {
+    // padding: '10px'
+  },
+  contentHeader: {
+    padding: theme.spacing(2),
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: theme.palette.background.paper
+  },
+  subjectHeaderText: {
+    ...theme.typography.h6,
+  },
+  contentBody: {
+    padding: theme.spacing(2)
+  },
+  internalCustomTab: {
+    position: '-webkit-sticky',
+    position: 'sticky',
+    top: '0',
+    backgroundColor: theme.palette.background.paper,
+    paddingLeft: '10px',
+    paddingTop: '10px',
+    paddingRight: '10px',
+    display: 'flex',
+    alignItems: 'flex-start',
+    marginBottom: '10px',
+    ...theme.typography.subtitle1
+  },
+  singleTab: {
+    cursor: 'pointer',
+    paddingBottom: '5px',
+    marginRight: '15px',
+    '& a': {
+      color: theme.palette.text.primary,
+      textDecoration: 'none'
+    }
+  },
+  tabActive: {
+    cursor: 'pointer',
+    paddingBottom: '5px',
+    marginRight: '15px',
+    borderBottom: `2px solid ${theme.palette.primary.main}`,
+    '& a': {
+      textDecoration: 'none',
+      color: theme.palette.primary.main,
+    }
+  },
+  chapterNumber: {
+    background: theme.palette.grey['300'],
+    height: '40px',
+    width: '40px',
+    borderRadius: '50%',
+    lineHeight: '40px',
+    textAlign: 'center'
+  },
+  separator: {
+    borderRight: '2px solid grey',
+    paddingRight: '5px'
+  }
+});
 
 const SubjectLayout = (props) => {
 
   const useStyles = makeStyles((theme) => ({
-    root: {
-      marginTop: '3%'
-    },
+    ...fixedStyle(theme),
     main: {
       marginTop: '3px',
       height: `calc(100vh - ${height}px - 3px)`
+    },
+    content: {
+      borderRight: `1px solid ${theme.palette.grey['200']}`,
+      overflowY: 'scroll'
     },
     sidebar: {
       borderRight: `1px solid ${theme.palette.grey['200']}`,
@@ -37,71 +106,13 @@ const SubjectLayout = (props) => {
         borderRadius: '10px'
       }
     },
-    content: {
-      borderRight: `1px solid ${theme.palette.grey['200']}`,
-      overflowY: 'scroll'
-    },
-    contentContainer: {
-      // padding: '10px'
-    },
-    contentHeader: {
-      padding: theme.spacing(2),
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      backgroundColor: theme.palette.background.paper
-    },
-    subjectHeaderText: {
-      ...theme.typography.h6,
-    },
-    contentBody: {
-      padding: theme.spacing(2)
-    },
-    internalCustomTab: {
-      backgroundColor: theme.palette.background.paper,
-      paddingLeft: '10px',
-      paddingTop: '10px',
-      paddingRight: '10px',
-      display: 'flex',
-      alignItems: 'flex-start',
-      marginBottom: '10px',
-      ...theme.typography.subtitle1
-    },
-    singleTab: {
-      cursor: 'pointer',
-      paddingBottom: '5px',
-      marginRight: '15px',
-      '& a': {
-        color: theme.palette.text.primary,
-        textDecoration: 'none'
-      }
-    },
-    tabActive: {
-      cursor: 'pointer',
-      paddingBottom: '5px',
-      marginRight: '15px',
-      borderBottom: `2px solid ${theme.palette.primary.main}`,
-      '& a': {
-        textDecoration: 'none',
-        color: theme.palette.primary.main,
-      }
-    },
-    chapterNumber: {
-      background: theme.palette.grey['300'],
-      height: '40px',
-      width: '40px',
-      borderRadius: '50%',
-      lineHeight: '40px',
-      textAlign: 'center'
-    },
-    separator: {
-      borderRight: '2px solid grey',
-      paddingRight: '5px'
-    }
   }));
 
   const {
     chapters,
+    total,
+    theories,
+    sums,
     router: {query: {chapter_slug, subject_slug, content_type}}
   } = props;
 
@@ -134,7 +145,10 @@ const SubjectLayout = (props) => {
 
   const classes = useStyles();
 
-  
+  const myRef = useRef(null)
+  const { scrollX, scrollY, scrollDirection } = useScroll(typeof window === "undefined" || !window.document ? 0 : document.getElementById('internal-subject-link-tab'));
+  console.log({ scrollX, scrollY, scrollDirection })
+
   return (
     <SimpleLayout>
       <Grid container>
@@ -183,31 +197,29 @@ const SubjectLayout = (props) => {
               />
             </div>
             <div className={classes.contentBody}>
-              <div className={classes.internalCustomTab}>
+              <div className={classes.internalCustomTab} id="internal-subject-link-tab" ref={myRef}>
                 <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
                     <a>
-                      All 
-                      {/* <span style={{fontSize: '14px'}}>(26)</span> */}
+                      All&nbsp; 
+                      <span style={{fontSize: '13px'}}>({total})</span>
                     </a>
                   </Link>
                 </div>
-                <Link href="">
-                  <a disabled>|</a>
-                </Link>
+                <a disabled>|</a>
                 <div style={{marginLeft: '10px'}} className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}>
                     <a>
-                      Theories 
-                      {/* <span style={{fontSize: '14px'}}>(10)</span> */}
+                      Theories&nbsp;
+                      <span style={{fontSize: '13px'}}>({theories})</span>
                     </a>
                   </Link>
                 </div>
                 <div className={`${activeTab === 'sums' ? classes.tabActive : classes.singleTab}`}>
                   <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}>
                     <a>
-                      Questions 
-                      {/* <span style={{fontSize: '14px'}}>(16)</span> */}
+                      Questions&nbsp; 
+                      <span style={{fontSize: '13px'}}>({sums})</span>
                     </a>
                   </Link>
                 </div>
@@ -223,7 +235,10 @@ const SubjectLayout = (props) => {
 
 function mapStateToProps (state) {
   return {
-    chapters: state.Content.chapters
+    chapters: state.Content.chapters,
+    total: state.Content.subject.total,
+    theories: state.Content.subject.theories,
+    sums: state.Content.subject.sums
   }
 }
 

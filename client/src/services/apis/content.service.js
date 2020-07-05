@@ -14,11 +14,11 @@ export const contentService = {
       throw error;
     }
   },
-  async getChaptersBySubjectSlug(subject_slug, isServer) {
+  async getChaptersBySubjectSlug(subject_slug, chapter_slug, isServer) {
     try {
       let result;
       if (isServer) {
-        result = await HTTPClient.get(`${process.env.API_URL}/api/v1/content/subject/${subject_slug}/all`);
+        result = await HTTPClient.get(`${process.env.API_URL}/api/v1/content/subject/${subject_slug}/chapter/${chapter_slug}/all`);
       } else {
         result = await HTTPClient.get(`/api/v1/content/subject/${subject_slug}/all`);
       }

@@ -1,3 +1,4 @@
+import {useState, useEffect, useRef} from 'react';
 import SubjectLayout from "../../src/components/layouts/SubjectLayout";
 import {contentService} from './../../src/services'
 import { contentActionTypes } from "./../../src/store/content/content.actiontype";
@@ -7,27 +8,65 @@ import Grid from '@material-ui/core/Grid';
 import Content from './../../src/components/subject/content';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EmptyData from './../../src/components/404/emptyData';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  },
-  root1: {
-    textAlign: 'center'
-  },
-}));
+import ReactHtmlParser from 'react-html-parser';
+import { withRouter } from 'next/router';
 
 const AllContent = (props) => {
   const {
     loading,
-    contents
+    contents,
+    router: {asPath}
   } = props;
 
+  const [height, setHeight] = useState(null);
+
+  let contentSlugArr = [];
+  for (let c of contents) {
+    contentSlugArr.push(c.slug)
+  }
+
+  useEffect(() => {
+    const el = document.getElementById('internal-subject-link-tab');
+    setHeight(el.offsetHeight);
+  }, []);
+
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      flexGrow: 1,
+    },
+    paper: {
+      padding: theme.spacing(2),
+      textAlign: 'center',
+      color: theme.palette.text.secondary,
+    },
+    root1: {
+      textAlign: 'center'
+    },
+    stickySidebar: {
+      position: '-webkit-sticky',
+      position: 'sticky',
+      top: height + 10,
+      '& ul': {
+        listStyleType: 'none',
+        margin: '0px',
+      },
+      '& li': {
+        paddingLeft: '5px',
+        paddingRight: '5px',
+        textDecoration: 'none',
+        margin: '-10px',
+        '& a': {
+          textDecoration: 'none',
+          color: theme.palette.grey['600'],
+          '&:hover': {
+            cursor: 'pointer',
+            background: theme.palette.background.paper
+          }
+        }
+      },
+    }
+  }));
+  
   const classes = useStyles();
 
   return (
@@ -40,7 +79,9 @@ const AllContent = (props) => {
                 &&
               contents.map((content, index) => {
                 return (
-                  <Content key={index} content={content}/>
+                  <section key={index} id={content.slug}>
+                    <Content content={content}/>
+                  </section>
                 )
               })
             }
@@ -64,7 +105,21 @@ const AllContent = (props) => {
             }
           </Grid>
           <Grid item xs={4}>
-            Right
+            <div className={classes.stickySidebar} >
+              <ul>
+                {
+                  contents.map((content, i) => {
+                    return (
+                      <li key={i}>
+                        <a href={`#${content.slug}`}>
+                          {ReactHtmlParser(content.name)}
+                        </a>
+                      </li>
+                    )
+                  })
+                }
+              </ul>
+            </div>
           </Grid>
         </Grid>
       </div>
@@ -77,12 +132,13 @@ AllContent.getInitialProps = async ({store, req, query}) => {
     const isServer = !!req;
     await store.dispatch({type: contentActionTypes.REQUEST});
     if (isServer || store.getState().Content.contents.length === 0) {
-      let chapters = await contentService.getChaptersBySubjectSlug(query.subject_slug, isServer);
+      let chapters = await contentService.getChaptersBySubjectSlug(query.subject_slug, query.chapter_slug, isServer);
       await store.dispatch({type: contentActionTypes.GET_SUBJECT, data: chapters.data.data.subject});
       await store.dispatch({type: contentActionTypes.GET_CHAPTERS, data: chapters.data.data.chapters});
+      await store.dispatch({type: contentActionTypes.GET_COUNTS, data: chapters.data.data.counts});
     }
     const contents = await contentService.getContentByChapterSlug(query.chapter_slug, query.content_type, isServer);
-    await store.dispatch({type: contentActionTypes.GET_CONTENTS, data: contents.data.data});
+    await store.dispatch({type: contentActionTypes.GET_CONTENTS, data: contents.data.data.contents});
     return {};
   } catch (err) {
     return {}
@@ -102,4 +158,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AllContent);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(AllContent));
