@@ -147,18 +147,11 @@ const SubjectLayout = (props) => {
 
   const myRef = useRef(null)
   const { scrollX, scrollY, scrollDirection } = useScroll(typeof window === "undefined" || !window.document ? 0 : document.getElementById('internal-subject-link-tab'));
-  console.log({ scrollX, scrollY, scrollDirection })
 
   return (
     <SimpleLayout>
       <Grid container>
         <Grid item xs={3} className={`${classes.sidebar} ${classes.main}`}>
-          <div style={{paddingTop: '5px'}}>
-          <InputMaterialSearch
-            handleSearch={handleSearchContent}
-            placeholder="Search Chapter"
-          />
-          </div>
           {
             chapters.map((chapter, i) => {
               return (

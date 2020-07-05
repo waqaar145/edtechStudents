@@ -4,18 +4,15 @@ import { Button, Grid } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
-import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import NotInterestedIcon from '@material-ui/icons/NotInterested';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import EditIcon from '@material-ui/icons/Edit';
-import ChatBubbleIcon from '@material-ui/icons/ChatBubble';
 import ReportIcon from '@material-ui/icons/Report';
-import BugReportIcon from '@material-ui/icons/BugReport';
-import AppsIcon from '@material-ui/icons/Apps';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add';
+import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import SimpleButton from'./../../components/buttons/simpleButton'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,23 +25,35 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     ...theme.typography.h6,
-    fontWeight: '500'
+    fontWeight: '500',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: '15px'
   },
   description: {
-    ...theme.typography.subtitle1
+    ...theme.typography.subtitle1,
+    marginTop: '-25px',
+    borderTop: `1px solid ${theme.palette.grey['200']}`
   },
   actions: {
     display: 'flex',
     justifyContent: 'space-between',
   },
   actionsInteract: {
-    display: 'flex'
+    display: 'flex',
+    alignItems: 'center'
   },
   actionsMore: {
     display: 'flex',
+    alignItems: 'center'
   },
   icon: {
     cursor: 'pointer'
+  },
+  showExtraInfo: {
+    cursor: 'pointer',
+    color: theme.palette.grey['400']
   }
 }));
 
@@ -83,23 +92,34 @@ const Content = ({content}) => {
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <div className={classes.title}>
+            <div>
             {ReactHtmlParser(name)}
+            </div>
+            <div className={classes.showExtraInfo}>
+              <InfoOutlinedIcon />
+            </div>
           </div>
           <div className={classes.description}>
             {ReactHtmlParser(description)}
           </div>
           <div className={classes.actions}>
             <div className={classes.actionsInteract}>
-              <div className={classes.icon} style={{marginRight: '20px'}}>
+              <div className={classes.icon} style={{marginRight: '10px'}}>
                 <ThumbUpIcon />
               </div>
-              <div  className={classes.icon} style={{marginRight: '20px'}}>
-                <ThumbDownIcon />
+              <div>
+                123
               </div>
             </div>
             <div className={classes.actionsMore}>
-              <div className={classes.icon} style={{marginRight: '20px'}}>
-                <ChatBubbleIcon />
+              <div  className={classes.icon} style={{marginRight: '20px'}}>
+                <SimpleButton 
+                  type="submit"
+                  name="Discussion"
+                  variant="outlined"
+                  color="primary"
+                  size="medium"
+                  />
               </div>
               <div className={classes.icon} >
                 <span onClick={handleClick}>
