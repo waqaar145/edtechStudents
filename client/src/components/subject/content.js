@@ -13,6 +13,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import AddIcon from '@material-ui/icons/Add';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import SimpleButton from'./../../components/buttons/simpleButton'
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,12 +29,10 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: '500',
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingBottom: '15px'
+    alignItems: 'center'
   },
   description: {
     ...theme.typography.subtitle1,
-    marginTop: '-25px',
     borderTop: `1px solid ${theme.palette.grey['200']}`
   },
   actions: {
@@ -51,9 +50,19 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     cursor: 'pointer'
   },
-  showExtraInfo: {
+  showExtraInfoIcon: {
     cursor: 'pointer',
     color: theme.palette.grey['400']
+  },
+  extraInfoArea: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingBottom: '5px'
+  },
+  chip: {
+    marginLeft: '5px',
+    marginRight: '5px'
   }
 }));
 
@@ -95,13 +104,26 @@ const Content = ({content}) => {
             <div>
             {ReactHtmlParser(name)}
             </div>
-            <div className={classes.showExtraInfo}>
+            <div className={classes.showExtraInfoIcon}>
               <InfoOutlinedIcon />
             </div>
           </div>
           <div className={classes.description}>
             {ReactHtmlParser(description)}
           </div>
+          {/* <div className={classes.extraInfoArea}>
+            <div>
+            </div>
+            <div>
+              <Chip color="default" size="small" label="Hard" className={classes.chip}/>
+              <span>|</span>
+              {
+                content.years_asked.map((asked, i) => {
+                  return <Chip color="primary" size="small" label={`${asked.month} ${asked.year}`} key={i} className={classes.chip}/>
+                })
+              }
+            </div>
+          </div> */}
           <div className={classes.actions}>
             <div className={classes.actionsInteract}>
               <div className={classes.icon} style={{marginRight: '10px'}}>
@@ -151,8 +173,7 @@ const Content = ({content}) => {
               </div>
             </div>
           </div>
-        </Grid>
-      </Grid>
+          </Grid></Grid>
     </div>
   )
 }
