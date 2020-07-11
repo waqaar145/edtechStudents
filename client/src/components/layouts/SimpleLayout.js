@@ -1,9 +1,6 @@
 import SimpleNavbar from './../navbars/SimpleNavbar'
 
 const SimpleLayout = ({children}) => {
-
-  console.log(children)
-
   return (
     <div>
       <div className="header">
