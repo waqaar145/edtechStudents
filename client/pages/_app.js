@@ -5,6 +5,8 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import { wrapper } from '../src/store/index'
 import theme from '../src/utils/theme'
 import { authActionTypes } from './../src/store/auth/auth.actiontype'
+import { persistStore } from 'redux-persist'
+import { PersistGate } from 'redux-persist/integration/react'
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
@@ -20,7 +22,7 @@ class MyApp extends App {
       await ctx.store.sagaTask.toPromise()
     }
 
-    return { pageProps }
+    return { pageProps, store: ctx.store }
   }
 
   componentDidMount() {
@@ -32,11 +34,21 @@ class MyApp extends App {
   }
 
   render() {
-    const { Component, pageProps } = this.props
+    const { Component, pageProps, store } = this.props;
     return (
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
-        <Component {...pageProps} />
+        {
+          'subscribe' in store.__persistor
+           ? 
+          <PersistGate persistor={'subscribe' in store.__persistor ? store.__persistor : {}}>
+           <Component {...pageProps} />
+          </PersistGate>
+           :
+          <div>
+            <Component {...pageProps} />
+          </div>
+        }
       </MuiThemeProvider>
     )
   }
