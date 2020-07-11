@@ -15,13 +15,11 @@ class MyApp extends App {
         ? await Component.getInitialProps(ctx)
         : {}),
     }
-
     if (ctx.req) {
       ctx.store.dispatch({type: authActionTypes.WATCH_LOGGED_IN_USER, headers: ctx.req.headers.cookie ? ctx.req.headers.cookie : ''});
       ctx.store.dispatch(END)
       await ctx.store.sagaTask.toPromise()
     }
-
     return { pageProps, store: ctx.store }
   }
 
