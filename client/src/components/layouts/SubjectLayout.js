@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useRouter, withRouter } from 'next/router'
 import {connect} from 'react-redux';
 import {useScroll} from './../../hooks/useScroll'
+import PropTypes from 'prop-types';
 
 let fixedStyle = (theme) => ({
   root: {
@@ -113,7 +114,8 @@ const SubjectLayout = (props) => {
     total,
     theories,
     sums,
-    router: {query: {chapter_slug, subject_slug, content_type}}
+    router: {query: {chapter_slug, subject_slug, content_type}},
+    start_discussion
   } = props;
 
   const router = useRouter()
@@ -151,7 +153,7 @@ const SubjectLayout = (props) => {
   return (
     <SimpleLayout>
       <Grid container>
-        <Grid item xs={3} className={`${classes.sidebar} ${classes.main}`}>
+        <Grid item xs={start_discussion ? 1 : 3} className={`${classes.sidebar} ${classes.main}`}>
           {
             chapters.map((chapter, i) => {
               return (
@@ -226,12 +228,30 @@ const SubjectLayout = (props) => {
   )
 }
 
+SubjectLayout.propTypes = {
+  chapters: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      chapter_name: PropTypes.string.isRequired,
+      chapter_number: PropTypes.number.isRequired,
+      slug: PropTypes.string.isRequired
+    })
+  ).isRequired,
+  total: PropTypes.number.isRequired,
+  theories: PropTypes.number.isRequired,
+  sums: PropTypes.number.isRequired,
+  start_discussion: PropTypes.bool.isRequired
+}
+
+
 function mapStateToProps (state) {
   return {
     chapters: state.Content.chapters,
     total: state.Content.subject.total,
     theories: state.Content.subject.theories,
-    sums: state.Content.subject.sums
+    sums: state.Content.subject.sums,
+
+    start_discussion: state.builder.subjectLayoutBuilder.discussion.on
   }
 }
 

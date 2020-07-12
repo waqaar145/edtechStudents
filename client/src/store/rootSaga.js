@@ -3,9 +3,11 @@ import {authSaga} from './auth/auth.saga';
 import {constantSaga} from './constant/constant.saga';
 import {contentSaga} from './content/content.saga';
 import {topLevelSaga} from './top-level/top_level.saga';
+import {builderSaga} from './builder/builder.saga';
 
 function* rootSaga() {
   yield all([
+    call(builderSaga),
     call(authSaga),
     call(constantSaga),
     call(contentSaga),

@@ -1,0 +1,4 @@
+export const builderActionTypes = {
+  START_DISCUSSION: 'START_DISCUSSION',
+  STOP_DISCUSSION: 'STOP_DISCUSSION'
+}

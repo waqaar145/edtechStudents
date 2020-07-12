@@ -42,7 +42,7 @@ export const makeStore = ({req}, initialState = {}) => {
     const persistConfig = {
       key: 'root',
       storage,
-      whitelist: ['Content']
+      whitelist: ['builder']
     };
 
     const persistedReducer = persistReducer(persistConfig, reducer);
