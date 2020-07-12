@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const Content = ({content}) => {
+const Content = ({content, handleDiscussion}) => {
 
   const {
     id,
@@ -141,6 +141,7 @@ const Content = ({content}) => {
                   variant="contained"
                   color="primary"
                   size="medium"
+                  onClick={() => handleDiscussion(content)}
                   />
               </div>
               <div className={classes.icon} >

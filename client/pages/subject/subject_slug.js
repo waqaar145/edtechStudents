@@ -2,6 +2,7 @@ import {useState, useEffect, useRef} from 'react';
 import SubjectLayout from "../../src/components/layouts/SubjectLayout";
 import {contentService} from './../../src/services'
 import { contentActionTypes } from "./../../src/store/content/content.actiontype";
+import { builderActionTypes } from "./../../src/store/builder/builder.actiontype";
 import { connect } from "react-redux";
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -15,7 +16,8 @@ const AllContent = (props) => {
   const {
     loading,
     contents,
-    router: {asPath}
+    router: {asPath},
+    startDiscussion
   } = props;
 
   const [height, setHeight] = useState(null);
@@ -69,6 +71,11 @@ const AllContent = (props) => {
   
   const classes = useStyles();
 
+  // HANDLE DISCUSSION
+  const handleDiscussion = (data) => {
+    startDiscussion(data);
+  }
+
   return (
     <SubjectLayout>
       <div className={classes.root}>
@@ -80,7 +87,7 @@ const AllContent = (props) => {
               contents.map((content, index) => {
                 return (
                   <section key={index} id={content.slug}>
-                    <Content content={content}/>
+                    <Content content={content} handleDiscussion={handleDiscussion}/>
                   </section>
                 )
               })
@@ -135,9 +142,10 @@ AllContent.getInitialProps = async ({store, req, query}) => {
       let chapters = await contentService.getChaptersBySubjectSlug(query.subject_slug, query.chapter_slug, isServer);
       await store.dispatch({type: contentActionTypes.GET_SUBJECT, data: chapters.data.data.subject});
       await store.dispatch({type: contentActionTypes.GET_CHAPTERS, data: chapters.data.data.chapters});
-      await store.dispatch({type: contentActionTypes.GET_COUNTS, data: chapters.data.data.counts});
     }
+    const counts = await contentService.getCountsByChapterSlug(query.chapter_slug, isServer);
     const contents = await contentService.getContentByChapterSlug(query.chapter_slug, query.content_type, isServer);
+    await store.dispatch({type: contentActionTypes.GET_COUNTS, data: counts.data.data});
     await store.dispatch({type: contentActionTypes.GET_CONTENTS, data: contents.data.data.contents});
     return {};
   } catch (err) {
@@ -148,7 +156,9 @@ AllContent.getInitialProps = async ({store, req, query}) => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return {}
+  return {
+    startDiscussion: (data) => dispatch({type: builderActionTypes.START_DISCUSSION, data})
+  }
 }
 
 function mapStateToProps (state) {

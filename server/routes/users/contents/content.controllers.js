@@ -127,6 +127,51 @@ module.exports.getChapterBySubjectSlug = async (req, res) => { // fetches all ch
   }
 }
 
+module.exports.getCounts = async (req, res) => {
+  try {
+    await check('chapter_slug').isLength({min: 1, max: 500}).withMessage('Chapter slug is required.').run(req);
+  
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).send({
+        message: 'Chapter slug is required',
+        data: errors.array()
+      });
+    }
+  
+    let {chapter_slug} = req.params;
+    
+    let chapter = await knex.select(
+                                'ed_chapters.cp_id as id'
+                              )
+                              .from('ed_chapters')
+                              .where('cp_slug', chapter_slug)
+                              .first();
+                          
+    let counts = {};
+    let total = '';
+    if (chapter) {
+      counts = await knex.raw('select  sum(case when cn_type = 1 then 1 else 0 end) as theories, sum(case when cn_type = 2 then 1 else 0 end) as sums FROM ed_contents where cn_chapter_id = ?', [chapter.id]);
+      total = await knex.raw('select count(*) from ed_contents where cn_chapter_id = ?', [chapter.id])
+    }
+    
+    return res.status(200).send({
+      message: 'Counts has been fetched for chapter',
+      data: {
+        total: Number(total.rows[0].count),
+        theories: counts.rows[0].theories ? counts.rows[0].theories : 0,
+        sums: counts.rows[0].sums ? counts.rows[0].sums : 0,
+      }
+    })
+  } catch (error) {
+    return res.status(422).send(unExpectedError(
+      'Something went wrong, please try to fetch again',
+      'Something went wrong, please try to fetch again',
+      'semester'
+    ))
+  }
+}
+
 module.exports.getContentByChapterSlug = async (req, res) => {
 
   await check('chapter_slug').isLength({min: 1, max: 500}).withMessage('Chapter slug is required.').run(req);
