@@ -74,6 +74,9 @@ let fixedStyle = (theme) => ({
   separator: {
     borderRight: '2px solid grey',
     paddingRight: '5px'
+  },
+  StartDiscussion: {
+    width: '80px'
   }
 });
 
@@ -150,80 +153,125 @@ const SubjectLayout = (props) => {
   const myRef = useRef(null)
   const { scrollX, scrollY, scrollDirection } = useScroll(typeof window === "undefined" || !window.document ? 0 : document.getElementById('internal-subject-link-tab'));
 
+  // *** CONTENT TYPES TAB LINKS
+  const ContentTabInternalLinks = () => {
+    return (
+      <div className={classes.internalCustomTab} id="internal-subject-link-tab" ref={myRef}>
+        <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
+          <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
+            <a>
+              All&nbsp; 
+              <span style={{fontSize: '13px'}}>({total})</span>
+            </a>
+          </Link>
+        </div>
+        <a disabled>|</a>
+        <div style={{marginLeft: '10px'}} className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
+          <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}>
+            <a>
+              Theories&nbsp;
+              <span style={{fontSize: '13px'}}>({theories})</span>
+            </a>
+          </Link>
+        </div>
+        <div className={`${activeTab === 'sums' ? classes.tabActive : classes.singleTab}`}>
+          <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}>
+            <a>
+              Questions&nbsp; 
+              <span style={{fontSize: '13px'}}>({sums})</span>
+            </a>
+          </Link>
+        </div>
+      </div>
+    )
+  }
+
+  // **** CONTENT HEADER BAR
+  const ContentHeader = () => (
+    <div className={classes.contentHeader}>
+      <div className={classes.subjectHeaderText}>
+        <div>
+          <span>
+          <ListItemIcon>
+            <div className={classes.chapterNumber}>
+              {(activeChapter && Object.keys(activeChapter).length > 0) ? activeChapter.chapter_number : ''}
+            </div>
+          </ListItemIcon>
+          </span>
+          <span>
+            {(activeChapter && Object.keys(activeChapter).length > 0) ? activeChapter.chapter_name : ''}
+          </span>
+        </div>
+      </div>
+      <InputMaterialSearch
+        handleSearch={handleSearchContent}
+        placeholder="Search Subject"
+      />
+    </div>
+  )
+
+  // **** CHAPTERS LIST COMPONENT WHICH IS AT LEFT SIDEBAR OF SUBJECT LAYOUT
+  const ChapterListComponent = ({start_discussion}) => {
+    return (
+      <>
+        {
+          chapters.map((chapter, i) => {
+            return (
+              <div key={i}>
+                <ChaptersList 
+                  chapter={chapter} 
+                  subject_slug={subject_slug} 
+                  chapter_slug={chapter_slug}
+                  content_type={content_type}
+                  start_discussion={start_discussion}
+                  />
+              </div>
+            )
+          })
+        }
+      </>
+    )
+  }
+
   return (
     <SimpleLayout>
-      <Grid container>
-        <Grid item xs={start_discussion ? 1 : 3} className={`${classes.sidebar} ${classes.main}`}>
-          {
-            chapters.map((chapter, i) => {
-              return (
-                <div key={i}>
-                  <ChaptersList 
-                    chapter={chapter} 
-                    subject_slug={subject_slug} 
-                    chapter_slug={chapter_slug}
-                    content_type={content_type}
-                    />
-                </div>
-              )
-            })
-          }
-        </Grid>
-        <Grid item xs={9} className={`${classes.content} ${classes.main}`}>
-          <div className={classes.contentContainer}>
-            <div className={classes.contentHeader}>
-              <div className={classes.subjectHeaderText}>
-                <div>
-                  <span>
-                  <ListItemIcon>
-                    <div className={classes.chapterNumber}>
-                      {(activeChapter && Object.keys(activeChapter).length > 0) ? activeChapter.chapter_number : ''}
-                    </div>
-                  </ListItemIcon>
-                  </span>
-                  <span>
-                    {(activeChapter && Object.keys(activeChapter).length > 0) ? activeChapter.chapter_name : ''}
-                  </span>
-                </div>
+      {
+        !start_discussion 
+          ?
+        (
+        <Grid container>
+          <Grid item xs={3} className={`${classes.sidebar} ${classes.main}`}>
+            <ChapterListComponent />
+          </Grid>
+          <Grid item xs={9} className={`${classes.content} ${classes.main}`}>
+            <div className={classes.contentContainer}>
+              <ContentHeader />
+              <div className={classes.contentBody}>
+                <ContentTabInternalLinks />
+                {props.children}
               </div>
-              <InputMaterialSearch
-                handleSearch={handleSearchContent}
-                placeholder="Search Subject"
-              />
             </div>
-            <div className={classes.contentBody}>
-              <div className={classes.internalCustomTab} id="internal-subject-link-tab" ref={myRef}>
-                <div className={`${activeTab === 'all' ? classes.tabActive : classes.singleTab}`}>
-                  <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}>
-                    <a>
-                      All&nbsp; 
-                      <span style={{fontSize: '13px'}}>({total})</span>
-                    </a>
-                  </Link>
-                </div>
-                <a disabled>|</a>
-                <div style={{marginLeft: '10px'}} className={`${activeTab === 'theories' ? classes.tabActive : classes.singleTab}`}>
-                  <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}>
-                    <a>
-                      Theories&nbsp;
-                      <span style={{fontSize: '13px'}}>({theories})</span>
-                    </a>
-                  </Link>
-                </div>
-                <div className={`${activeTab === 'sums' ? classes.tabActive : classes.singleTab}`}>
-                  <Link href={`/subject/subject_slug?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`} as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}>
-                    <a>
-                      Questions&nbsp; 
-                      <span style={{fontSize: '13px'}}>({sums})</span>
-                    </a>
-                  </Link>
-                </div>
-              </div>
-              {props.children}
-            </div>
-          </div>
+          </Grid>
         </Grid>
-      </Grid>
+        )
+        :
+        (
+        <Grid container>
+          <Grid item xs={0} className={`${classes.sidebar} ${classes.main}`}>
+            <ChapterListComponent start_discussion={start_discussion}/>
+          </Grid>
+          <Grid item xs={11} className={`${classes.content} ${classes.main}`}>
+            <div className={classes.contentContainer}>
+              <ContentHeader />
+              <div className={classes.contentBody}>
+                <ContentTabInternalLinks />
+                {props.children}
+              </div>
+            </div>
+          </Grid>
+        </Grid>
+        )
+      }
     </SimpleLayout>
   )
 }

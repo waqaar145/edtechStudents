@@ -156,11 +156,11 @@ module.exports.getCounts = async (req, res) => {
     }
     
     return res.status(200).send({
-      message: 'Counts has been fetched for chapter',
+      message: 'Counts have been fetched for chapter',
       data: {
-        total: Number(total.rows[0].count),
-        theories: counts.rows[0].theories ? counts.rows[0].theories : 0,
-        sums: counts.rows[0].sums ? counts.rows[0].sums : 0,
+        total: +total.rows[0].count,
+        theories: counts.rows[0].theories ? +counts.rows[0].theories : 0,
+        sums: counts.rows[0].sums ? +counts.rows[0].sums : 0,
       }
     })
   } catch (error) {
