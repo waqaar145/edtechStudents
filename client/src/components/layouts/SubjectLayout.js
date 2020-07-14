@@ -75,9 +75,10 @@ let fixedStyle = (theme) => ({
     borderRight: '2px solid grey',
     paddingRight: '5px'
   },
-  StartDiscussion: {
-    width: '80px'
-  }
+  startDiscussion: {
+    display: 'flex'
+  },
+
 });
 
 const SubjectLayout = (props) => {
@@ -118,7 +119,7 @@ const SubjectLayout = (props) => {
     theories,
     sums,
     router: {query: {chapter_slug, subject_slug, content_type}},
-    start_discussion
+    discusstion_started
   } = props;
 
   const router = useRouter()
@@ -211,7 +212,7 @@ const SubjectLayout = (props) => {
   )
 
   // **** CHAPTERS LIST COMPONENT WHICH IS AT LEFT SIDEBAR OF SUBJECT LAYOUT
-  const ChapterListComponent = ({start_discussion}) => {
+  const ChapterListComponent = ({discusstion_started}) => {
     return (
       <>
         {
@@ -223,7 +224,7 @@ const SubjectLayout = (props) => {
                   subject_slug={subject_slug} 
                   chapter_slug={chapter_slug}
                   content_type={content_type}
-                  start_discussion={start_discussion}
+                  discusstion_started={discusstion_started}
                   />
               </div>
             )
@@ -236,7 +237,7 @@ const SubjectLayout = (props) => {
   return (
     <SimpleLayout>
       {
-        !start_discussion 
+        !discusstion_started 
           ?
         (
         <Grid container>
@@ -256,20 +257,22 @@ const SubjectLayout = (props) => {
         )
         :
         (
-        <Grid container>
-          <Grid item xs={0} className={`${classes.sidebar} ${classes.main}`}>
-            <ChapterListComponent start_discussion={start_discussion}/>
-          </Grid>
-          <Grid item xs={11} className={`${classes.content} ${classes.main}`}>
-            <div className={classes.contentContainer}>
-              <ContentHeader />
-              <div className={classes.contentBody}>
-                <ContentTabInternalLinks />
-                {props.children}
+        <div className={classes.startDiscussion}>
+          <div className={`${classes.sidebar} ${classes.main}`}>
+            <ChapterListComponent discusstion_started={discusstion_started}/>
+          </div>
+          <Grid container>
+            <Grid item xs={12} className={`${classes.content} ${classes.main}`}>
+              <div className={classes.contentContainer}>
+                <ContentHeader />
+                <div className={classes.contentBody}>
+                  <ContentTabInternalLinks />
+                  {props.children}
+                </div>
               </div>
-            </div>
+            </Grid>
           </Grid>
-        </Grid>
+        </div>
         )
       }
     </SimpleLayout>
@@ -288,7 +291,7 @@ SubjectLayout.propTypes = {
   total: PropTypes.number.isRequired,
   theories: PropTypes.number.isRequired,
   sums: PropTypes.number.isRequired,
-  start_discussion: PropTypes.bool.isRequired
+  discusstion_started: PropTypes.bool.isRequired
 }
 
 
@@ -299,7 +302,7 @@ function mapStateToProps (state) {
     theories: state.Content.subject.theories,
     sums: state.Content.subject.sums,
 
-    start_discussion: state.builder.subjectLayoutBuilder.discussion.on
+    discusstion_started: state.builder.subjectLayoutBuilder.discussion.on
   }
 }
 

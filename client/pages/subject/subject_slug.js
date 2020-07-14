@@ -17,7 +17,8 @@ const AllContent = (props) => {
     loading,
     contents,
     router: {asPath},
-    startDiscussion
+    startDiscussion,
+    discusstion_started
   } = props;
 
   const [height, setHeight] = useState(null);
@@ -80,7 +81,7 @@ const AllContent = (props) => {
     <SubjectLayout>
       <div className={classes.root}>
         <Grid container spacing={3}>
-          <Grid item xs={8}>
+          <Grid item xs={discusstion_started ? 6 : 8}>
             {
               (!loading && Array.isArray(contents) && contents.length > 0)
                 &&
@@ -111,23 +112,35 @@ const AllContent = (props) => {
               </div>
             }
           </Grid>
-          <Grid item xs={4}>
-            <div className={classes.stickySidebar} >
-              <ul>
-                {
-                  contents.map((content, i) => {
-                    return (
-                      <li key={i}>
-                        <a href={`#${content.slug}`}>
-                          {ReactHtmlParser(content.name)}
-                        </a>
-                      </li>
-                    )
-                  })
-                }
-              </ul>
-            </div>
-          </Grid>
+          {
+            !discusstion_started
+              ?
+            (
+              <Grid item xs={4}>
+                <div className={classes.stickySidebar} >
+                  <ul>
+                    {
+                      contents.map((content, i) => {
+                        return (
+                          <li key={i}>
+                            <a href={`#${content.slug}`}>
+                              {ReactHtmlParser(content.name)}
+                            </a>
+                          </li>
+                        )
+                      })
+                    }
+                  </ul>
+                </div>
+              </Grid>
+            )
+            :
+            (
+              <Grid item xs={6}>
+                Here goes the discussions Here goes the discussions Here goes the discussions Here goes the discussions Here goes the discussions 
+              </Grid>
+            )
+          }
         </Grid>
       </div>
     </SubjectLayout>
@@ -164,7 +177,9 @@ const mapDispatchToProps = dispatch => {
 function mapStateToProps (state) {
   return {
     contents: state.Content.contents,
-    loading: state.Content.loading
+    loading: state.Content.loading,
+
+    discusstion_started: state.builder.subjectLayoutBuilder.discussion.on
   }
 }
 

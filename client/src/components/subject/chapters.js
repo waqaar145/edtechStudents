@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => {
   })
 });
 
-const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type, start_discussion}) => {
+const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type, discusstion_started}) => {
 
   const classes = useStyles();
 
@@ -44,7 +44,7 @@ const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type, start_
             </div>
           </ListItemIcon>
           {
-            !start_discussion &&
+            !discusstion_started &&
             <ListItemText primary={chapter.chapter_name} />
           }
         </ListItem>
