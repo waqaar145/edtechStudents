@@ -11,6 +11,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import EmptyData from './../../src/components/404/emptyData';
 import ReactHtmlParser from 'react-html-parser';
 import { withRouter } from 'next/router';
+import ContentSkelton from './../../src/skeltons/content'
 
 const AllContent = (props) => {
   const {
@@ -107,9 +108,7 @@ const AllContent = (props) => {
             {
               loading
                 &&
-              <div className={classes.root1}>
-                <CircularProgress />
-              </div>
+              <ContentSkelton />
             }
           </Grid>
           {

@@ -10,6 +10,7 @@ import { useRouter, withRouter } from 'next/router'
 import {connect} from 'react-redux';
 import {useScroll} from './../../hooks/useScroll'
 import PropTypes from 'prop-types';
+import useElementHeightCalc from '../../hooks/useElementHeightCalc'
 
 let fixedStyle = (theme) => ({
   root: {
@@ -83,6 +84,10 @@ let fixedStyle = (theme) => ({
 
 const SubjectLayout = (props) => {
 
+  const {
+    height
+  } = useElementHeightCalc();
+
   const useStyles = makeStyles((theme) => ({
     ...fixedStyle(theme),
     main: {
@@ -125,13 +130,6 @@ const SubjectLayout = (props) => {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('');
   const [activeChapter, setActiveChapter] = useState({});
-
-  const [height, setHeight] = useState(null);
-
-  useEffect(() => {
-    const el = document.getElementsByClassName('header')[0]
-    setHeight(el.offsetHeight);
-  }, []);
 
   useEffect(() => {
     if (content_type) {
