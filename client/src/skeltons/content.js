@@ -27,12 +27,12 @@ const ContentSkelton = (props) => {
   return (
     <>
       {
-        Array.from(Array(2), (e, i) => {
+        Array.from(Array(2), (e, idx) => {
           return (
-            <div className={classes.root}>
+            <div className={classes.root} key={idx}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  {variants.map((variant,i) => (
+                  {variants.map((variant, i) => (
                     <Typography component="div" key={i} variant={variant}>
                       <Skeleton animation="wave"/>
                     </Typography>

@@ -30,8 +30,12 @@ export const Builder  = (state = initalState, action = {}) => {
       return {
         ...state,
         subjectLayoutBuilder: {
-          ...state.subjectLayoutBuilder,
-          ...initalState.discussion
+          discussion: {
+            ...state.subjectLayoutBuilder.discussion,
+            loading: false,
+            on: false,
+            current_topic: {}
+          }
         }
       }
 

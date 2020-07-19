@@ -6,11 +6,13 @@ import { useEffect, useState } from 'react';
 import ChaptersList from './../subject/chapters'
 import InputMaterialSearch from './../forms/InputMaterialSearch';
 import Link from 'next/link';
-import { useRouter, withRouter } from 'next/router'
+import { useRouter, withRouter } from 'next/router';
 import {connect} from 'react-redux';
-import {useScroll} from './../../hooks/useScroll'
+import {useScroll} from './../../hooks/useScroll';
 import PropTypes from 'prop-types';
-import useElementHeightCalc from '../../hooks/useElementHeightCalc'
+import useElementHeightCalc from '../../hooks/useElementHeightCalc';
+import SimpleButton from'./../../components/buttons/simpleButton';
+import { builderActionTypes } from "./../../store/builder/builder.actiontype";
 
 let fixedStyle = (theme) => ({
   root: {
@@ -32,6 +34,11 @@ let fixedStyle = (theme) => ({
   contentBody: {
     padding: theme.spacing(2)
   },
+  commentBody: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    paddingTop: theme.spacing(0)
+  },
   internalCustomTab: {
     position: '-webkit-sticky',
     position: 'sticky',
@@ -42,6 +49,20 @@ let fixedStyle = (theme) => ({
     paddingRight: '10px',
     display: 'flex',
     alignItems: 'flex-start',
+    marginBottom: '10px',
+    ...theme.typography.subtitle1
+  },
+  commentTopHeader: {
+    position: '-webkit-sticky',
+    position: 'sticky',
+    top: '0',
+    backgroundColor: theme.palette.background.paper,
+    paddingLeft: '10px',
+    paddingTop: '10px',
+    paddingRight: '10px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: '10px',
     ...theme.typography.subtitle1
   },
@@ -76,7 +97,7 @@ let fixedStyle = (theme) => ({
     borderRight: '2px solid grey',
     paddingRight: '5px'
   },
-  startDiscussion: {
+  discussionStarted: {
     display: 'flex'
   },
 
@@ -96,7 +117,25 @@ const SubjectLayout = (props) => {
     },
     content: {
       borderRight: `1px solid ${theme.palette.grey['200']}`,
-      overflowY: 'scroll'
+      overflowY: 'scroll',
+    },
+    content1: {
+      borderRight: `1px solid ${theme.palette.grey['200']}`,
+      overflowY: 'scroll',
+      overflowY: 'scroll',
+      '&::-webkit-scrollbar': {
+        width: '0.1em',
+        
+      },
+      '&::-webkit-scrollbar-track': {
+        boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+        webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+      },
+      '&::-webkit-scrollbar-thumb': {
+        backgroundColor: 'rgba(0,0,0,.1)',
+        outline: '1px solid slategrey',
+        borderRadius: '10px'
+      }
     },
     sidebar: {
       borderRight: `1px solid ${theme.palette.grey['200']}`,
@@ -124,7 +163,8 @@ const SubjectLayout = (props) => {
     theories,
     sums,
     router: {query: {chapter_slug, subject_slug, content_type}},
-    discusstion_started
+    discusstion_started,
+    stopDiscussion
   } = props;
 
   const router = useRouter()
@@ -209,6 +249,25 @@ const SubjectLayout = (props) => {
     </div>
   )
 
+  // *** Comment header i.e topic name
+  const CommentTopicNameHeader = () => (
+    <div className={classes.commentTopHeader} id="internal-subject-link-tab" ref={myRef}>
+      <div>
+        This is topic name This is topic name 
+      </div>
+      <div>
+        <SimpleButton 
+          type="submit"
+          name="Stop Discussion"
+          variant="contained"
+          color="primary"
+          size="medium"
+          onClick={stopDiscussion}
+          />
+      </div>
+    </div>
+  );
+
   // **** CHAPTERS LIST COMPONENT WHICH IS AT LEFT SIDEBAR OF SUBJECT LAYOUT
   const ChapterListComponent = ({discusstion_started}) => {
     return (
@@ -255,18 +314,21 @@ const SubjectLayout = (props) => {
         )
         :
         (
-        <div className={classes.startDiscussion}>
+        <div className={classes.discussionStarted}>
           <div className={`${classes.sidebar} ${classes.main}`}>
             <ChapterListComponent discusstion_started={discusstion_started}/>
           </div>
           <Grid container>
-            <Grid item xs={12} className={`${classes.content} ${classes.main}`}>
-              <div className={classes.contentContainer}>
-                <ContentHeader />
-                <div className={classes.contentBody}>
-                  <ContentTabInternalLinks />
-                  {props.children}
-                </div>
+            <Grid item xs={6} className={`${classes.content1} ${classes.main}`}>
+              <ContentHeader />
+              <div className={classes.contentBody}>
+                <ContentTabInternalLinks />
+                {props.children}
+              </div>
+            </Grid>
+            <Grid item xs={6} className={`${classes.content} ${classes.main}`}>
+              <div className={classes.commentBody}>
+                <CommentTopicNameHeader />
               </div>
             </Grid>
           </Grid>
@@ -289,7 +351,14 @@ SubjectLayout.propTypes = {
   total: PropTypes.number.isRequired,
   theories: PropTypes.number.isRequired,
   sums: PropTypes.number.isRequired,
-  discusstion_started: PropTypes.bool.isRequired
+  discusstion_started: PropTypes.bool.isRequired,
+  stopDiscussion: PropTypes.func.isRequired
+}
+
+const mapDispatchToProps = dispatch => {
+  return {
+    stopDiscussion: () => dispatch({type: builderActionTypes.STOP_DISCUSSION})
+  }
 }
 
 
@@ -304,4 +373,4 @@ function mapStateToProps (state) {
   }
 }
 
-export default connect(mapStateToProps)(withRouter(SubjectLayout));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(SubjectLayout));

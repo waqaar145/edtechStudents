@@ -82,7 +82,7 @@ const AllContent = (props) => {
     <SubjectLayout>
       <div className={classes.root}>
         <Grid container spacing={3}>
-          <Grid item xs={discusstion_started ? 6 : 8}>
+          <Grid item xs={discusstion_started ? 12 : 8}>
             {
               (!loading && Array.isArray(contents) && contents.length > 0)
                 &&
@@ -135,9 +135,7 @@ const AllContent = (props) => {
             )
             :
             (
-              <Grid item xs={6}>
-                Here goes the discussions Here goes the discussions Here goes the discussions Here goes the discussions Here goes the discussions 
-              </Grid>
+              <></>
             )
           }
         </Grid>
