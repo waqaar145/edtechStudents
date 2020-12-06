@@ -13,6 +13,8 @@ import PropTypes from 'prop-types';
 import useElementHeightCalc from '../../hooks/useElementHeightCalc';
 import SimpleButton from'./../../components/buttons/simpleButton';
 import { builderActionTypes } from "./../../store/builder/builder.actiontype";
+import ReactHtmlParser from 'react-html-parser';
+import CommentSection from './../subject/commentSection'
 
 let fixedStyle = (theme) => ({
   root: {
@@ -35,8 +37,6 @@ let fixedStyle = (theme) => ({
     padding: theme.spacing(2)
   },
   commentBody: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
     paddingTop: theme.spacing(0)
   },
   internalCustomTab: {
@@ -54,7 +54,7 @@ let fixedStyle = (theme) => ({
   },
   commentTopHeader: {
     position: '-webkit-sticky',
-    position: 'sticky',
+    // position: 'sticky',
     top: '0',
     backgroundColor: theme.palette.background.paper,
     paddingLeft: '10px',
@@ -164,7 +164,8 @@ const SubjectLayout = (props) => {
     sums,
     router: {query: {chapter_slug, subject_slug, content_type}},
     discusstion_started,
-    stopDiscussion
+    stopDiscussion,
+    name
   } = props;
 
   const router = useRouter()
@@ -251,9 +252,9 @@ const SubjectLayout = (props) => {
 
   // *** Comment header i.e topic name
   const CommentTopicNameHeader = () => (
-    <div className={classes.commentTopHeader} id="internal-subject-link-tab" ref={myRef}>
+    <div className={classes.commentTopHeader} id="internal-subject-link-tab1" ref={myRef}>
       <div>
-        This is topic name This is topic name 
+        {ReactHtmlParser(name)}
       </div>
       <div>
         <SimpleButton 
@@ -327,9 +328,10 @@ const SubjectLayout = (props) => {
               </div>
             </Grid>
             <Grid item xs={6} className={`${classes.content} ${classes.main}`}>
-              <div className={classes.commentBody}>
+              <div className={classes.commentBody1}>
                 <CommentTopicNameHeader />
               </div>
+              <CommentSection />
             </Grid>
           </Grid>
         </div>
@@ -352,7 +354,13 @@ SubjectLayout.propTypes = {
   theories: PropTypes.number.isRequired,
   sums: PropTypes.number.isRequired,
   discusstion_started: PropTypes.bool.isRequired,
-  stopDiscussion: PropTypes.func.isRequired
+  stopDiscussion: PropTypes.func.isRequired,
+  id: PropTypes.number,
+  content_type: PropTypes.number,
+  difficulty_level: PropTypes.number,
+  name: PropTypes.string,
+  slug: PropTypes.string,
+  description: PropTypes.string
 }
 
 const mapDispatchToProps = dispatch => {
@@ -368,8 +376,16 @@ function mapStateToProps (state) {
     total: state.Content.subject.total,
     theories: state.Content.subject.theories,
     sums: state.Content.subject.sums,
-
-    discusstion_started: state.builder.subjectLayoutBuilder.discussion.on
+    // DISCUSSION ON OR OFF I.E SHOWING COMMENT SECTION
+    discusstion_started: state.builder.subjectLayoutBuilder.discussion.on,
+    // DETAILS OF CURRENT SELECTED CONTENT FOR DISCUSSION
+    id: state.builder.subjectLayoutBuilder.discussion.current_topic.id,
+    content_type: state.builder.subjectLayoutBuilder.discussion.current_topic.content_type,
+    difficulty_level: state.builder.subjectLayoutBuilder.discussion.current_topic.difficulty_level,
+    name: state.builder.subjectLayoutBuilder.discussion.current_topic.name,
+    slug: state.builder.subjectLayoutBuilder.discussion.current_topic.slug,
+    description: state.builder.subjectLayoutBuilder.discussion.current_topic.description
+    
   }
 }
 
