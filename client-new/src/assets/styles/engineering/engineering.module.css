@@ -13,8 +13,8 @@
   height: 50px;
   line-height: 50px;
   text-align: center;
-  color: var(--gray-90);
-  border: 1px solid var(--gray-30);
+  background-color: var(--bg-color-3);
+  color: var(--gray-10);
   font-size: 1.1rem;
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
@@ -22,14 +22,22 @@
 
 .custom-card .custom-card-body ul {
   color: var(--font-color-1);
-  border: 1px solid var(--gray-30);
 }
 
 .custom-card .custom-card-body ul li {
-  height: 50px;
-  line-height: 50px;
+  height: 65px;
+  line-height: 65px;
   text-align: center;
-  border-top: 1px solid var(--gray-20);
+  border-top: 1px solid var(--gray-30);
+}
+
+.custom-card .custom-card-body ul li:hover {
+  height: 65px;
+  line-height: 65px;
+  text-align: center;
+  border-top: 1px solid var(--gray-30);
+  background-color: var(--bg-color-1);
+  transition: 0.3s;
 }
 
 .custom-card .custom-card-body ul li a{

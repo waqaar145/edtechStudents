@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 const MainHeader = () => {
   return (
@@ -22,22 +22,19 @@ const MainHeader = () => {
                 </Link>
               </li>
               <li className="nav-link" style={{ "--i": "1.1s" }}>
-                <a href="#">
-                  Services<i className="fas fa-caret-down"></i>
-                </a>
+                <Link href="/subject" passHref>
+                  Subject
+                </Link>
               </li>
               <li className="nav-link" style={{ "--i": "1.35s" }}>
                 <a href="#">About</a>
               </li>
             </ul>
           </div>
-          <div style={{ "--i": "1.8s" }}>
-            <li><a href="#" className="btn transparent">
-              Log in
-            </a></li>
-            {/* <a href="#" className="btn solid">
-              Sign up
-            </a> */}
+          <div style={{ "--i": "1.8s" }} className="login-button">
+            <Link href="/login" passHref>
+              Login
+            </Link>
           </div>
         </div>
         <div className="hamburger-menu-container">

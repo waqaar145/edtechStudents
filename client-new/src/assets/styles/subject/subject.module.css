@@ -36,7 +36,7 @@
   background-color: var(--bg-color-2);
   height: 50px;
   line-height: 50px;
-  text-align: center;
+  /* text-align: center; */
   color: var(--gray-90);
   font-size: 1.1rem;
   position: sticky;
@@ -44,6 +44,13 @@
   box-shadow: var(--box-shadow-1);
   z-index: 1006;
   border-right: 1px solid var(--gray-30);
+  padding-left: 25px;
+}
+
+.chapter-list-container .back-button{
+  margin-right: 20px;
+  font-size: 1.3rem;
+  cursor: pointer;
 }
 
 .chapter-list-body {
@@ -209,7 +216,7 @@
 
 .content-main-header ul li a:hover {
   text-decoration: none;
-  color: var(--secondary);
+  color: var(--primary);
   padding-bottom: 14px;
   font-size: 1rem;
   transition: 0.3s;
@@ -282,7 +289,7 @@
 .content-wrapper .content-body {
   padding: 10px;
   border-bottom: 1px solid var(--gray-30);
-  color: var(--gray-80);
+  color: var(--gray-70);
 }
 
 .content-wrapper .content-footer {

@@ -1,12 +1,12 @@
 :root {
-  --primary: #041F60;
-  --secondary: #0476D0;
+  --primary: #0f0f6d;
+  --secondary: #2b2bff;
   --danger: #F51720;
   --success: #00A8A8;
   /* background colors */
   --bg-color-1: #f0f4f6;
   --bg-color-2: #fff;
-  --bg-color-3: #1f2d33;
+  --bg-color-3: #0f0f6d;
   --bg-color-4: #fafaf9;
   --bg-color-5: #e9e5df;
   --bg-color-6: #d6cec2;

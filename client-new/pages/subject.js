@@ -1,11 +1,16 @@
 import { useState, useEffect } from "react";
-import BasicLayout from "./../src/layouts/Basic";
 import { Row, Col } from "react-bootstrap";
-import { MdThumbUp, MdMoreVert, MdSearch } from "react-icons/md";
+import { useRouter } from 'next/router'
+import { MdThumbUp, MdMoreVert, MdSearch, MdArrowBack } from "react-icons/md";
 import BasicButton from './../src/components/Button/Basic'
+import {useSelector, useDispatch} from 'react-redux'
 import "./../src/assets/styles/subject/subject.module.css";
 
 const Subject = () => {
+
+  const router = useRouter(); 
+  const dispatch = useDispatch();
+
   const [scrollTop, setScrollTop] = useState(0);
   useEffect(() => {
     const onScroll = (e) => {
@@ -15,12 +20,17 @@ const Subject = () => {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleDiscussion = () => {
+    console.log('handleDiscussion')
+  }
+
   return (
     <div className="subject-wrapper">
       <Row className="subject-full-height">
         <Col xs={3} className="content-height chapter-list">
           <div className="chapter-list-container">
-            <div className="chapter-list-header">Engineering Mechanics</div>
+            <div className="chapter-list-header"><span className="back-button" onClick={() => router.back()}><MdArrowBack /></span> Engineering Mechanics</div>
             <div className="chapter-list-body">
               <ul>
                 {Array.from(Array(20), (e, i) => {
@@ -56,7 +66,7 @@ const Subject = () => {
               <ul>
                 <li>
                   <a href="#" className="text-links">
-                    All (5)
+                    All (15)
                   </a>
                 </li>
                 <li className="active">
@@ -116,7 +126,12 @@ const Subject = () => {
                           <div className="count">123</div>
                         </div>
                         <div className="user-actions">
-                          <div className="text"><BasicButton title="Discussion"/></div>
+                          <div className="text">
+                            <BasicButton 
+                              title="Discussion"
+                              onClick={handleDiscussion}
+                              />
+                          </div>
                           <div className="icon">
                             <MdMoreVert />
                           </div>

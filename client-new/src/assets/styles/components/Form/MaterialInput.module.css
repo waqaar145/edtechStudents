@@ -1,0 +1,23 @@
+.material-input input[type="text"], input[type="password"] {
+  background-color: var(--gray-10);
+  width: 100%;
+  padding: 15px 5px;
+  box-sizing: border-box;  
+  border: none;
+  border-bottom: 2px solid var(--primary);  
+  margin-bottom: 10px;
+  outline: none;
+  color: var(--gray-80);
+}
+
+.material-input input[type=text]:focus, input[type=password]:focus {
+  background-color: var(--gray-20);
+  border: none;
+  border-bottom: 3px solid var(--secondary); 
+  transition: 0.3s;
+}
+
+span.input-error {
+  color: var(--danger);
+  font-size: 13px;
+}
