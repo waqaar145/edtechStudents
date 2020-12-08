@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => {
   })
 });
 
-const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type}) => {
+const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type, discusstion_started}) => {
 
   const classes = useStyles();
 
@@ -43,7 +43,10 @@ const ChaptersList = ({chapter, subject_slug, chapter_slug, content_type}) => {
               {chapter.chapter_number}
             </div>
           </ListItemIcon>
-          <ListItemText primary={chapter.chapter_name} />
+          {
+            !discusstion_started &&
+            <ListItemText primary={chapter.chapter_name} />
+          }
         </ListItem>
       </Link>
     </List>

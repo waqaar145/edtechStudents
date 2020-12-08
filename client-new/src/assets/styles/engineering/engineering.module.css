@@ -1,0 +1,112 @@
+.custom-card {
+  position: relative;
+  background-color: var(--bg-color-2);
+  box-shadow: var(--box-shadow-1);
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 65px;
+}
+
+.custom-card .custom-card-header {
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  background-color: var(--bg-color-3);
+  color: var(--gray-10);
+  font-size: 1.1rem;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.custom-card .custom-card-body ul {
+  color: var(--font-color-1);
+}
+
+.custom-card .custom-card-body ul li {
+  height: 65px;
+  line-height: 65px;
+  text-align: center;
+  border-top: 1px solid var(--gray-30);
+}
+
+.custom-card .custom-card-body ul li:hover {
+  height: 65px;
+  line-height: 65px;
+  text-align: center;
+  border-top: 1px solid var(--gray-30);
+  background-color: var(--bg-color-1);
+  transition: 0.3s;
+}
+
+.custom-card .custom-card-body ul li a{
+  display: block;
+  text-decoration: none;
+  color: var(--gray-80);
+  font-size: 1rem;
+}
+
+.search-box {
+  background-color: var(--bg-color-2);
+  padding: 10px;
+  margin: 0;
+  position: sticky;
+  top: 60px;
+  z-index: 1001;
+  box-shadow: var(--box-shadow-1);
+}
+
+.search-box-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-box-input .current-selected-subject {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.search-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.search-box-input-field {
+  margin-right: 10px;
+}
+
+.semesters-list {
+  margin-top: 15px;
+  z-index: 1000;
+}
+
+a.custom-image-card {
+  display: block;
+  width: 100%;
+  background-color: var(--bg-color-2);
+  box-shadow: var(--box-shadow-1);
+  margin-bottom: 15px;
+  margin-top: 3px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  text-decoration: none;
+}
+
+a.custom-image-card:hover {
+  box-shadow: var(--box-shadow-2)
+}
+
+.custom-image-card img {
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+}
+
+.custom-image-card-body {
+  font-size: 1rem;
+  padding: 15px 15px;
+  height: 50px;
+  color: var(--gray-80);
+}

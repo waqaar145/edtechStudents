@@ -43,9 +43,7 @@ class MyApp extends App {
            <Component {...pageProps} />
           </PersistGate>
            :
-          <div>
-            <Component {...pageProps} />
-          </div>
+          <Component {...pageProps} />
         }
       </MuiThemeProvider>
     )

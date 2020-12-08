@@ -12,16 +12,16 @@ const uuid = require('uuid/v4');
 const passport = require('passport');
 const config = require('./config/config');
 var morgan = require('morgan');
-//
-// // Redis Starts here *****
-// // const redis = require("redis");
-// // const client = redis.createClient();
-// // client.on('connect', function() {
-// //     console.log('Redis client connected');
-// // });
-// // client.set('count', '1');
-// // Redis ends here *****
-//
+
+// Redis Starts here *****
+const redis = require("redis");
+const client = redis.createClient();
+client.on('connect', function() {
+    console.log('Redis client connected');
+});
+client.set('count', '1');
+// Redis ends here *****
+
 var app = express();
 var server = require('http').createServer(app);
 app.use(morgan('combined'))
@@ -49,20 +49,20 @@ require("./config/passport-local");
 app.use(passport.initialize());
 app.use(passport.session());
 
-//
-// // Socket-io starts here ********
-// var io = require('socket.io')(server);
-// io.on('connection', function(socket){
-//   console.log('a user connected');
-// });
-// // Socket-io ends here ********
-//
+
+// Socket-io starts here ********
+var io = require('socket.io')(server);
+io.on('connection', function(socket){
+  console.log('a user connected');
+});
+// Socket-io ends here ********
+
 app.use(express.static(__dirname + '/uploads/top-level'));
 usersRoutes.routes(app);
 
-// app.get('*', function(req, res){
-//   res.status(404).send('what???');
-// });
+app.get('*', function(req, res){
+  res.status(404).send('what???');
+});
 
 server.listen(port, () => {
   console.log('Student\'s server is running on port - ', port);
