@@ -1,23 +1,27 @@
 import { authActionTypes } from "./auth.actiontype";
 
 const initalState = {
-  first_name: "test",
-  users: [],
+  loggedInStatus: false,
+  loggedInUser: {
+    uid: null,
+    uuid: "",
+    username: "",
+    first_name: "",
+    last_name: "",
+    email: "",
+  },
 };
 
 export const Auth = (state = initalState, action = {}) => {
   switch (action.type) {
-    case "FIRST_NAME_HANDLER":
-      const { name, value } = action.data;
+    case authActionTypes.SET_LOGGED_IN_SUCCESS:
       return {
         ...state,
-        [name]: value,
-      };
-
-    case "SET_USERS":
-      return {
-        ...state,
-        users: action.data,
+        loggedInStatus: true,
+        loggedInUser: {
+          ...state.loggedInUser,
+          ...action.data,
+        },
       };
 
     default:

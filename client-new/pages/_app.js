@@ -1,5 +1,7 @@
 import App from "next/app";
 import { wrapper } from "./../src/store/index";
+import { END } from 'redux-saga'
+import {authActionTypes} from './../src/store/auth/auth.actiontype'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../src/assets/styles/main.css";
 import "./../src/assets/styles/navbar/mainHeader.css";
@@ -11,7 +13,12 @@ class MyApp extends App {
         ? await Component.getInitialProps(ctx)
         : {}),
     };
-    return { pageProps };
+    if (ctx.req) {
+      ctx.store.dispatch({type: authActionTypes.WATCH_LOGGED_IN_USER, headers: ctx.req.headers.cookie ? ctx.req.headers.cookie : ''});
+      ctx.store.dispatch(END)
+      await ctx.store.sagaTask.toPromise()
+    }
+    return { pageProps, store: ctx.store };
   }
 
   render() {
