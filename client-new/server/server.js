@@ -24,6 +24,16 @@ app.prepare()
       server.use(context, createProxyMiddleware(devProxy[context]))
     })
   }
+
+  // ******************** PAGES ROUTES START
+
+  server.get('/login', (req, res) => {
+    return app.render(req, res, '/login', req.query)
+  });
+
+  server.get('/signup', (req, res) => {
+    return app.render(req, res, '/signup', req.query)
+  });
     
   server.get('*', (req, res) => {
     return handle(req, res)

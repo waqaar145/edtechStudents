@@ -19,7 +19,7 @@ export const authService = {
   },
   async getLoggedInUser (cookie) {
     try {
-      const result = await HTTPClient.get(process.env.API_URL + '/api/v1/auth/logged-in', {headers: {Cookie: cookie}});
+      const result = await HTTPClient.get('/api/v1/auth/logged-in', {headers: {Cookie: cookie}});
       return result;
     } catch(error) {
       throw error;

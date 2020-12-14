@@ -21,7 +21,7 @@ const signUp = async (req, res) => {
     return res.status(400).send(
       unExpectedError(
         'Can\'t signup',
-        'This email already exists, please try logging in!',
+        'This email already exists, please login!',
         'email'
       )
     );

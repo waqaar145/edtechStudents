@@ -1,11 +1,8 @@
 import axios from 'axios';
-// import store from '../../store/store';
-// import {appConstOnError} from '../../store/appStore/appStore.action';
-// import {logoutStart} from '../../store/auth/auth.action';
-
 
 const axiosInstance  = axios.create({
-  // baseURL: process.env.REACT_APP_BASE_URL
+  withCredentials: true,
+  baseURL: process.env.NEXT_PUBLIC_API_URL
 });
 
 const instanceCreator = ($axios) => ({

@@ -1,5 +1,31 @@
-import { all } from 'redux-saga/effects';
+import { all, call, takeLatest } from "redux-saga/effects";
+import { authService } from "./../../services";
+import { authActionTypes } from "./auth.actiontype";
+import { actions } from "./auth.action";
+import { put } from "redux-saga/effects";
+
+function* handleLoginSuccess({ payload: { data, Router } }) {
+  yield put(actions.setLoggedInSuccess(data));
+  Router.push("/");
+}
+
+function* handleLoggedInUser({ headers }) {
+  try {
+    let { data } = yield authService.getLoggedInUser(headers);
+    yield put(actions.setLoggedInSuccess(data));
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export function* loginSuccess() {
+  yield takeLatest(authActionTypes.WATCH_LOGIN_SUCCESS, handleLoginSuccess);
+}
+
+export function* getLoggedInUser() {
+  yield takeLatest(authActionTypes.WATCH_LOGGED_IN_USER, handleLoggedInUser);
+}
 
 export function* authSaga() {
-  yield all([]);
+  yield all([call(loginSuccess), call(getLoggedInUser)]);
 }
