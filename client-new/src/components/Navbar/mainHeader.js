@@ -14,7 +14,9 @@ const MainHeader = () => {
           <div className="nav-links">
             <ul>
               <li className="nav-link" style={{ "--i": ".6s" }}>
-                <a href="#">Home</a>
+                <Link href="/" passHref>
+                  Home
+                </Link>
               </li>
               <li className="nav-link" style={{ "--i": ".85s" }}>
                 <Link href="/engineering" passHref>

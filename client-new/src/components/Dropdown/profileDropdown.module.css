@@ -1,0 +1,8 @@
+.profile-dropdown {
+  /* margin-top: 20px; */
+  overflow: auto;
+}
+
+.profile-dropdown body {
+  margin-top: 0;
+}
