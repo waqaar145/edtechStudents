@@ -24,6 +24,21 @@ export const Auth = (state = initalState, action = {}) => {
         },
       };
 
+    case authActionTypes.SET_LOGGED_IN_FAILED:
+      return {
+        ...state,
+        loggedInStatus: false,
+        loggedInUser: {
+          ...state.loggedInUser,
+          uid: null,
+          uuid: "",
+          username: "",
+          first_name: "",
+          last_name: "",
+          email: "",
+        },
+      };
+
     default:
       return state;
   }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, Dropdown } from "react-bootstrap";
 import { useRouter } from 'next/router'
 import { MdThumbUp, MdMoreVert, MdSearch, MdArrowBack } from "react-icons/md";
 import BasicButton from './../src/components/Button/Basic'
@@ -133,8 +133,17 @@ const Subject = () => {
                               onClick={handleDiscussion}
                               />
                           </div>
-                          <div className="icon">
-                            <ProfileDropdown />
+                          <div className="icon bootstrap-dropdown-style">
+                            <Dropdown>
+                              <Dropdown.Toggle>
+                                <MdMoreVert />
+                              </Dropdown.Toggle>
+                              <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                              </Dropdown.Menu>
+                            </Dropdown>
                           </div>
                         </div>
                       </div>

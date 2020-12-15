@@ -339,10 +339,7 @@
 }
 
 .content-footer .user-actions .icon:hover {
-  font-size: 1.3rem;
-  margin-top: -5px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .content-footer .user-actions .text {

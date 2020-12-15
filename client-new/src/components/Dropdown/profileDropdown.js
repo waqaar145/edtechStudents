@@ -1,11 +1,25 @@
-const ProfileDropdown = () => {
+import './profileDropdown.module.css'
+const ProfileDropdown = ({title}) => {
   return (
-    <div className="profile-dropdown">
+    <div className="ed-dropdown">
       <div className="header">
-        this is header
+        {title}
       </div>
       <div className="body">
-      asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />asdfasd<br />
+        <div className="body-element">
+          this is first link
+        </div>
+        <div className="body-element">
+          this is first link
+        </div>
+        <div className="body-element">
+          this is first link
+        </div>
+        <div className="body-element">
+          this is first link
+        </div><div className="body-element">
+          this is first link
+        </div>
       </div>
     </div>
   )

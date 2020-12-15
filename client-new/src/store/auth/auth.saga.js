@@ -12,8 +12,11 @@ function* handleLoginSuccess({ payload: { data, Router } }) {
 function* handleLoggedInUser({ headers }) {
   try {
     let { data } = yield authService.getLoggedInUser(headers);
+    console.log(data)
     yield put(actions.setLoggedInSuccess(data));
   } catch (error) {
+    console.log('40100000')
+    yield put(actions.setLoggedInFailed());
     console.log(error);
   }
 }

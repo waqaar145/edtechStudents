@@ -62,3 +62,34 @@ a{
   margin-top: 50px;
   text-align: center;
 }
+
+.bootstrap-dropdown-style .dropdown-item  {
+  color: red !important;
+}
+
+.bootstrap-dropdown-style .btn-primary {
+  color: black !important;
+  background-color: white;
+  border-color: white;
+}
+
+.bootstrap-dropdown-style .btn-primary.active, .btn-primary:active {
+  color: black !important;
+  background-color: white;
+  border-color: white;
+  outline: none;
+  border: none;
+}
+
+.bootstrap-dropdown-style .btn-primary.focus, .btn-primary:focus {
+  color: black !important;
+  background-color: white !important;
+  border-color: white !important;
+  box-shadow: none !important;
+}
+
+
+.bootstrap-dropdown-style .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+  background-color: white !important;
+  border-color: white !important;
+}

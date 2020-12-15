@@ -1,8 +1,18 @@
-.profile-dropdown {
-  /* margin-top: 20px; */
+.ed-dropdown {
+  position: absolute;
+  margin-right: 100px;
+}
+.ed-dropdown .body {
   overflow: auto;
+  background-color: #fff;
+  position: relative;
+  padding: 10px;
+  box-shadow: var(--box-shadow-1);
+  margin-top: 40px;
+  max-width: 300px;
+  z-index: 999;
 }
 
-.profile-dropdown body {
-  margin-top: 0;
+.ed-dropdown .body .body-element{
+  display: block;
 }
