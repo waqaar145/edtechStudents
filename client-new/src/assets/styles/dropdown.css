@@ -1,0 +1,68 @@
+.bootstrap-dropdown-style .btn-primary {
+  color: var(--gray-90) !important;
+  background-color: var(--bg-color-2);
+  border-color: var(--bg-color-2);
+}
+
+.bootstrap-dropdown-style .btn-primary.active, .btn-primary:active {
+  background-color: var(--bg-color-2);
+  border-color: var(--bg-color-2);
+  outline: none;
+  border: none;
+}
+
+.bootstrap-dropdown-style .btn-primary.focus, .btn-primary:focus {
+  color: var(--gray-90) !important;
+  background-color: white !important;
+  border-color: white !important;
+  box-shadow: none !important;
+}
+
+.bootstrap-dropdown-style .btn-primary:not(:disabled):not(.disabled).active, .btn-primary:not(:disabled):not(.disabled):active, .show>.btn-primary.dropdown-toggle {
+  background-color: var(--bg-color-2);
+  border-color: var(--bg-color-2);
+}
+
+.bootstrap-dropdown-style .dropdown-toggle::after {
+  display: none !important;
+}
+
+.bootstrap-dropdown-style svg {
+  margin-bottom: 5px;
+  font-size: 1.2rem;
+}
+
+.bootstrap-dropdown-style .dropdown-menu {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  box-shadow: var(--box-shadow-1);
+  transition: 00.3s;
+}
+
+.bootstrap-dropdown-style .dropdown-item.active, .dropdown-item:active {
+  color: var(--bg-color-2);
+  text-decoration: none;
+  background-color: var(--bg-color-2);
+}
+
+.bootstrap-dropdown-style .dropdown-item:focus, .dropdown-item:hover {
+  color: var(--gray-90);
+  text-decoration: none;
+  background-color: var(--bg-color-1);
+  font-size: 0.96rem;
+  transition: 0.3s;
+}
+
+.bootstrap-dropdown-style .dropdown-item {
+  font-size: 0.9rem;
+  color: var(--gray-90) !important;
+  padding: 7px 10px !important;
+}
+
+.bootstrap-dropdown-style .dropdown-item  .dropdown-item-icon {
+  margin-right: 10px;
+}

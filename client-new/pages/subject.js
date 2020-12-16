@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
 import { useRouter } from 'next/router'
-import { MdThumbUp, MdMoreVert, MdSearch, MdArrowBack } from "react-icons/md";
+import { MdThumbUp, MdMoreVert, MdSearch, MdArrowBack, MdAccountBalance, MdBookmark, MdSend, MdPeople, MdEmail } from "react-icons/md";
 import BasicButton from './../src/components/Button/Basic'
 import {useSelector, useDispatch} from 'react-redux'
 import ProfileDropdown from './../src/components/Dropdown/profileDropdown'
@@ -139,9 +139,11 @@ const Subject = () => {
                                 <MdMoreVert />
                               </Dropdown.Toggle>
                               <Dropdown.Menu>
-                                <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                                <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                                <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                                <Dropdown.Item href="#/action-1"><span className="dropdown-item-icon"><MdAccountBalance /></span> Add to My Study Room</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2"><span className="dropdown-item-icon"><MdBookmark /></span> Add to Bookmark</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3"><span className="dropdown-item-icon"><MdSend /></span>Request for a Change</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3"><span className="dropdown-item-icon"><MdPeople /></span> Invite Friends to Read</Dropdown.Item>
+                                <Dropdown.Item href="#/action-3"><span className="dropdown-item-icon"><MdEmail /></span> Email me</Dropdown.Item>
                               </Dropdown.Menu>
                             </Dropdown>
                           </div>

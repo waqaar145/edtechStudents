@@ -5,6 +5,7 @@ import {authActionTypes} from './../src/store/auth/auth.actiontype'
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../src/assets/styles/main.css";
 import "./../src/assets/styles/navbar/mainHeader.css";
+import "./../src/assets/styles/dropdown.css";
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
