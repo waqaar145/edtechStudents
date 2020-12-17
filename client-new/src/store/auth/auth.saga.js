@@ -15,9 +15,7 @@ function* handleLoggedInUser({ headers }) {
     console.log(data)
     yield put(actions.setLoggedInSuccess(data));
   } catch (error) {
-    console.log('40100000')
     yield put(actions.setLoggedInFailed());
-    console.log(error);
   }
 }
 

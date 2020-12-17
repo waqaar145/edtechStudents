@@ -256,3 +256,8 @@
     margin-right: 230px;
   }
 }
+
+.profile-nav-img img{
+  border-radius: 50%;
+  box-shadow: var(--box-shadow-1);
+}
