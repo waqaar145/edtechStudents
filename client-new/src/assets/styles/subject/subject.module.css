@@ -21,6 +21,13 @@
 .content-height {
   height: 100vh;
   overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.content-height::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
 }
 
 .chapter-list {
@@ -332,10 +339,7 @@
 }
 
 .content-footer .user-actions .icon:hover {
-  font-size: 1.3rem;
-  margin-top: -5px;
   cursor: pointer;
-  transition: 0.3s;
 }
 
 .content-footer .user-actions .text {
