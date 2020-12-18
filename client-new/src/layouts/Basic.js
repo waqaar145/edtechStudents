@@ -1,4 +1,4 @@
-import Navbar from "../components/Navbar/mainHeader";
+import Navbar from "../components/Navbar/MainHeader";
 import "./basic.css";
 
 const BasicLayout = ({ children }) => {

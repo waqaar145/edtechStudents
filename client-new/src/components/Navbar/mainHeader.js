@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Dropdown } from "react-bootstrap";
 import { shallowEqual, useSelector } from "react-redux";
 import { RiUserLine, RiSettings3Line, RiLogoutBoxRLine } from "react-icons/ri";
-import {authService} from './../../services'
+import {authService} from '../../services'
 
 const navLinks = [
   {
@@ -69,7 +69,7 @@ const MainHeader = () => {
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         <Dropdown.Item href={`/profile/${username}`}><span className="dropdown-item-icon"><RiUserLine /></span> {`${first_name} ${last_name}`}</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2"><span className="dropdown-item-icon"><RiSettings3Line /></span> Settings</Dropdown.Item>
+                        <Dropdown.Item href="/profile/settings"><span className="dropdown-item-icon"><RiSettings3Line /></span> Settings</Dropdown.Item>
                         <Dropdown.Item onClick={() => handleLogout()}><span className="dropdown-item-icon"><RiLogoutBoxRLine /></span> Logout</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>

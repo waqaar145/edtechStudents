@@ -1,0 +1,9 @@
+export const topLevelActionTypes = {
+  WATCH_ENGG_PAGE_CHANGES: "WATCH_ENGG_PAGE_CHANGES",
+
+  REQUEST: "REQUEST",
+  SUCCESS: "SUCCESS",
+  failed: "FAILED",
+
+  SET_ENGG_PAGE_DATA: "SET_ENGG_PAGE_DATA",
+};
