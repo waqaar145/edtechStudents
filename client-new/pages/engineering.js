@@ -16,12 +16,17 @@ import { contentService } from "./../src/services";
 import Router from "next/router";
 
 const Engineering = () => {
+  const dispatch = useDispatch();
   const semesters = useSelector(
     (state) => state.TopLevel.semesters,
     shallowEqual
   );
   const subjects = useSelector(
-    (state) => state.TopLevel.subjects,
+    (state) => state.TopLevel.current_subjects,
+    shallowEqual
+  );
+  const current_semester = useSelector(
+    (state) => state.TopLevel.current_semester,
     shallowEqual
   );
 
@@ -57,6 +62,13 @@ const Engineering = () => {
                         <li
                           key={semester.id}
                           className="custom-card-body-element"
+                          onClick={() =>
+                            dispatch({
+                              type: topLevelActionTypes.WATCH_SEMESTER_SELECTED,
+                              id: semester.id,
+                            })
+                          }
+                          className={current_semester === semester.id ? 'active' : ''}
                         >
                           <a>{semester.name}</a>
                         </li>
@@ -113,16 +125,18 @@ const Engineering = () => {
                   );
                 })
               ) : (
-                <div className="empty-container">
-                  <img
-                    src="https://d1xz17h748l1av.cloudfront.net/assets/images/gold-theme/earn-zone/empty-task.svg"
-                    alt="Empty Task"
-                  />
-                  <div className="empty-msg">
-                    <h3>No Subject found!</h3>
-                    <p className="msg">Please search for another subject</p>
+                <Col>
+                  <div className="empty-container">
+                    <img
+                      src="https://d1xz17h748l1av.cloudfront.net/assets/images/gold-theme/earn-zone/empty-task.svg"
+                      alt="Empty Task"
+                    />
+                    <div className="empty-msg">
+                      <h3>No Subject found!</h3>
+                      <p className="msg">Please search for another subject</p>
+                    </div>
                   </div>
-                </div>
+                </Col>
               )}
             </Row>
           </Col>

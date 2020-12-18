@@ -3,6 +3,8 @@ import { topLevelActionTypes } from "./top_level.actiontype";
 const initalState = {
   semesters: [],
   subjects: [],
+  current_semester: null,
+  current_subjects: [],
   loading: false,
   failed: false,
 };
@@ -27,6 +29,20 @@ export const TopLevel = (state = initalState, action = {}) => {
         ...state,
         semesters,
         subjects,
+        current_semester: semesters[0].id,
+        current_subjects: subjects.filter(
+          (subject) => subject.semester_id === semesters[0].id
+        ),
+      };
+
+    case topLevelActionTypes.SET_SUBJECTS_BY_SEMESTER:
+      const { data } = action.data;
+      return {
+        ...state,
+        current_semester: data,
+        current_subjects: state.subjects.filter(
+          (subject) => subject.semester_id === data
+        ),
       };
 
     default:

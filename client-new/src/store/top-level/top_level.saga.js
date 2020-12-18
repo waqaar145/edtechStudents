@@ -15,12 +15,21 @@ function* handleEnggPageData () {
   }
 }
 
+function* handleSemestesSelected ({id}) {
+  yield put(actions.getSubjectsBySemesterId({data: id}));
+}
+
 export function* getEnggPageData () {
   yield takeLatest(topLevelActionTypes.WATCH_ENGG_PAGE_CHANGES, handleEnggPageData)
 }
 
+export function* getSubjectsBySemsterId (id) {
+  yield takeLatest(topLevelActionTypes.WATCH_SEMESTER_SELECTED, handleSemestesSelected)
+}
+
 export function* topLevelSaga() {
   yield all([
-    call(getEnggPageData)
+    call(getEnggPageData),
+    call(getSubjectsBySemsterId)
   ]);
 }
