@@ -86,21 +86,25 @@ const Engineering = () => {
             </div>
           </Col>
           <Col sm={9}>
-            <Row className="search-box">
-              <Col>
-                <div className="search-box-input">
-                  <div className="current-selected-subject">Semester 1</div>
-                  <div className="search-container">
-                    <div className="search-box-input-field">
-                      <input type="text" placeholder="Search.." name="search" />
-                    </div>
-                    <div>
-                      <BsSearch />
-                    </div>
+            {
+              (semesters.length > 0 && semesters.find(semester => semester.id === current_semester).name !== "")
+                &&
+              (<Row className="search-box">
+                <Col>
+                  <div className="search-box-input">
+                    <div className="current-selected-subject">{semesters.length > 0 ? semesters.find(semester => semester.id === current_semester).name : ''}</div>
+                    {/* <div className="search-container">
+                      <div className="search-box-input-field">
+                        <input type="text" placeholder="Search.." name="search" />
+                      </div>
+                      <div>
+                        <BsSearch />
+                      </div>
+                    </div> */}
                   </div>
-                </div>
-              </Col>
-            </Row>
+                </Col>
+              </Row>)
+            }
             <Row className="semesters-list">
               {subjects.length > 0 ? (
                 subjects.map((subject) => {
@@ -112,7 +116,7 @@ const Engineering = () => {
                       >
                         <img
                           src="https://www.w3schools.com/howto/img_avatar.png"
-                          alt="Avatar"
+                          alt={`Mumbai University - Engineering - ${subject.semester_name} - ${subject.name}`}
                           width="100%"
                         />
                         <div className="custom-image-card-body">
@@ -126,16 +130,12 @@ const Engineering = () => {
                 })
               ) : (
                 <Col>
-                  <div className="empty-container">
-                    <img
-                      src="https://d1xz17h748l1av.cloudfront.net/assets/images/gold-theme/earn-zone/empty-task.svg"
-                      alt="Empty Task"
-                    />
-                    <div className="empty-msg">
-                      <h3>No Subject found!</h3>
-                      <p className="msg">Please search for another subject</p>
-                    </div>
-                  </div>
+                  <EmptyStateText
+                    text="No subjects found."
+                    subText="Please try after sometime."
+                    image={emptyStateUrls.emptyState.enggSemstersList}
+                    width="300"
+                  />
                 </Col>
               )}
             </Row>
