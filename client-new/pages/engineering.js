@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -30,6 +31,8 @@ const Engineering = () => {
     shallowEqual
   );
 
+  const [semesterName, setSemesterName] = useState("");
+
   const redirectToSubject = async (slug) => {
     try {
       let {
@@ -46,6 +49,16 @@ const Engineering = () => {
       console.log("Could not send subject page");
     }
   };
+
+  useEffect(() => {
+    if (current_semester) {
+      setSemesterName(
+        semesters.length > 0
+          ? semesters.find(semester => semester.id === current_semester).name
+          : ""
+      );
+    }
+  }, [current_semester]);
 
   return (
     <BasicLayout>
@@ -68,7 +81,9 @@ const Engineering = () => {
                               id: semester.id,
                             })
                           }
-                          className={current_semester === semester.id ? 'active' : ''}
+                          className={
+                            current_semester === semester.id ? "active" : ""
+                          }
                         >
                           <a>{semester.name}</a>
                         </li>
@@ -86,25 +101,17 @@ const Engineering = () => {
             </div>
           </Col>
           <Col sm={9}>
-            {
-              (semesters.length > 0 && semesters.find(semester => semester.id === current_semester).name !== "")
-                &&
-              (<Row className="search-box">
+            {semesterName !== "" && (
+              <Row className="search-box">
                 <Col>
                   <div className="search-box-input">
-                    <div className="current-selected-subject">{semesters.length > 0 ? semesters.find(semester => semester.id === current_semester).name : ''}</div>
-                    {/* <div className="search-container">
-                      <div className="search-box-input-field">
-                        <input type="text" placeholder="Search.." name="search" />
-                      </div>
-                      <div>
-                        <BsSearch />
-                      </div>
-                    </div> */}
+                    <div className="current-selected-subject">
+                      {semesterName}
+                    </div>
                   </div>
                 </Col>
-              </Row>)
-            }
+              </Row>
+            )}
             <Row className="semesters-list">
               {subjects.length > 0 ? (
                 subjects.map((subject) => {
@@ -148,7 +155,8 @@ const Engineering = () => {
 
 Engineering.getInitialProps = async ({ store }) => {
   try {
-    await store.dispatch({ type: topLevelActionTypes.WATCH_ENGG_PAGE_CHANGES });
+    let {semesters, subjects} = store.getState().TopLevel;
+    if (semesters.length === 0 || subjects.length === 0) await store.dispatch({ type: topLevelActionTypes.WATCH_ENGG_PAGE_CHANGES });
     return {};
   } catch (err) {
     console.log(err);
