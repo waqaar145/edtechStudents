@@ -29,6 +29,7 @@
   line-height: 65px;
   text-align: center;
   border-top: 1px solid var(--gray-30);
+  cursor: pointer;
 }
 
 .custom-card .custom-card-body ul li:hover {
@@ -36,6 +37,11 @@
   line-height: 65px;
   text-align: center;
   border-top: 1px solid var(--gray-30);
+  background-color: var(--bg-color-1);
+  transition: 0.3s;
+}
+
+.custom-card .custom-card-body ul li.active {
   background-color: var(--bg-color-1);
   transition: 0.3s;
 }
@@ -93,6 +99,7 @@ a.custom-image-card {
   border-top-left-radius: 5px;
   border-top-right-radius: 5px;
   text-decoration: none;
+  cursor: pointer;
 }
 
 a.custom-image-card:hover {

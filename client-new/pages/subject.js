@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { MdThumbUp, MdMoreVert, MdSearch, MdArrowBack, MdAccountBalance, MdBookmark, MdSend, MdPeople, MdEmail } from "react-icons/md";
 import BasicButton from './../src/components/Button/Basic'
 import {useSelector, useDispatch} from 'react-redux'
-import ProfileDropdown from './../src/components/Dropdown/profileDropdown'
+import ProfileDropdown from '../src/components/Dropdown/ProfileDropdown'
 import "./../src/assets/styles/subject/subject.module.css";
 
 const Subject = () => {
