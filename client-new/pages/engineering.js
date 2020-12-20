@@ -47,10 +47,10 @@ const Engineering = () => {
         ); // Router.push(`/subject/subject_slug?=${slug}`, `/subject/${slug}`);
       } else {
         return Toast(
-                  `Looks like ${name} does not have any content.`, 
-                  "error", 
-                  toastDefaultObject
-                );
+          `Looks like ${name} does not have any content.`,
+          "error",
+          toastDefaultObject
+        );
       }
     } catch (err) {
       console.log("Could not send to subject page", err);
@@ -125,7 +125,9 @@ const Engineering = () => {
                   return (
                     <Col sm={4} xs={6} key={subject.id}>
                       <a
-                        onClick={() => redirectToSubject(subject.name, subject.slug)}
+                        onClick={() =>
+                          redirectToSubject(subject.name, subject.slug)
+                        }
                         className="custom-image-card"
                       >
                         <img
