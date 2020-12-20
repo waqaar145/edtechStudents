@@ -12,16 +12,6 @@ const Subject = () => {
   const router = useRouter(); 
   const dispatch = useDispatch();
 
-  const [scrollTop, setScrollTop] = useState(0);
-  useEffect(() => {
-    const onScroll = (e) => {
-      setScrollTop(e.target.documentElement.scrollTop);
-      setScrolling(e.target.documentElement.scrollTop > scrollTop);
-    };
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   const handleDiscussion = () => {
     console.log('handleDiscussion')
   }

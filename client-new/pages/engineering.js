@@ -47,7 +47,7 @@ const Engineering = () => {
         ); // Router.push(`/subject/subject_slug?=${slug}`, `/subject/${slug}`);
       } else {
         return Toast(
-          `Looks like ${name} does not have any content.`,
+          `Looks like Subject ${name} does not have any content.`,
           "error",
           toastDefaultObject
         );
