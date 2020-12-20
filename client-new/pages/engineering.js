@@ -15,6 +15,7 @@ import { emptyStateUrls } from "./../src/utils/imageUrls";
 
 import { contentService } from "./../src/services";
 import Router from "next/router";
+import { Toast, toastDefaultObject } from "./../src/components/Toast/index";
 
 const Engineering = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const Engineering = () => {
 
   const [semesterName, setSemesterName] = useState("");
 
-  const redirectToSubject = async (slug) => {
+  const redirectToSubject = async (name, slug) => {
     try {
       let {
         data: { data },
@@ -41,12 +42,18 @@ const Engineering = () => {
       if (data.length > 0) {
         let content = data[0];
         Router.push(
-          `/subject/subject_slug?subject_slug=${slug}&chapter_slug=${content.slug}&content_type=all`,
+          `/subject?subject_slug=${slug}&chapter_slug=${content.slug}&content_type=all`,
           `/subject/${slug}/chapter/${content.slug}/all`
         ); // Router.push(`/subject/subject_slug?=${slug}`, `/subject/${slug}`);
+      } else {
+        return Toast(
+          `Looks like ${name} does not have any content.`,
+          "error",
+          toastDefaultObject
+        );
       }
     } catch (err) {
-      console.log("Could not send subject page");
+      console.log("Could not send to subject page", err);
     }
   };
 
@@ -54,7 +61,7 @@ const Engineering = () => {
     if (current_semester) {
       setSemesterName(
         semesters.length > 0
-          ? semesters.find(semester => semester.id === current_semester).name
+          ? semesters.find((semester) => semester.id === current_semester).name
           : ""
       );
     }
@@ -118,7 +125,9 @@ const Engineering = () => {
                   return (
                     <Col sm={4} xs={6} key={subject.id}>
                       <a
-                        onClick={() => redirectToSubject(subject.slug)}
+                        onClick={() =>
+                          redirectToSubject(subject.name, subject.slug)
+                        }
                         className="custom-image-card"
                       >
                         <img
@@ -155,11 +164,13 @@ const Engineering = () => {
 
 Engineering.getInitialProps = async ({ store }) => {
   try {
-    let {semesters, subjects} = store.getState().TopLevel;
-    if (semesters.length === 0 || subjects.length === 0) await store.dispatch({ type: topLevelActionTypes.WATCH_ENGG_PAGE_CHANGES });
+    let { semesters, subjects } = store.getState().TopLevel;
+    if (semesters.length === 0 || subjects.length === 0)
+      await store.dispatch({
+        type: topLevelActionTypes.WATCH_ENGG_PAGE_CHANGES,
+      });
     return {};
   } catch (err) {
-    console.log(err);
     return {};
   }
 };
