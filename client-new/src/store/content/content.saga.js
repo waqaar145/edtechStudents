@@ -9,14 +9,13 @@ export function* handleGetChapters({ data: { subject_slug, chapter_slug } }) {
     yield put(actions.request());
     let {
       data: {
-        data: { chapters, counts, subject },
+        data: { chapters, subject },
       },
     } = yield contentService.getChaptersBySubjectSlug(
       subject_slug,
       chapter_slug
     );
     yield put(actions.setChapters(chapters));
-    yield put(actions.setCounts(counts));
     yield put(actions.setSubject(subject));
   } catch (error) {
     console.log("Error", error);
@@ -25,12 +24,30 @@ export function* handleGetChapters({ data: { subject_slug, chapter_slug } }) {
   }
 }
 
-export function* handleGetContents({data: {chapter_slug, content_type}}) {
+export function* handleGetContents({ data: { chapter_slug, content_type } }) {
   try {
-    const {data: {data: {contents: {contents}}}} = yield contentService.getContentByChapterSlug(chapter_slug, content_type);
-    yield put(actions.setContents(contents))
+    const {
+      data: {
+        data: {
+          contents: { contents },
+        },
+      },
+    } = yield contentService.getContentByChapterSlug(
+      chapter_slug,
+      content_type
+    );
+    yield put(actions.setContents(contents));
   } catch (error) {
-    console.log(error)
+    console.log(error);
+  }
+}
+
+export function* handleGetCounts({ data: { chapter_slug } }) {
+  try {
+    const {data: {data}} = yield contentService.getCountsByChapterSlug(chapter_slug);
+    yield put(actions.setCounts(data));
+  } catch (error) {
+    console.log(error);
   }
 }
 
@@ -40,12 +57,12 @@ export function* getChapters() {
 
 export function* getContents() {
   yield takeLatest(contentActionTypes.WATCH_GET_CONTENT, handleGetContents);
-  // yield takeLatest(contentActionTypes.WATCH_GET_CONTENT, handleGetContents);
+}
+
+export function* getCounts() {
+  yield takeLatest(contentActionTypes.WATCH_GET_COUNTS, handleGetCounts);
 }
 
 export function* contentSaga() {
-  yield all([
-    call(getChapters),
-    call(getContents)
-  ]);
+  yield all([call(getChapters), call(getContents), call(getCounts)]);
 }

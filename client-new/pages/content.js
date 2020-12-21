@@ -11,7 +11,7 @@ import {
   MdPeople,
   MdEmail,
 } from "react-icons/md";
-import ContentLayout from './../src/layouts/Content'
+import ContentLayout from "./../src/layouts/Content";
 import BasicButton from "../src/components/Button/Basic";
 import { useSelector, useDispatch } from "react-redux";
 import { contentActionTypes } from "./../src/store/content/content.actiontype";
@@ -118,6 +118,12 @@ Content.getInitialProps = async ({ store, query }) => {
       type: contentActionTypes.WATCH_GET_CHAPTERS,
       data: {
         subject_slug: query.subject_slug,
+        chapter_slug: query.chapter_slug,
+      },
+    });
+    await store.dispatch({
+      type: contentActionTypes.WATCH_GET_COUNTS,
+      data: {
         chapter_slug: query.chapter_slug,
       },
     });

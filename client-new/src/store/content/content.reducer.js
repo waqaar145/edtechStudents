@@ -9,9 +9,14 @@ const initalState = {
     thumbnail: ''
   },
   current_chapters_stats: {
-    total: '',
-    theories: '',
-    sums: ''
+    id: null,
+    chapter_name: '',
+    chapter_number: null,
+    slug: '',
+    is_active: false,
+    total: null,
+    theories: null,
+    sums: null
   },
   chapters: [],
   contents: [],

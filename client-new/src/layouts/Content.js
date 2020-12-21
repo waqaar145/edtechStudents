@@ -4,11 +4,10 @@ import { useRouter } from "next/router";
 import { MdArrowBack } from "react-icons/md";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { contentActionTypes } from "./../store/content/content.actiontype";
-import Link from 'next/link';
+import Link from "next/link";
 import "./../assets/styles/subject/subject.module.css";
 
 const Content = ({ children }) => {
-  const router = useRouter();
   const dispatch = useDispatch();
 
   const chapters = useSelector((state) => state.Content.chapters, shallowEqual);
@@ -17,6 +16,36 @@ const Content = ({ children }) => {
     (state) => state.Content.current_chapters_stats,
     shallowEqual
   );
+
+  const router = useRouter();
+  const {
+    query: { chapter_slug, subject_slug, content_type },
+  } = router;
+  const [activeTab, setActiveTab] = useState("");
+  const [activeChapter, setActiveChapter] = useState({});
+  const [chapterIndex, setChapterIndex] = useState(-1);
+
+  useEffect(() => {
+    if (content_type) {
+      if (
+        content_type === "all" ||
+        content_type === "theories" ||
+        content_type === "sums"
+      ) {
+        setActiveTab(content_type);
+      }
+    }
+  }, [content_type]);
+
+  useEffect(() => {
+    if (chapter_slug) {
+      let indexIs = chapters.findIndex(
+        (chapter) => chapter.slug === chapter_slug
+      );
+      setActiveChapter(chapters[indexIs]);
+      setChapterIndex(indexIs + 1);
+    }
+  }, [chapter_slug]);
 
   const handleDiscussion = () => {
     console.log("handleDiscussion");
@@ -35,22 +64,29 @@ const Content = ({ children }) => {
             </div>
             <div className="chapter-list-body">
               <ul>
-                {chapters.length > 0 && chapters.map((chapter, index) => {
-                  return (
-                    <li key={chapter.id}>
-                      <Link
-                        href="#"
-                      >
-                        <>
-                        <div className="chapter-number">
-                          <span className="chapter-number">{index + 1}</span>
-                        </div>
-                        <div className="chapter-name">Chapter Name {index + 1}</div>
-                        </>
-                      </Link>
-                    </li>
-                  );
-                })}
+                {chapters.length > 0 &&
+                  chapters.map((chapter, index) => {
+                    return (
+                      <li key={chapter.id}>
+                        <Link
+                          href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter.slug}&content_type=${content_type}`}
+                          as={`/subject/${subject_slug}/chapter/${chapter.slug}/${content_type}`}
+                          passHref={true}
+                        >
+                          <a>
+                            <div className="chapter-number">
+                              <span className="chapter-number">
+                                {index + 1}
+                              </span>
+                            </div>
+                            <div className="chapter-name">
+                              {chapter.chapter_name}
+                            </div>
+                          </a>
+                        </Link>
+                      </li>
+                    );
+                  })}
               </ul>
             </div>
           </div>
@@ -59,28 +95,42 @@ const Content = ({ children }) => {
           <div className="content-wrapper">
             <div className="content-main-header" style={{ display: "flex" }}>
               <div className="chapter-number-selected">
-                <span className="chapter-number">2</span>
+                <span className="chapter-number">{chapterIndex}</span>
               </div>
-              <div>Chapter number 2</div>
+              <div>
+                {activeChapter.chapter_name ? activeChapter.chapter_name : ""}
+              </div>
             </div>
           </div>
           <div className="content-subheader">
             <div className="content-main-header">
               <ul>
-                <li>
-                  <a href="#" className="text-links">
-                    All (15)
-                  </a>
+                <li className={content_type === "all" ? "active" : ""}>
+                  <Link
+                    href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`}
+                    as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}
+                    className="text-links"
+                  >
+                    <a>All ({total})</a>
+                  </Link>
                 </li>
-                <li className="active">
-                  <a href="#" className="text-links">
-                    Theories (10)
-                  </a>
+                <li className={content_type === "theories" ? "active" : ""}>
+                  <Link
+                    href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`}
+                    as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}
+                    className="text-links"
+                  >
+                    <a>Theories ({theories})</a>
+                  </Link>
                 </li>
-                <li>
-                  <a href="#" className="text-links">
-                    Questions (6)
-                  </a>
+                <li className={content_type === "sums" ? "active" : ""}>
+                  <Link
+                    href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`}
+                    as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}
+                    className="text-links"
+                  >
+                    <a>Questions ({sums})</a>
+                  </Link>
                 </li>
               </ul>
               <div>search bar</div>
@@ -112,28 +162,6 @@ const Content = ({ children }) => {
       </Row>
     </div>
   );
-};
-
-Content.getInitialProps = async ({ store, query }) => {
-  try {
-    await store.dispatch({
-      type: contentActionTypes.WATCH_GET_CHAPTERS,
-      data: {
-        subject_slug: query.subject_slug,
-        chapter_slug: query.chapter_slug,
-      },
-    });
-    await store.dispatch({
-      type: contentActionTypes.WATCH_GET_CONTENT,
-      data: {
-        chapter_slug: query.chapter_slug,
-        content_type: query.content_type,
-      },
-    });
-    return {};
-  } catch (err) {
-    return {};
-  }
 };
 
 export default Content;
