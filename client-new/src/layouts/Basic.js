@@ -1,5 +1,5 @@
 import Navbar from "../components/Navbar/MainHeader";
-import "./basic.css";
+import "./css/basic.css";
 
 const BasicLayout = ({ children }) => {
   return (
