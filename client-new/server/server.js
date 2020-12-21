@@ -49,7 +49,7 @@ app
 
     server.get(
       "/subject/:subject_slug/chapter/:chapter_slug/:content_type?", (req, res) => {
-        return app.render(req, res, "/subject", {
+        return app.render(req, res, "/content", {
           subject_slug: req.params.subject_slug,
           chapter_slug: req.params.chapter_slug,
           content_type: req.params.content_type,

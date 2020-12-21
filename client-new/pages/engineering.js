@@ -3,7 +3,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 
-import BasicLayout from "./../src/layouts/Basic";
+import BasicLayout from "../src/layouts/Basic";
 import "./../src/assets/styles/engineering/engineering.module.css";
 import { BsSearch } from "react-icons/bs";
 import { topLevelActionTypes } from "./../src/store/top-level/top_level.actiontype";
@@ -42,12 +42,12 @@ const Engineering = () => {
       if (data.length > 0) {
         let content = data[0];
         Router.push(
-          `/subject?subject_slug=${slug}&chapter_slug=${content.slug}&content_type=all`,
+          `/content?subject_slug=${slug}&chapter_slug=${content.slug}&content_type=all`,
           `/subject/${slug}/chapter/${content.slug}/all`
         ); // Router.push(`/subject/subject_slug?=${slug}`, `/subject/${slug}`);
       } else {
         return Toast(
-          `Looks like Subject ${name} does not have any content.`,
+          `Looks like ${name} does not have any content.`,
           "error",
           toastDefaultObject
         );
