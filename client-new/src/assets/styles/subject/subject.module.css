@@ -234,6 +234,7 @@
   color: var(--secondary);
   padding-bottom: 14px;
   font-size: 1rem;
+  border-bottom: 3px solid;
 }
 
 .chapter-number-selected span.chapter-number {
@@ -271,6 +272,10 @@
 
 .content-header .chapter-name {
   font-size: 1.2rem;
+}
+
+.content-header .chapter-name p{
+  margin-bottom: 0 !important;
 }
 
 .content-header .icon {
@@ -374,6 +379,8 @@
 
 .quick-links-wrapper .quick-links-body ul li {
   margin-bottom: 5px;
+  display: flex;
+  align-items: baseline;
 }
 
 .quick-links-wrapper .quick-links-body ul li span.link-number {

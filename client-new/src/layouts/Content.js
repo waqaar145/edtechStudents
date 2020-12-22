@@ -3,8 +3,8 @@ import { Row, Col, Dropdown } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { MdArrowBack } from "react-icons/md";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import { contentActionTypes } from "./../store/content/content.actiontype";
 import Link from "next/link";
+import ReactHtmlParser from 'react-html-parser';
 import "./../assets/styles/subject/subject.module.css";
 
 const Content = ({ children }) => {
@@ -12,6 +12,7 @@ const Content = ({ children }) => {
 
   const chapters = useSelector((state) => state.Content.chapters, shallowEqual);
   const subject = useSelector((state) => state.Content.subject, shallowEqual);
+  const contents = useSelector((state) => state.Content.contents, shallowEqual);
   const { total, theories, sums } = useSelector(
     (state) => state.Content.current_chapters_stats,
     shallowEqual
@@ -23,7 +24,7 @@ const Content = ({ children }) => {
   } = router;
   const [activeTab, setActiveTab] = useState("");
   const [activeChapter, setActiveChapter] = useState({});
-  const [chapterIndex, setChapterIndex] = useState(-1);
+  const [chapterIndex, setChapterIndex] = useState(null);
 
   useEffect(() => {
     if (content_type) {
@@ -38,14 +39,14 @@ const Content = ({ children }) => {
   }, [content_type]);
 
   useEffect(() => {
-    if (chapter_slug) {
+    if (chapter_slug && chapters.length > 0) {
       let indexIs = chapters.findIndex(
         (chapter) => chapter.slug === chapter_slug
       );
       setActiveChapter(chapters[indexIs]);
       setChapterIndex(indexIs + 1);
     }
-  }, [chapter_slug]);
+  }, [chapters, chapter_slug]);
 
   const handleDiscussion = () => {
     console.log("handleDiscussion");
@@ -67,13 +68,13 @@ const Content = ({ children }) => {
                 {chapters.length > 0 &&
                   chapters.map((chapter, index) => {
                     return (
-                      <li key={chapter.id}>
+                      <li key={chapter.id} className={chapter.slug === chapter_slug ? "active" : ""}>
                         <Link
                           href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter.slug}&content_type=${content_type}`}
                           as={`/subject/${subject_slug}/chapter/${chapter.slug}/${content_type}`}
                           passHref={true}
                         >
-                          <a>
+                          <a className={chapter.slug === chapter_slug ? "active" : ""}>
                             <div className="chapter-number">
                               <span className="chapter-number">
                                 {index + 1}
@@ -98,7 +99,7 @@ const Content = ({ children }) => {
                 <span className="chapter-number">{chapterIndex}</span>
               </div>
               <div>
-                {activeChapter.chapter_name ? activeChapter.chapter_name : ""}
+                {activeChapter ? activeChapter.chapter_name : ""}
               </div>
             </div>
           </div>
@@ -109,27 +110,24 @@ const Content = ({ children }) => {
                   <Link
                     href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`}
                     as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}
-                    className="text-links"
                   >
-                    <a>All ({total})</a>
+                    <a className="text-links">All ({total})</a>
                   </Link>
                 </li>
                 <li className={content_type === "theories" ? "active" : ""}>
                   <Link
                     href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`}
                     as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}
-                    className="text-links"
                   >
-                    <a>Theories ({theories})</a>
+                    <a className="text-links">Theories ({theories})</a>
                   </Link>
                 </li>
                 <li className={content_type === "sums" ? "active" : ""}>
                   <Link
                     href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`}
                     as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}
-                    className="text-links"
                   >
-                    <a>Questions ({sums})</a>
+                    <a className="text-links">Questions ({sums})</a>
                   </Link>
                 </li>
               </ul>
@@ -138,17 +136,19 @@ const Content = ({ children }) => {
           </div>
           <div className="subject-content">
             <Row>
-              <Col sm={8}>{children}</Col>
+              <Col sm={8}>
+                {children}
+              </Col>
               <Col sm={4}>
                 <div className="quick-links-wrapper">
                   <div className="quick-links-header">Quick Links</div>
                   <div className="quick-links-body">
                     <ul>
-                      {Array.from(Array(10), (e, i) => {
+                      {contents.length > 0 && contents.map((content, i) => {
                         return (
                           <li key={i}>
-                            <span className="link-number">{i + 1}</span>{" "}
-                            <a href="#">Quick links number {i + 1}</a>
+                            <span className="link-number">{i + 1}</span>
+                            <a href={`#${content.slug}`}>{ReactHtmlParser(content.name)}</a>
                           </li>
                         );
                       })}

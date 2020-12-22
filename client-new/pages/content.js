@@ -13,12 +13,17 @@ import {
 } from "react-icons/md";
 import ContentLayout from "./../src/layouts/Content";
 import BasicButton from "../src/components/Button/Basic";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { contentActionTypes } from "./../src/store/content/content.actiontype";
+import EmptyStateText from "./../src/components/EmptyState/EmptyText";
+import { emptyStateUrls } from "./../src/utils/imageUrls";
+import ReactHtmlParser from 'react-html-parser';
 
 const Content = () => {
   const router = useRouter();
   const dispatch = useDispatch();
+
+  const {contents} = useSelector(state => state.Content, shallowEqual);
 
   const handleDiscussion = () => {
     console.log("handleDiscussion");
@@ -26,32 +31,17 @@ const Content = () => {
 
   return (
     <ContentLayout>
-      {Array.from(Array(10), (e, i) => {
+      {contents.length > 0 ? contents.map((content, i) => {
         return (
-          <div className="content-wrapper" key={i}>
+          <div className="content-wrapper" key={i} id={content.slug}>
             <div className="content-header">
-              <div className="chapter-name">This is name of the topic</div>
+              <div className="chapter-name">{ReactHtmlParser(content.name)}</div>
               <div className="icon">
                 <MdSearch />
               </div>
             </div>
             <div className="content-body">
-              This is actual content This is actual content This is actual
-              content This is actual content This is actual content This is
-              actual content This is actual content This is actual content This
-              is actual content This is actual content This is actual content
-              This is actual content This is actual content This is actual
-              content This is actual content This is actual content This is
-              actual content This is actual content This is actual content This
-              is actual content This is actual content This is actual content
-              This is actual content This is actual content This is actual
-              content This is actual content This is actual content This is
-              actual content This is actual content This is actual content This
-              is actual content This is actual content This is actual content
-              This is actual content This is actual content This is actual
-              content This is actual content This is actual content This is
-              actual content This is actual content This is actual content This
-              is actual content This is actual content This is actual content
+              {ReactHtmlParser(content.description)}
             </div>
             <div className="content-footer">
               <div className="user-interacted">
@@ -107,7 +97,15 @@ const Content = () => {
             </div>
           </div>
         );
-      })}
+      })
+      :
+      <EmptyStateText
+        text="There isn't anything to show."
+        subText="Please try after sometime."
+        image={emptyStateUrls.emptyState.enggSemstersList}
+        width="400"
+      />
+      }
     </ContentLayout>
   );
 };
@@ -119,7 +117,7 @@ Content.getInitialProps = async ({ store, query }) => {
       data: {
         subject_slug: query.subject_slug,
         chapter_slug: query.chapter_slug,
-      },
+      }
     });
     await store.dispatch({
       type: contentActionTypes.WATCH_GET_COUNTS,
