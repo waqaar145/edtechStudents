@@ -21,7 +21,7 @@ const signUp = async (req, res) => {
     return res.status(400).send(
       unExpectedError(
         'Can\'t signup',
-        'This email already exists, please try logging in!',
+        'This email already exists, please login!',
         'email'
       )
     );
@@ -97,7 +97,7 @@ const signIn = async (req, res, next) => {
       return res.status(400).send(
         unExpectedError(
           'Can\'t signin',
-          'This email does not exists. please create a new account!',
+          'This email does not exist. please create a new account!',
           'email'
         )
       );

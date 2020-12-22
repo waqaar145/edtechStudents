@@ -1,0 +1,21 @@
+.empty-state-text-wrapper {
+  background-color: var(--bg-color-2);
+  padding: 15px;
+  text-align: center;
+}
+
+.empty-state-text-wrapper img {
+  font-size: 1.1rem;
+  color: var(--gray-70);
+  margin-bottom: 20px;
+}
+
+.empty-state-text-wrapper .main-text {
+  font-size: 1.1rem;
+  color: var(--gray-70);
+}
+
+.empty-state-text-wrapper .sub-text {
+  font-size: 0.8rem;
+  color: var(--gray-50);
+}
