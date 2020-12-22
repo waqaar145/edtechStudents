@@ -13,13 +13,13 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   margin: {
-    marginTop: '10%'
+    marginTop: '7%'
   },
   loginContainer: {
     boxShadow: theme.shadows[2],
     padding: theme.spacing(2),
     backgroundColor: theme.palette.background.paper,
-    borderRadius: 5
+    borderRadius: theme.shape.borderRadius
   },
   cursor: {
     cursor: 'pointer'

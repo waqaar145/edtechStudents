@@ -9,7 +9,6 @@ import {authActionTypes} from './../../store/auth/auth.actiontype'
 import {authService} from './../../services'
 
 const useStyles = makeStyles((theme) => {
-  console.log(theme)
   return {
     root: {
       flexGrow: 1,
@@ -58,7 +57,7 @@ const SimpleNavbar = (props) => {
 
   return (
     <AppBar position="static" className={classes.bgColor} elevation={1}>
-      <Toolbar>
+      <Toolbar variant="dense">
         <Hidden only={['md', 'lg', 'xl']}>
           <IconButton edge="start" className={classes.menuButton} aria-label="menu">
             <MenuIcon />

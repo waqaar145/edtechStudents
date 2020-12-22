@@ -8,7 +8,7 @@ function* handleLoggedInUser ({headers}) {
     let result = yield authService.getLoggedInUser(headers);
     yield put(actions.setAuthUser(result.data));
   } catch (error) {
-    console.log(error)
+    // console.log(error)
   }
 }
 

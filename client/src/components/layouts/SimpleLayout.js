@@ -1,7 +1,6 @@
 import SimpleNavbar from './../navbars/SimpleNavbar'
 
 const SimpleLayout = ({children}) => {
-
   return (
     <div>
       <div className="header">
@@ -11,7 +10,7 @@ const SimpleLayout = ({children}) => {
         {children}
       </div>
       <div className="footer">
-        This is footer
+        {/* This is footer */}
       </div>
     </div>
   )
