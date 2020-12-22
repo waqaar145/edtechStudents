@@ -1,7 +1,6 @@
 .empty-state-text-wrapper {
   background-color: var(--bg-color-2);
   padding: 15px;
-  box-shadow: var(--box-shadow-1);
   text-align: center;
 }
 

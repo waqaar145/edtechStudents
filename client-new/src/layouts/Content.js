@@ -3,9 +3,13 @@ import { Row, Col, Dropdown } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { MdArrowBack } from "react-icons/md";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import Link from "next/link";
-import ReactHtmlParser from 'react-html-parser';
+import EmptyStateText from "./../components/EmptyState/EmptyText";
+import { emptyStateUrls } from "./../utils/imageUrls";
 import "./../assets/styles/subject/subject.module.css";
+
+import Chapters from "./components/Content/Chapters";
+import ChapterInternalTab from "./components/Content/ChapterInternalTab";
+import QuickLinks from "./components/Content/QuickLinks";
 
 const Content = ({ children }) => {
   const dispatch = useDispatch();
@@ -64,31 +68,20 @@ const Content = ({ children }) => {
               {subject.subject_name}
             </div>
             <div className="chapter-list-body">
-              <ul>
-                {chapters.length > 0 &&
-                  chapters.map((chapter, index) => {
-                    return (
-                      <li key={chapter.id} className={chapter.slug === chapter_slug ? "active" : ""}>
-                        <Link
-                          href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter.slug}&content_type=${content_type}`}
-                          as={`/subject/${subject_slug}/chapter/${chapter.slug}/${content_type}`}
-                          passHref={true}
-                        >
-                          <a className={chapter.slug === chapter_slug ? "active" : ""}>
-                            <div className="chapter-number">
-                              <span className="chapter-number">
-                                {index + 1}
-                              </span>
-                            </div>
-                            <div className="chapter-name">
-                              {chapter.chapter_name}
-                            </div>
-                          </a>
-                        </Link>
-                      </li>
-                    );
-                  })}
-              </ul>
+              {chapters.length > 0 ? (
+                <Chapters
+                  chapters={chapters}
+                  chapter_slug={chapter_slug}
+                  subject_slug={subject_slug}
+                  content_type={content_type}
+                />
+              ) : (
+                <EmptyStateText
+                  text="There isn't anything."
+                  subText="Please try after sometime."
+                  image={emptyStateUrls.emptyState.enggSemstersList}
+                />
+              )}
             </div>
           </div>
         </Col>
@@ -98,60 +91,39 @@ const Content = ({ children }) => {
               <div className="chapter-number-selected">
                 <span className="chapter-number">{chapterIndex}</span>
               </div>
-              <div>
-                {activeChapter ? activeChapter.chapter_name : ""}
-              </div>
+              <div>{activeChapter ? activeChapter.chapter_name : ""}</div>
             </div>
           </div>
           <div className="content-subheader">
             <div className="content-main-header">
-              <ul>
-                <li className={content_type === "all" ? "active" : ""}>
-                  <Link
-                    href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`}
-                    as={`/subject/${subject_slug}/chapter/${chapter_slug}/all`}
-                  >
-                    <a className="text-links">All ({total})</a>
-                  </Link>
-                </li>
-                <li className={content_type === "theories" ? "active" : ""}>
-                  <Link
-                    href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=theories`}
-                    as={`/subject/${subject_slug}/chapter/${chapter_slug}/theories`}
-                  >
-                    <a className="text-links">Theories ({theories})</a>
-                  </Link>
-                </li>
-                <li className={content_type === "sums" ? "active" : ""}>
-                  <Link
-                    href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=sums`}
-                    as={`/subject/${subject_slug}/chapter/${chapter_slug}/sums`}
-                  >
-                    <a className="text-links">Questions ({sums})</a>
-                  </Link>
-                </li>
-              </ul>
+              <ChapterInternalTab
+                chapter_slug={chapter_slug}
+                subject_slug={subject_slug}
+                content_type={content_type}
+                total={total}
+                theories={theories}
+                sums={sums}
+              />
               <div>search bar</div>
             </div>
           </div>
           <div className="subject-content">
             <Row>
-              <Col sm={8}>
-                {children}
-              </Col>
+              <Col sm={8}>{children}</Col>
               <Col sm={4}>
                 <div className="quick-links-wrapper">
                   <div className="quick-links-header">Quick Links</div>
                   <div className="quick-links-body">
                     <ul>
-                      {contents.length > 0 && contents.map((content, i) => {
-                        return (
-                          <li key={i}>
-                            <span className="link-number">{i + 1}</span>
-                            <a href={`#${content.slug}`}>{ReactHtmlParser(content.name)}</a>
-                          </li>
-                        );
-                      })}
+                      {contents.length > 0 ? (
+                        <QuickLinks contents={contents} />
+                      ) : (
+                        <EmptyStateText
+                          text="There isn't anything."
+                          subText="Please try after sometime."
+                          image={emptyStateUrls.emptyState.enggSemstersList}
+                        />
+                      )}
                     </ul>
                   </div>
                 </div>
