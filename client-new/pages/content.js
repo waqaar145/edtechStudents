@@ -36,9 +36,6 @@ const Content = () => {
           <div className="content-wrapper" key={i} id={content.slug}>
             <div className="content-header">
               <div className="chapter-name">{ReactHtmlParser(content.name)}</div>
-              <div className="icon">
-                <MdSearch />
-              </div>
             </div>
             <div className="content-body">
               {ReactHtmlParser(content.description)}
