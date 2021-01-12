@@ -22,6 +22,7 @@
 
 .custom-card .custom-card-body ul {
   color: var(--font-color-1);
+  list-style: none;
 }
 
 .custom-card .custom-card-body ul li {

@@ -29,7 +29,7 @@ const reducerFunc = (state, action) => {
 const persistConfig = {
   key: "primary",
   storage,
-  whitelist: [],
+  whitelist: ["ContentBuilder"],
 };
 
 const persistedReducer = persistReducer(persistConfig, reducerFunc);
