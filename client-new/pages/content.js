@@ -15,6 +15,7 @@ import ContentLayout from "./../src/layouts/Content";
 import BasicButton from "../src/components/Button/Basic";
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
 import { contentActionTypes } from "./../src/store/content/content.actiontype";
+import { contentBuilderActionTypes } from './../src/store/contentBuilder/contentBuilder.actiontype'
 import EmptyStateText from "./../src/components/EmptyState/EmptyText";
 import { emptyStateUrls } from "./../src/utils/imageUrls";
 import ReactHtmlParser from 'react-html-parser';
@@ -24,9 +25,11 @@ const Content = () => {
   const dispatch = useDispatch();
 
   const {contents} = useSelector(state => state.Content, shallowEqual);
+  const discussionOn = useSelector(state => state.ContentBuilder.subjectLayoutBuilder.discussion.on, shallowEqual);
 
-  const handleDiscussion = () => {
-    console.log("handleDiscussion");
+  const handleDiscussion = (type, content) => {
+    if (type) dispatch({type: contentBuilderActionTypes.START_DISCUSSION, data: content});
+    else dispatch({type: contentBuilderActionTypes.STOP_DISCUSSION});
   };
 
   return (
@@ -49,7 +52,16 @@ const Content = () => {
               </div>
               <div className="user-actions">
                 <div className="text">
-                  <BasicButton title="Discussion" onClick={handleDiscussion} />
+                  {
+                  !discussionOn 
+                    ? <BasicButton 
+                        title="Discussion" 
+                        onClick={() => handleDiscussion(true, content)} /> 
+                        : 
+                      <BasicButton 
+                        title="Stop Discussion"
+                        onClick={() => handleDiscussion(false)} />
+                  }
                 </div>
                 <div className="icon bootstrap-dropdown-style">
                   <Dropdown>

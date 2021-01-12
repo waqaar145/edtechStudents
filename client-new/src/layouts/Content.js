@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Row, Col, Dropdown } from "react-bootstrap";
 import { useRouter } from "next/router";
 import { MdArrowBack } from "react-icons/md";
-import { useSelector, useDispatch, shallowEqual } from "react-redux";
+import { useSelector, shallowEqual } from "react-redux";
 import EmptyStateText from "./../components/EmptyState/EmptyText";
 import { emptyStateUrls } from "./../utils/imageUrls";
 import "./../assets/styles/subject/subject.module.css";
@@ -12,8 +12,6 @@ import ChapterInternalTab from "./components/Content/ChapterInternalTab";
 import QuickLinks from "./components/Content/QuickLinks";
 
 const Content = ({ children }) => {
-  const dispatch = useDispatch();
-
   const chapters = useSelector((state) => state.Content.chapters, shallowEqual);
   const subject = useSelector((state) => state.Content.subject, shallowEqual);
   const contents = useSelector((state) => state.Content.contents, shallowEqual);
@@ -111,22 +109,24 @@ const Content = ({ children }) => {
             <Row>
               <Col sm={8}>{children}</Col>
               <Col sm={4}>
-                <div className="quick-links-wrapper">
-                  <div className="quick-links-header">Quick Links</div>
-                  <div className="quick-links-body">
-                    <ul>
-                      {contents.length > 0 ? (
-                        <QuickLinks contents={contents} />
-                      ) : (
-                        <EmptyStateText
-                          text="There isn't anything."
-                          subText="Please try after sometime."
-                          image={emptyStateUrls.emptyState.enggSemstersList}
-                        />
-                      )}
-                    </ul>
+                {contents.length > 0 && (
+                  <div className="quick-links-wrapper">
+                    <div className="quick-links-header">Quick Links</div>
+                    {contents.length > 0 ? (
+                      <div className="quick-links-body">
+                        <ul>
+                          <QuickLinks contents={contents} />
+                        </ul>
+                      </div>
+                    ) : (
+                      <EmptyStateText
+                        text="There isn't anything."
+                        subText="Please try after sometime."
+                        image={emptyStateUrls.emptyState.enggSemstersList}
+                      />
+                    )}
                   </div>
-                </div>
+                )}
               </Col>
             </Row>
           </div>

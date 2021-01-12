@@ -37,14 +37,14 @@ body{
   background-color: var(--bg-color-1);
   font-family: 'Poppins', sans-serif;
 }
-
+/* 
 ul{
   list-style: none;
 }
 
 a{
   text-decoration: none;
-}
+} */
 
 .empty-container {
   box-shadow: var(--box-shadow-1);

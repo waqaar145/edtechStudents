@@ -8,7 +8,7 @@ const handle = app.getRequestHandler();
 
 const devProxy = {
   "/api": {
-    target: "http://localhost:4001/",
+    target: "http://192.168.43.181:4001/",
     changeOrigin: true,
   },
 };
