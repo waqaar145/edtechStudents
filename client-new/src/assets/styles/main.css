@@ -3,6 +3,8 @@
   --secondary: #2b2bff;
   --danger: #F51720;
   --success: #00A8A8;
+  --default: #f0f4f6;
+
   /* background colors */
   --bg-color-1: #f0f4f6;
   --bg-color-2: #fff;
@@ -37,14 +39,14 @@ body{
   background-color: var(--bg-color-1);
   font-family: 'Poppins', sans-serif;
 }
-
+/* 
 ul{
   list-style: none;
 }
 
 a{
   text-decoration: none;
-}
+} */
 
 .empty-container {
   box-shadow: var(--box-shadow-1);
@@ -61,4 +63,24 @@ a{
 .empty-container .empty-msg {
   margin-top: 50px;
   text-align: center;
+}
+
+.content-wrapper ul li{
+  padding: 0 !important;
+}
+
+.content-wrapper-w-b ul li {
+  padding: 0 !important;
+}
+
+.default-text-color {
+  color: var(--gray-70);
+}
+
+.danger-text-color {
+  color: var(--danger);
+}
+
+.success-text-color {
+  color: var(--secondary);
 }

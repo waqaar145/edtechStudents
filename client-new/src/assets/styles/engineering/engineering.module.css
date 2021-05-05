@@ -22,6 +22,7 @@
 
 .custom-card .custom-card-body ul {
   color: var(--font-color-1);
+  list-style: none;
 }
 
 .custom-card .custom-card-body ul li {
@@ -113,6 +114,12 @@ a.custom-image-card:hover {
 }
 
 .custom-image-card-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.custom-image-card-body .custom-image-card-body-title{
   font-size: 1rem;
   padding: 15px 15px;
   height: 50px;

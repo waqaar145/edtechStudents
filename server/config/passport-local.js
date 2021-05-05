@@ -6,7 +6,6 @@ passport.serializeUser(function(user, done) {
 });
 
 passport.deserializeUser(async function(user, done) {
-  console.log('PASSPORT LOCAL', user);
   let user1 = await knex('ed_users').where('u_id', user.uid).first();
   if (!user1) {
     done(null, false)

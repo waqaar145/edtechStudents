@@ -8,7 +8,7 @@ const handle = app.getRequestHandler();
 
 const devProxy = {
   "/api": {
-    target: "http://localhost:4001/",
+    target: "http://192.168.43.181:4001/",
     changeOrigin: true,
   },
 };
@@ -48,11 +48,21 @@ app
     });
 
     server.get(
-      "/subject/:subject_slug/chapter/:chapter_slug/:content_type?", (req, res) => {
+      "/:subject_slug/:chapter_slug/:content_type?", (req, res) => {
         return app.render(req, res, "/content", {
           subject_slug: req.params.subject_slug,
           chapter_slug: req.params.chapter_slug,
           content_type: req.params.content_type,
+        });
+      }
+    );
+
+    server.get(
+      "/:subject_slug/:chapter_slug/discussion/:content_slug", (req, res) => {
+        return app.render(req, res, "/discussion", {
+          subject_slug: req.params.subject_slug,
+          chapter_slug: req.params.chapter_slug,
+          content_slug: req.params.content_slug,
         });
       }
     );

@@ -3,14 +3,20 @@ import { wrapper } from "./../src/store/index";
 import { END } from "redux-saga";
 import { authActionTypes } from "./../src/store/auth/auth.actiontype";
 import Router from "next/router";
+import { ToastContainer } from 'react-toastify';
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./../src/assets/styles/main.css";
 import "./../src/assets/styles/navbar/mainHeader.css";
 import "./../src/assets/styles/dropdown.css";
+import "./../src/assets/styles/engineering/engineering.module.css";
+import "./../src/assets/styles/login/login.module.css";
+import 'react-toastify/dist/ReactToastify.css';
+
 
 class MyApp extends App {
   static async getInitialProps({ Component, ctx }) {
+
     const pageProps = {
       ...(Component.getInitialProps
         ? await Component.getInitialProps(ctx)

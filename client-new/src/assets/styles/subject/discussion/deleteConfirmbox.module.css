@@ -1,0 +1,73 @@
+.comment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.comment-header .comment-header-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.comment-body-confirmation-text {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  font-size: 1rem;
+}
+
+.comment-content-wrapper {
+  margin-bottom: 15px;
+}
+
+.comment-main-action-area {
+  display: flex;
+  align-items: center;
+  float: right;
+}
+
+.action-button {
+  margin-left: 10px;
+}
+
+.comment-header-action {
+  position: relative;
+  cursor: pointer;
+}
+
+.comment-header-action:hover {
+  background-color: var(--bg-color-1);
+  cursor: pointer;
+}
+
+
+.comment-action .profile-user-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.comment-action .profile-username{
+  color: var(--gray-80);
+  font-weight: 500;
+}
+
+.comment-action .profile-user-wrapper .time{
+  margin-left: 5px;
+  font-size: 13px;
+  color: var(--gray-60);;
+}
+
+.comment-action .profile-comment{
+  color: var(--gray-70);
+}
+
+.discussion-content {
+  overflow-y: scroll;
+  max-height: calc(100vh - 58px - 38px);
+}
+
+.comment-content-wrapper {
+  border: 1px solid var(--gray-40);
+  border-radius: 5px;
+  padding: 10px;
+}

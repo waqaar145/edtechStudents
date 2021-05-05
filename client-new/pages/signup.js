@@ -6,7 +6,6 @@ import {useDispatch} from 'react-redux'
 import { handleError } from "./../src/utils/validations/inputError";
 import { authService } from "./../src/services/apis/auth.service";
 import Router from "next/router";
-import "./../src/assets/styles/login/login.module.css";
 
 const INITIAL_STATE = {
   first_name: {

@@ -2,7 +2,6 @@ import { takeLatest, put, all, call } from "redux-saga/effects";
 import { contentActionTypes } from "./content.actiontype";
 import { contentService } from "../../services";
 import { actions } from "./content.action";
-import { func } from "prop-types";
 
 export function* handleGetChapters({ data: { subject_slug, chapter_slug } }) {
   try {
@@ -17,15 +16,15 @@ export function* handleGetChapters({ data: { subject_slug, chapter_slug } }) {
     );
     yield put(actions.setChapters(chapters));
     yield put(actions.setSubject(subject));
+    yield put(actions.complete());
   } catch (error) {
     console.log("Error", error);
-  } finally {
-    yield put(actions.complete());
   }
 }
 
 export function* handleGetContents({ data: { chapter_slug, content_type } }) {
   try {
+    yield put(actions.request());
     const {
       data: {
         data: {
@@ -37,6 +36,7 @@ export function* handleGetContents({ data: { chapter_slug, content_type } }) {
       content_type
     );
     yield put(actions.setContents(contents));
+    yield put(actions.complete());
   } catch (error) {
     console.log(error);
   }
@@ -44,8 +44,12 @@ export function* handleGetContents({ data: { chapter_slug, content_type } }) {
 
 export function* handleGetCounts({ data: { chapter_slug } }) {
   try {
-    const {data: {data}} = yield contentService.getCountsByChapterSlug(chapter_slug);
+    yield put(actions.request());
+    const {
+      data: { data },
+    } = yield contentService.getCountsByChapterSlug(chapter_slug);
     yield put(actions.setCounts(data));
+    yield put(actions.complete());
   } catch (error) {
     console.log(error);
   }
@@ -64,5 +68,9 @@ export function* getCounts() {
 }
 
 export function* contentSaga() {
-  yield all([call(getChapters), call(getContents), call(getCounts)]);
+  yield all([
+    call(getChapters),
+    call(getContents),
+    call(getCounts),
+  ]);
 }

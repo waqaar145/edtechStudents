@@ -20,6 +20,9 @@ const initalState = {
   },
   chapters: [],
   contents: [],
+  discussion: {
+    content: []
+  }
 }
 
 export const Content  = (state = initalState, action = {}) => {

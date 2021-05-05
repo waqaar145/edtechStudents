@@ -2,20 +2,16 @@ import { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-
 import BasicLayout from "../src/layouts/Basic";
-import "./../src/assets/styles/engineering/engineering.module.css";
-import { BsSearch } from "react-icons/bs";
 import { topLevelActionTypes } from "./../src/store/top-level/top_level.actiontype";
-
 import { useSelector, useDispatch, shallowEqual } from "react-redux";
-import Link from "next/link";
 import EmptyStateText from "./../src/components/EmptyState/EmptyText";
 import { emptyStateUrls } from "./../src/utils/imageUrls";
-
 import { contentService } from "./../src/services";
 import Router from "next/router";
 import { Toast, toastDefaultObject } from "./../src/components/Toast/index";
+import Semesters from "../src/components/Pages/Engineering/Semesters";
+import Subjects from "../src/components/Pages/Engineering/Subjects";
 
 const Engineering = () => {
   const dispatch = useDispatch();
@@ -33,9 +29,13 @@ const Engineering = () => {
   );
 
   const [semesterName, setSemesterName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(null);
 
-  const redirectToSubject = async (name, slug) => {
+  const redirectToSubject = async (name, slug, index) => {
     try {
+      setLoading(true);
+      setCurrentIndex(index);
       let {
         data: { data },
       } = await contentService.getFirstChaptersBySubjectSlug(slug);
@@ -43,8 +43,8 @@ const Engineering = () => {
         let content = data[0];
         Router.push(
           `/content?subject_slug=${slug}&chapter_slug=${content.slug}&content_type=all`,
-          `/subject/${slug}/chapter/${content.slug}/all`
-        ); // Router.push(`/subject/subject_slug?=${slug}`, `/subject/${slug}`);
+          `/${slug}/${content.slug}/all`
+        );
       } else {
         return Toast(
           `Looks like ${name} does not have any content.`,
@@ -52,7 +52,11 @@ const Engineering = () => {
           toastDefaultObject
         );
       }
+      setLoading(false);
+      setCurrentIndex(null);
     } catch (err) {
+      setLoading(false);
+      setCurrentIndex(null);
       console.log("Could not send to subject page", err);
     }
   };
@@ -75,35 +79,18 @@ const Engineering = () => {
             <div className="custom-card">
               <div className="custom-card-header">Semesters</div>
               <div className="custom-card-body">
-                <ul>
-                  {semesters.length > 0 ? (
-                    semesters.map((semester) => {
-                      return (
-                        <li
-                          key={semester.id}
-                          className="custom-card-body-element"
-                          onClick={() =>
-                            dispatch({
-                              type: topLevelActionTypes.WATCH_SEMESTER_SELECTED,
-                              id: semester.id,
-                            })
-                          }
-                          className={
-                            current_semester === semester.id ? "active" : ""
-                          }
-                        >
-                          <a>{semester.name}</a>
-                        </li>
-                      );
+                <Semesters
+                  handleSemester={(id) =>
+                    dispatch({
+                      type: topLevelActionTypes.WATCH_SEMESTER_SELECTED,
+                      id: id,
                     })
-                  ) : (
-                    <EmptyStateText
-                      text="No semesters found."
-                      subText="Please try after sometime."
-                      image={emptyStateUrls.emptyState.enggSemstersList}
-                    />
-                  )}
-                </ul>
+                  }
+                  current_semester={current_semester}
+                  semesters={semesters}
+                  emptyStateUrls={emptyStateUrls}
+                  EmptyStateText={EmptyStateText}
+                />
               </div>
             </div>
           </Col>
@@ -120,40 +107,14 @@ const Engineering = () => {
               </Row>
             )}
             <Row className="semesters-list">
-              {subjects.length > 0 ? (
-                subjects.map((subject) => {
-                  return (
-                    <Col sm={4} xs={6} key={subject.id}>
-                      <a
-                        onClick={() =>
-                          redirectToSubject(subject.name, subject.slug)
-                        }
-                        className="custom-image-card"
-                      >
-                        <img
-                          src="https://www.w3schools.com/howto/img_avatar.png"
-                          alt={`Mumbai University - Engineering - ${subject.semester_name} - ${subject.name}`}
-                          width="100%"
-                        />
-                        <div className="custom-image-card-body">
-                          <p className="custom-image-card-body-title">
-                            {subject.name}
-                          </p>
-                        </div>
-                      </a>
-                    </Col>
-                  );
-                })
-              ) : (
-                <Col>
-                  <EmptyStateText
-                    text="No subjects found."
-                    subText="Please try after sometime."
-                    image={emptyStateUrls.emptyState.enggSemstersList}
-                    width="300"
-                  />
-                </Col>
-              )}
+              <Subjects
+                subjects={subjects}
+                redirectToSubject={redirectToSubject}
+                loading={loading}
+                currentIndex={currentIndex}
+                emptyStateUrls={emptyStateUrls}
+                EmptyStateText={EmptyStateText}
+              />
             </Row>
           </Col>
         </Row>

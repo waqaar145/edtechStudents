@@ -1,0 +1,7 @@
+export const contentBuilderActionTypes = {
+  REQUEST: "REQUEST",
+  COMPLETE: "COMPLETE",
+
+  START_DISCUSSION: "START_DISCUSSION",
+  STOP_DISCUSSION: "STOP_DISCUSSION",
+};
