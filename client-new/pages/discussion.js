@@ -248,7 +248,7 @@ const Discussion = () => {
   };
 
   const onScroll = (e) => {
-    if (e.target.scrollHeight - Math.abs(e.target.scrollTop) === size.height && totalEntries > comments.length) {
+    if (comments.length > 0 && e.target.scrollHeight - Math.abs(e.target.scrollTop) === size.height && totalEntries > comments.length) {
       let query = {
         ...queryParams,
         pageNo: currentPage
@@ -267,7 +267,7 @@ const Discussion = () => {
     <DiscussionLayout>
       <div className="discussion-wrapper-bodysadf">
         <div className="discussion-wrapper-body1">
-          {loadingComment && (
+          {(loadingComment && comments.length > 0) && (
             <div className="more-comment-loader">
               <Spinner animation="border" variant="primary" />
             </div>

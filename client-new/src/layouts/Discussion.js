@@ -10,6 +10,7 @@ import {
   AiOutlineLeft,
 } from "react-icons/ai";
 import { ToastContainer, Zoom } from 'react-toastify';
+import ContentShimmer from './../components/Shimmer/Content'
 
 import "./../assets/styles/subject/discussion/discussion.module.css";
 let showNumberOfActiveUser = 3;
@@ -17,6 +18,10 @@ let showNumberOfActiveUser = 3;
 const Discussion = ({ children }) => {
   const discussionTopRef = useRef();
   const size = useDimensions(discussionTopRef);
+  const loading = useSelector(
+    (state) => state.ContentDiscussion.loading
+  );
+
   const contents = useSelector(
     (state) => state.ContentDiscussion.content,
     shallowEqual
@@ -42,7 +47,14 @@ const Discussion = ({ children }) => {
       <div className="content-left-wrapper">
         <div className="content-basic-details-l">this is test</div>
         <div className="content-wrapper-w-b">
-          {Array.isArray(contents) &&
+          {
+            loading
+            &&
+            <div className="shimmerBackground">
+              <ContentShimmer />
+            </div>
+          }
+          {!loading && Array.isArray(contents) &&
             contents.map((content, i) => {
               return (
                 <ContentComponent

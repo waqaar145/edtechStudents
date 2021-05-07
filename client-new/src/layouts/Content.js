@@ -139,7 +139,7 @@ const Content = ({ children }) => {
         </div>
       </div>
       <div className="engg-header">
-        <div className="number">{chapterIndex}</div>
+        <div className="number">{!loading ? chapterIndex : ''}</div>
         <div className="chapter-name">
           {loading && <LineShimmer />}
           {(!loading && activeChapter) ? activeChapter.chapter_name : ""}
