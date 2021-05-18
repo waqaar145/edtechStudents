@@ -7,6 +7,7 @@ import { emptyStateUrls } from "./../src/utils/imageUrls";
 import ContentComponent from "./../src/components/ContentComponent";
 import ContentShimmer from './../src/components/Shimmer/Content'
 import "./../src/assets/styles/subject/subject.module.css";
+import { useEffect } from "react";
 
 const Content = () => {
   const { loading, contents } = useSelector(

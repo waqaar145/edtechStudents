@@ -39,6 +39,10 @@ body{
   background-color: var(--bg-color-1);
   font-family: 'Poppins', sans-serif;
 }
+
+mjx-container.MathJax {
+  pointer-events: none;
+}
 /* 
 ul{
   list-style: none;

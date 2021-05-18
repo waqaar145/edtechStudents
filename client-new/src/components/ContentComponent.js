@@ -40,7 +40,7 @@ const ContentComponent = ({ content, className, removeDiscussionButton }) => {
             {!removeDiscussionButton && (
               <BasicButton
                 className="primary-btn"
-                title="Discussion (50)"
+                title={`Discussion (${content.total_comments})`}
                 onClick={() => {
                   Router.push(
                     `/discussion?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_slug=${content.slug}`,

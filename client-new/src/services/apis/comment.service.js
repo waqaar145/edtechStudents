@@ -33,9 +33,9 @@ export const commentService = {
       throw error;
     }
   },
-  async deleteCommentById(id) {
+  async deleteCommentById(contentId, commentId) {
     try {
-      let result = await HTTPClient.delete(`/api/v1/discussion/comment/${id}`);
+      let result = await HTTPClient.delete(`/api/v1/discussion/comment/${commentId}/${contentId}`);
       return result;
     } catch(error) {
       throw error;

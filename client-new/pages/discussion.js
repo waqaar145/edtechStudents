@@ -235,7 +235,7 @@ const Discussion = () => {
 
   const handleDeleteComment = async (comment) => {
     try {
-      await commentService.deleteCommentById(comment.id);
+      await commentService.deleteCommentById(content.id, comment.id);
       setDeleteModal(false);
       dispatch({
         type: commentActionTypes.DELETE_COMMENT,

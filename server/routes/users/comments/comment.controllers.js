@@ -306,6 +306,7 @@ module.exports.addComment = async (req, res) => {
         ...currentUserFormate(req.user),
         ...(parent_id === null && { childComment: [] }),
       };
+      totalCommentCount(content_id, true);
       return res.status(200).send({
         message: "Your comment has been saved.",
         data: object,
@@ -421,7 +422,7 @@ module.exports.deleteCommentById = async (req, res) => {
   }
 
   try {
-    const { comment_id } = req.params;
+    const { content_id, comment_id } = req.params;
     let comment = await knex('ed_comments').where('comm_id', comment_id).first();
     
     if (!comment) {
@@ -442,7 +443,7 @@ module.exports.deleteCommentById = async (req, res) => {
       comm_is_active: false,
       comm_is_deleted: true,
     })
-
+    totalCommentCount(content_id, false);
     return res.status(200).send({
       message: "Comment has been delete",
       data: 'ok',
@@ -459,3 +460,25 @@ module.exports.deleteCommentById = async (req, res) => {
       );
   }
 };
+
+const totalCommentCount = async (content_id, bool) => {
+  try {
+    if (bool) {
+      await knex('ed_contents')
+        .where('cn_id', '=', content_id)
+        .increment({
+          cn_total_comments: 1
+        })
+    } else {
+      await knex('ed_contents')
+        .where('cn_id', '=', content_id)
+        .decrement({
+          cn_total_comments: 1
+        })
+    }
+    return;
+  } catch (err) {
+    console.log(err)
+    return;
+  }
+}

@@ -285,6 +285,7 @@ module.exports.getContentByChapterSlug = async (req, res) => {
         "ed_contents.cn_name as name",
         "ed_contents.cn_slug as slug",
         "ed_contents.cn_description as description",
+        "ed_contents.cn_total_comments as total_comments",
         "ed_contents.cn_is_active as is_active",
         "ed_contents.cn_created_at as created_at",
         "ed_contents.cn_updated_at as updated_at",
