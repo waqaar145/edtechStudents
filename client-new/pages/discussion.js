@@ -263,6 +263,10 @@ const Discussion = () => {
     }
   };
 
+  const handleHeartAction = (data) => {
+    console.log(data);
+  }
+
   return (
     <DiscussionLayout>
       <div className="discussion-wrapper-bodysadf">
@@ -300,6 +304,7 @@ const Discussion = () => {
                     deleteComment={deleteComment}
                     childSubmittedVale={childSubmittedVale}
                     auth={auth}
+                    handleHeartAction={handleHeartAction}
                   />
                 );
               })}

@@ -6,6 +6,7 @@ import {
   MdBookmark,
   MdDelete,
   MdModeEdit,
+  MdFavoriteBorder
 } from "react-icons/md";
 import { Media } from "react-bootstrap";
 import dynamic from "next/dynamic";
@@ -67,15 +68,13 @@ const CommentComponent = ({
   cCCommentId,
   currentCommentEditingData,
   auth,
+  handleHeartAction
 }) => {
   const { loggedInStatus, loggedInUser } = auth;
 
   const QuickActions = ({ comment }) => {
     return (
       <div className="comment-action-area">
-        <div className="comment-action-icons default-text-color">
-          <MdInsertEmoticon />
-        </div>
         {!noReply && (
           <div
             className="comment-action-icons default-text-color"
@@ -177,6 +176,14 @@ const CommentComponent = ({
               comment.comment
             )}
           </div>
+          <div className="quick-actions">
+            <div className="heart">
+              <MdFavoriteBorder onClick={() => handleHeartAction(comment)}/> 
+            </div>
+            <div className="total-heart">
+              12
+            </div>
+          </div>
           {Array.isArray(replyingToComments) &&
             replyingToComments.indexOf(comment.id) > -1 && (
               <ChildCommentEditor parent_id={comment.id} update={false} />
@@ -203,6 +210,7 @@ const CommentComponent = ({
                   childSubmittedVale={childSubmittedVale}
                   deleteComment={deleteComment}
                   auth={auth}
+                  handleHeartAction={handleHeartAction}
                 />
               );
             })}
