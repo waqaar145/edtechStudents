@@ -16,10 +16,10 @@ export function* handleGetContentByContentSlug({ data: { content_slug } }) {
   }
 }
 
-export function* handleGetComments({ data: { content_slug, query } }) {
+export function* handleGetComments({ data: { content_slug, query, req } }) {
   try {
     yield put(actions.requestComment());
-    let {data: {data: {comments, totalEntries}}} = yield commentService.getDiscussionByContentSlug(content_slug, query);
+    let {data: {data: {comments, totalEntries}}} = yield commentService.getDiscussionByContentSlug(content_slug, query, req);
     yield put(actions.getComments({comments, totalEntries}))
     yield put(actions.completeComment());
   } catch (error) {

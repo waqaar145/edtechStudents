@@ -263,8 +263,17 @@ const Discussion = () => {
     }
   };
 
-  const handleHeartAction = (data) => {
-    console.log(data);
+  const handleHeartAction = async ({id}) => {
+    let dataObj = {
+      id,
+      liked: false
+    }
+    try {
+      let result = await commentService.likeComment(dataObj);
+      console.log(result);
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -344,7 +353,7 @@ const Discussion = () => {
   );
 };
 
-Discussion.getInitialProps = async ({ store, query }) => {
+Discussion.getInitialProps = async ({ store, query, req }) => {
   try {
     await store.dispatch({
       type: commentActionTypes.WATCH_GET_CONTENT_BY_CONTENT_SLUG,
@@ -359,6 +368,7 @@ Discussion.getInitialProps = async ({ store, query }) => {
       data: {
         content_slug: query.content_slug,
         query: queryParams,
+        req
       },
     });
     return {};

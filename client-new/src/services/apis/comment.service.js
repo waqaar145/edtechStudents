@@ -1,4 +1,5 @@
 import { HTTPClient } from './http.service';
+const queryString = require('query-string');
 
 export const commentService = {
   async getContentByContentSlug (content_slug) {
@@ -9,9 +10,10 @@ export const commentService = {
       throw error;
     }
   },
-  async getDiscussionByContentSlug(content_slug, queryParams) {
+  async getDiscussionByContentSlug(content_slug, queryParams, req) {
+    let params = queryString.stringify(queryParams)
     try {
-      let result = await HTTPClient.get(`/api/v1/discussion/discussion/${content_slug}`, { params: queryParams });
+      let result = await HTTPClient.get(`/api/v1/discussion/discussion/${content_slug}?${params}`, {headers: {Cookie: req.headers.cookie}});
       return result;
     } catch(error) {
       throw error;
@@ -41,4 +43,12 @@ export const commentService = {
       throw error;
     }
   },
+  async likeComment (data) {
+    try {
+      let result = await HTTPClient.post('/api/v1/discussion/comment/like', data);
+      return result;
+    } catch(error) {
+      throw error;
+    }
+  }
 }

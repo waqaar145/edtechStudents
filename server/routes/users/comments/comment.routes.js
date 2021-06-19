@@ -8,5 +8,6 @@ routes.get('/discussion/discussion/:content_slug', commentController.getComments
 routes.post('/discussion/comment/add', commentController.addComment)
 routes.put('/discussion/comment/edit/:comment_id', commentController.updateComment)
 routes.delete('/discussion/comment/:comment_id/:content_id', commentController.deleteCommentById)
+routes.post('/discussion/comment/like', commentController.likeComment)
 
 module.exports = routes;

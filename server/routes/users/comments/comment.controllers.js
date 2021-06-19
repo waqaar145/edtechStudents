@@ -2,7 +2,7 @@ const knex = require("./../../../db/knex");
 const { check, validationResult } = require("express-validator");
 const { getPaginationValues } = require("../../../utils/pagination");
 const { unExpectedError } = require("./../../../messages/error");
-const { currentUserFormate } = require("./../../../utils/basicFormatting")
+const { currentUserFormate } = require("./../../../utils/basicFormatting");
 
 module.exports.getContentByContentSlug = async (req, res) => {
   const { content_slug } = req.params;
@@ -136,14 +136,9 @@ module.exports.getCommentsOfContent = async (req, res) => {
       data: errors.array(),
     });
   }
-
-  const {
-    offset,
-    limit,
-    sort,
-    q
-  } = getPaginationValues(req.query);
-
+  console.log('----', req.user);
+  const { offset, limit, sort, q } = getPaginationValues(req.query);
+  
   try {
     const { content_slug } = req.params;
 
@@ -176,8 +171,10 @@ module.exports.getCommentsOfContent = async (req, res) => {
         "ed_comments.comm_id as id",
         "ed_comments.comm_parent_id as parent_id",
         "ed_comments.comm_comment as comment",
+        "ed_comments.comm_total_likes as total_likes",
         "ed_comments.comm_created_at as created_at",
         "ed_comments.comm_updated_at as updated_at",
+        // "ed_comment_likes.comment_id as liked",
 
         "ed_users.u_id as user_id",
         "ed_users.u_uuid as user_uuid",
@@ -187,6 +184,11 @@ module.exports.getCommentsOfContent = async (req, res) => {
       )
       .from("ed_comments")
       .innerJoin("ed_users", "ed_users.u_id", "ed_comments.comm_user_id")
+      // .leftJoin("ed_comment_likes", function (builder) {
+      //   builder
+      //     .on("ed_comment_likes.comment_id", "ed_comments.comm_id")
+      //     .on("ed_comment_likes.user_id", req.user.uid);
+      // })
       .where("ed_comments.comm_content_id", content.id)
       .where("ed_comments.comm_parent_id", null)
       .where("ed_comments.comm_is_deleted", false)
@@ -203,6 +205,7 @@ module.exports.getCommentsOfContent = async (req, res) => {
           "ed_comments.comm_id as id",
           "ed_comments.comm_parent_id as parent_id",
           "ed_comments.comm_comment as comment",
+          "ed_comments.comm_total_likes as total_likes",
           "ed_comments.comm_created_at as created_at",
           "ed_comments.comm_updated_at as updated_at",
 
@@ -245,10 +248,18 @@ module.exports.getCommentsOfContent = async (req, res) => {
 };
 
 module.exports.addComment = async (req, res) => {
-
-  await check("comment").isLength({ min: 1, max: 10000 }).withMessage("Comment is required.").run(req);
-  await check("content_id").isNumeric().withMessage("Content Id is required.").run(req);
-  await check("parent_id").isLength().withMessage("Parent Id is required.").run(req);
+  await check("comment")
+    .isLength({ min: 1, max: 10000 })
+    .withMessage("Comment is required.")
+    .run(req);
+  await check("content_id")
+    .isNumeric()
+    .withMessage("Content Id is required.")
+    .run(req);
+  await check("parent_id")
+    .isLength()
+    .withMessage("Parent Id is required.")
+    .run(req);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -259,31 +270,33 @@ module.exports.addComment = async (req, res) => {
   }
 
   try {
-
-    const {
-      content_id,
-      parent_id,
-      comment
-    } = req.body;
+    const { content_id, parent_id, comment } = req.body;
 
     let content = await knex("ed_contents").where("cn_id", content_id);
     if (content.length < 1) {
-      return res.status(422).send(unExpectedError(
-          "Content does not exist",
-          "Content does not exist",
-          "subject"
-        )
-      );
+      return res
+        .status(422)
+        .send(
+          unExpectedError(
+            "Content does not exist",
+            "Content does not exist",
+            "subject"
+          )
+        );
     }
 
     if (parent_id) {
       let commentRes = await knex("ed_comments").where("comm_id", parent_id);
       if (commentRes.length < 1) {
-        return res.status(422).send(unExpectedError(
-          "Content parent id does not exist",
-          "Content parent id does not exist",
-          "discussion"
-        ));
+        return res
+          .status(422)
+          .send(
+            unExpectedError(
+              "Content parent id does not exist",
+              "Content parent id does not exist",
+              "discussion"
+            )
+          );
       }
     }
 
@@ -312,25 +325,42 @@ module.exports.addComment = async (req, res) => {
         data: object,
       });
     }
-    return res.status(422).send(unExpectedError(
-      "Your comment could not be saved, please try again later",
-      "Your comment could not be saved, please try again later",
-      "discussion"
-    ))
+    return res
+      .status(422)
+      .send(
+        unExpectedError(
+          "Your comment could not be saved, please try again later",
+          "Your comment could not be saved, please try again later",
+          "discussion"
+        )
+      );
   } catch (err) {
-    console.log(err)
-    return res.status(422).send(unExpectedError(
-      "Something went wrong",
-      "Something went wrong",
-      "discussion"
-    ))
+    console.log(err);
+    return res
+      .status(422)
+      .send(
+        unExpectedError(
+          "Something went wrong",
+          "Something went wrong",
+          "discussion"
+        )
+      );
   }
-}
+};
 
 module.exports.updateComment = async (req, res) => {
-  await check("comment").isLength({ min: 1, max: 10000 }).withMessage("Comment is required.").run(req);
-  await check("content_id").isNumeric().withMessage("Content Id is required.").run(req);
-  await check("comment_id").isLength().withMessage("Comment Id is required.").run(req);
+  await check("comment")
+    .isLength({ min: 1, max: 10000 })
+    .withMessage("Comment is required.")
+    .run(req);
+  await check("content_id")
+    .isNumeric()
+    .withMessage("Content Id is required.")
+    .run(req);
+  await check("comment_id")
+    .isLength()
+    .withMessage("Comment Id is required.")
+    .run(req);
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -341,40 +371,45 @@ module.exports.updateComment = async (req, res) => {
   }
 
   try {
+    const { content_id, comment } = req.body;
 
-    const {
-      content_id,
-      comment
-    } = req.body;
-
-    const comment_id = req.params.comment_id
+    const comment_id = req.params.comment_id;
 
     let content = await knex("ed_contents").where("cn_id", content_id);
     if (content.length < 1) {
-      return res.status(422).send(unExpectedError(
-          "Content does not exist",
-          "Content does not exist",
-          "discussion"
-        )
-      );
+      return res
+        .status(422)
+        .send(
+          unExpectedError(
+            "Content does not exist",
+            "Content does not exist",
+            "discussion"
+          )
+        );
     }
 
     let commentRes = await knex("ed_comments").where("comm_id", comment_id);
-      if (commentRes.length < 1) {
-        return res.status(422).send(unExpectedError(
-          "Comment does not exist",
-          "Comment does not exist",
-          "discussion"
-        )
-      );
+    if (commentRes.length < 1) {
+      return res
+        .status(422)
+        .send(
+          unExpectedError(
+            "Comment does not exist",
+            "Comment does not exist",
+            "discussion"
+          )
+        );
     }
 
     let commObj = {
       comm_comment: comment,
-      comm_updated_at: new Date()
+      comm_updated_at: new Date(),
     };
 
-    let result = await knex("ed_comments").update(commObj).where('comm_id', comment_id).returning("*");
+    let result = await knex("ed_comments")
+      .update(commObj)
+      .where("comm_id", comment_id)
+      .returning("*");
     let resultObj = result[0];
     if (result.length > 0) {
       let object = {
@@ -391,20 +426,28 @@ module.exports.updateComment = async (req, res) => {
         data: object,
       });
     }
-    return res.status(422).send(unExpectedError(
-      "Your comment could not be updated, please try again later",
-      "Your comment could not be updated, please try again later",
-      "discussion"
-    ))
+    return res
+      .status(422)
+      .send(
+        unExpectedError(
+          "Your comment could not be updated, please try again later",
+          "Your comment could not be updated, please try again later",
+          "discussion"
+        )
+      );
   } catch (err) {
-    console.log(err)
-    return res.status(422).send(unExpectedError(
-      "Something went wrong",
-      "Something went wrong",
-      "discussion"
-    ))
+    console.log(err);
+    return res
+      .status(422)
+      .send(
+        unExpectedError(
+          "Something went wrong",
+          "Something went wrong",
+          "discussion"
+        )
+      );
   }
-}
+};
 
 module.exports.deleteCommentById = async (req, res) => {
   await check("comment_id")
@@ -423,8 +466,10 @@ module.exports.deleteCommentById = async (req, res) => {
 
   try {
     const { content_id, comment_id } = req.params;
-    let comment = await knex('ed_comments').where('comm_id', comment_id).first();
-    
+    let comment = await knex("ed_comments")
+      .where("comm_id", comment_id)
+      .first();
+
     if (!comment) {
       return res
         .status(422)
@@ -437,18 +482,82 @@ module.exports.deleteCommentById = async (req, res) => {
         );
     }
 
-    await knex('ed_comments')
-    .where('comm_id', comment_id)
-    .update({
+    await knex("ed_comments").where("comm_id", comment_id).update({
       comm_is_active: false,
       comm_is_deleted: true,
-    })
+    });
     totalCommentCount(content_id, false);
     return res.status(200).send({
       message: "Comment has been delete",
-      data: 'ok',
+      data: "ok",
     });
-  } catch(error) {
+  } catch (error) {
+    return res
+      .status(422)
+      .send(
+        unExpectedError(
+          "Something went wrong, please try to fetch again",
+          "Something went wrong, please try to fetch again",
+          "semester"
+        )
+      );
+  }
+};
+
+module.exports.likeComment = async (req, res) => {
+  await check("id").isNumeric().withMessage("Id is required.").run(req);
+
+  await check("liked").isBoolean().withMessage("Liked is required.").run(req);
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).send({
+      message: "Fields are missing",
+      data: errors.array(),
+    });
+  }
+
+  try {
+    const { id, liked } = req.body;
+    let likedResultObj;
+    let checkIfLiked = await knex("ed_comment_likes")
+      .select("id")
+      .where({ comment_id: id, user_id: req.user.uid })
+      .first();
+    if (!checkIfLiked) {
+      let likedResult = await knex("ed_comment_likes")
+        .insert({ comment_id: id, user_id: req.user.uid })
+        .returning("*");
+      likedResultObj = likedResult[0];
+      if (likedResultObj) {
+        totalCommentLikesCount(id, true);
+        return res.status(200).send({
+          message: "Your status has been updated.",
+          data: {
+            comment_id: likedResultObj.comment_id,
+            liked: true,
+          },
+        });
+      }
+    } else {
+      let deleteLikedResult = await knex("ed_comment_likes")
+        .where({ comment_id: id, user_id: req.user.uid })
+        .del();
+      likedResultObj = deleteLikedResult;
+      if (likedResultObj) {
+        totalCommentLikesCount(id, false);
+        return res.status(200).send({
+          message: "Your status has been updated.",
+          data: {
+            comment_id: likedResultObj.comment_id,
+            liked: false,
+          },
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
     return res
       .status(422)
       .send(
@@ -464,21 +573,41 @@ module.exports.deleteCommentById = async (req, res) => {
 const totalCommentCount = async (content_id, bool) => {
   try {
     if (bool) {
-      await knex('ed_contents')
-        .where('cn_id', '=', content_id)
+      return await knex("ed_contents")
+        .where("cn_id", "=", content_id)
         .increment({
-          cn_total_comments: 1
-        })
+          cn_total_comments: 1,
+        });
     } else {
-      await knex('ed_contents')
-        .where('cn_id', '=', content_id)
+      return await knex("ed_contents")
+        .where("cn_id", "=", content_id)
         .decrement({
-          cn_total_comments: 1
-        })
+          cn_total_comments: 1,
+        });
     }
-    return;
   } catch (err) {
-    console.log(err)
+    console.log(err);
     return;
   }
-}
+};
+
+const totalCommentLikesCount = async (comment_id, bool) => {
+  try {
+    if (bool) {
+      return await knex("ed_comments")
+        .where("comm_id", "=", comment_id)
+        .increment({
+          comm_total_likes: 1,
+        });
+    } else {
+      return await knex("ed_comments")
+        .where("comm_id", "=", comment_id)
+        .decrement({
+          comm_total_likes: 1,
+        });
+    }
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+};
