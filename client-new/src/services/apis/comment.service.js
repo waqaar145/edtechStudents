@@ -10,10 +10,10 @@ export const commentService = {
       throw error;
     }
   },
-  async getDiscussionByContentSlug(content_slug, queryParams, req) {
+  async getDiscussionByContentSlug(content_slug, queryParams, cookie) {
     let params = queryString.stringify(queryParams)
     try {
-      let result = await HTTPClient.get(`/api/v1/discussion/discussion/${content_slug}?${params}`, {headers: {Cookie: req.headers.cookie}});
+      let result = await HTTPClient.get(`/api/v1/discussion/discussion/${content_slug}?${params}`, cookie ? {headers: {Cookie: cookie}} : {});
       return result;
     } catch(error) {
       throw error;

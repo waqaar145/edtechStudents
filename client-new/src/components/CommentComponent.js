@@ -6,7 +6,7 @@ import {
   MdBookmark,
   MdDelete,
   MdModeEdit,
-  MdFavoriteBorder
+  MdFavorite
 } from "react-icons/md";
 import { Media } from "react-bootstrap";
 import dynamic from "next/dynamic";
@@ -177,11 +177,11 @@ const CommentComponent = ({
             )}
           </div>
           <div className="quick-actions">
-            <div className="heart">
-              <MdFavoriteBorder onClick={() => handleHeartAction(comment)}/> 
+            <div className={`heart ${comment.liked ? 'heart-active' : ''}`}>
+              <MdFavorite onClick={() => handleHeartAction(comment)}/> 
             </div>
             <div className="total-heart">
-              12
+              {comment.total_likes}
             </div>
           </div>
           {Array.isArray(replyingToComments) &&

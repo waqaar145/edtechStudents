@@ -136,7 +136,6 @@ module.exports.getCommentsOfContent = async (req, res) => {
       data: errors.array(),
     });
   }
-  console.log('----', req.user);
   const { offset, limit, sort, q } = getPaginationValues(req.query);
   
   try {
@@ -165,8 +164,9 @@ module.exports.getCommentsOfContent = async (req, res) => {
       .where("ed_comments.comm_is_active", true)
       .where("ed_comments.comm_parent_id", null)
       .where("ed_comments.comm_content_id", content.id);
-
-    let comments = await knex
+    let comments = [];
+    if (req.user) { // two separae query one for loggedin user and one for not loggedin user
+      comments = await knex
       .select(
         "ed_comments.comm_id as id",
         "ed_comments.comm_parent_id as parent_id",
@@ -174,21 +174,21 @@ module.exports.getCommentsOfContent = async (req, res) => {
         "ed_comments.comm_total_likes as total_likes",
         "ed_comments.comm_created_at as created_at",
         "ed_comments.comm_updated_at as updated_at",
-        // "ed_comment_likes.comment_id as liked",
+        "ed_comment_likes.comment_id as liked",
 
         "ed_users.u_id as user_id",
         "ed_users.u_uuid as user_uuid",
         "ed_users.u_first_name as first_name",
         "ed_users.u_last_name as last_name",
         "ed_users.u_username as username"
-      )
+      )       
       .from("ed_comments")
       .innerJoin("ed_users", "ed_users.u_id", "ed_comments.comm_user_id")
-      // .leftJoin("ed_comment_likes", function (builder) {
-      //   builder
-      //     .on("ed_comment_likes.comment_id", "ed_comments.comm_id")
-      //     .on("ed_comment_likes.user_id", req.user.uid);
-      // })
+      .leftJoin("ed_comment_likes", function (builder) {
+        builder
+          .on("ed_comment_likes.comment_id", "ed_comments.comm_id")
+          .on("ed_comment_likes.user_id", req.user.uid);
+      })
       .where("ed_comments.comm_content_id", content.id)
       .where("ed_comments.comm_parent_id", null)
       .where("ed_comments.comm_is_deleted", false)
@@ -196,11 +196,68 @@ module.exports.getCommentsOfContent = async (req, res) => {
       .orderBy("id", sort)
       .offset(offset)
       .limit(limit);
+    } else {
+      comments = await knex
+      .select(
+        "ed_comments.comm_id as id",
+        "ed_comments.comm_parent_id as parent_id",
+        "ed_comments.comm_comment as comment",
+        "ed_comments.comm_total_likes as total_likes",
+        "ed_comments.comm_created_at as created_at",
+        "ed_comments.comm_updated_at as updated_at",
+
+        "ed_users.u_id as user_id",
+        "ed_users.u_uuid as user_uuid",
+        "ed_users.u_first_name as first_name",
+        "ed_users.u_last_name as last_name",
+        "ed_users.u_username as username"
+      )       
+      .from("ed_comments")
+      .innerJoin("ed_users", "ed_users.u_id", "ed_comments.comm_user_id")
+      .where("ed_comments.comm_content_id", content.id)
+      .where("ed_comments.comm_parent_id", null)
+      .where("ed_comments.comm_is_deleted", false)
+      .where("ed_comments.comm_is_active", true)
+      .orderBy("id", sort)
+      .offset(offset)
+      .limit(limit);
+    }
 
     let finalComments = [];
     for (let comment of comments) {
       // need improvement
-      let childComment = await knex
+      let childComment = [];
+      if (req.user) {
+        childComment = await knex
+        .select(
+          "ed_comments.comm_id as id",
+          "ed_comments.comm_parent_id as parent_id",
+          "ed_comments.comm_comment as comment",
+          "ed_comments.comm_total_likes as total_likes",
+          "ed_comments.comm_created_at as created_at",
+          "ed_comments.comm_updated_at as updated_at",
+          "ed_comment_likes.comment_id as liked",
+
+          "ed_users.u_id as user_id",
+          "ed_users.u_uuid as user_uuid",
+          "ed_users.u_first_name as first_name",
+          "ed_users.u_last_name as last_name",
+          "ed_users.u_username as username"
+        )
+        .from("ed_comments")
+        .innerJoin("ed_users", "ed_users.u_id", "ed_comments.comm_user_id")
+        .leftJoin("ed_comment_likes", function (builder) {
+          builder
+            .on("ed_comment_likes.comment_id", "ed_comments.comm_id")
+            .on("ed_comment_likes.user_id", req.user.uid);
+        })
+        .where("ed_comments.comm_content_id", content.id)
+        .where("ed_comments.comm_parent_id", comment.id)
+        .where("ed_comments.comm_is_deleted", false)
+        .where("ed_comments.comm_is_active", true)
+        .orderBy("id", "desc");
+      } else {
+        childComment = await knex
         .select(
           "ed_comments.comm_id as id",
           "ed_comments.comm_parent_id as parent_id",
@@ -222,6 +279,7 @@ module.exports.getCommentsOfContent = async (req, res) => {
         .where("ed_comments.comm_is_deleted", false)
         .where("ed_comments.comm_is_active", true)
         .orderBy("id", "desc");
+      }
       comment.childComment = childComment;
       finalComments.push(comment);
     }
@@ -316,6 +374,7 @@ module.exports.addComment = async (req, res) => {
         comment: resultObj.comm_comment,
         created_at: resultObj.comm_created_at,
         updated_at: resultObj.comm_updated_at,
+        total_likes: 0,
         ...currentUserFormate(req.user),
         ...(parent_id === null && { childComment: [] }),
       };
@@ -520,6 +579,7 @@ module.exports.likeComment = async (req, res) => {
 
   try {
     const { id, liked } = req.body;
+    let total_likes = 0;
     let likedResultObj;
     let checkIfLiked = await knex("ed_comment_likes")
       .select("id")
@@ -531,27 +591,30 @@ module.exports.likeComment = async (req, res) => {
         .returning("*");
       likedResultObj = likedResult[0];
       if (likedResultObj) {
-        totalCommentLikesCount(id, true);
+        total_likes = await totalCommentLikesCount(id, true);
         return res.status(200).send({
           message: "Your status has been updated.",
           data: {
-            comment_id: likedResultObj.comment_id,
+            comment_id: id,
             liked: true,
+            total_likes
           },
         });
       }
     } else {
       let deleteLikedResult = await knex("ed_comment_likes")
         .where({ comment_id: id, user_id: req.user.uid })
-        .del();
+        .del()
+        .returning("*");
       likedResultObj = deleteLikedResult;
       if (likedResultObj) {
-        totalCommentLikesCount(id, false);
+        total_likes = await totalCommentLikesCount(id, false);
         return res.status(200).send({
           message: "Your status has been updated.",
           data: {
-            comment_id: likedResultObj.comment_id,
+            comment_id: id,
             liked: false,
+            total_likes
           },
         });
       }
@@ -593,18 +656,25 @@ const totalCommentCount = async (content_id, bool) => {
 
 const totalCommentLikesCount = async (comment_id, bool) => {
   try {
+    let data = [];
     if (bool) {
-      return await knex("ed_comments")
+      data =  await knex("ed_comments")
+        .select('comm_total_likes')
         .where("comm_id", "=", comment_id)
         .increment({
           comm_total_likes: 1,
-        });
+        })
+        .returning('*');
+      return data[0].comm_total_likes
     } else {
-      return await knex("ed_comments")
+      data = await knex("ed_comments")
+        .select('comm_total_likes')
         .where("comm_id", "=", comment_id)
         .decrement({
           comm_total_likes: 1,
-        });
+        })
+        .returning('*');
+      return data[0].comm_total_likes
     }
   } catch (err) {
     console.log(err);

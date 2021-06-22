@@ -144,18 +144,41 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
         };
       }
 
-    case commentActionTypes.EMPTY_DATA:
+    case commentActionTypes.EMPTY_ALL_DATA:
+      console.log('action.data');
       return {
-        ...state,
-        loading: false,
-        loadingComment: false,
-        content: [],
-        comments: [],
-        allUsersInRoom: [],
-        startPagination: false,
-        currentPage: 1,
-        totalEntries: 0,
+        ...state
       };
+
+    case commentActionTypes.CHANGE_COMMENT_REACTION:
+      if (action.data.parent_id) {
+        return {
+          ...state,
+          comments: state.comments.map((comment) => {
+            if (comment.id === action.data.parent_id) {
+              comment.childComment = comment.childComment.map((child) => {
+                if (child.id === action.data.id) {
+                  child.liked = action.data.liked;
+                  child.total_likes = action.data.total_likes
+                }
+                return child;
+              });
+            }
+            return comment;
+          }),
+        };
+      } else {
+        return {
+          ...state,
+          comments: state.comments.map((comment) => {
+            if (comment.id === action.data.id) {
+              comment.liked = action.data.liked;
+              comment.total_likes = action.data.total_likes
+            }
+            return comment;
+          }),
+        };
+      }
 
     default:
       return state;

@@ -12,4 +12,5 @@ export const actions = {
 
   setDiscussionContent: (data) => ({ type: commentActionTypes.GET_CONTENT, data }),
   getComments: (data) => ({type: commentActionTypes.GET_COMMENTS, data}),
+  emtyData: () => ({type: commentActionTypes.EMPTY_ALL_DATA})
 };

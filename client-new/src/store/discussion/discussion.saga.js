@@ -16,15 +16,19 @@ export function* handleGetContentByContentSlug({ data: { content_slug } }) {
   }
 }
 
-export function* handleGetComments({ data: { content_slug, query, req } }) {
+export function* handleGetComments({ data: { content_slug, query, cookie } }) {
   try {
     yield put(actions.requestComment());
-    let {data: {data: {comments, totalEntries}}} = yield commentService.getDiscussionByContentSlug(content_slug, query, req);
+    let {data: {data: {comments, totalEntries}}} = yield commentService.getDiscussionByContentSlug(content_slug, query, cookie);
     yield put(actions.getComments({comments, totalEntries}))
     yield put(actions.completeComment());
   } catch (error) {
     console.log("Error", error);
   }
+}
+
+export function* handleEmptyingData () {
+  yield put(actions.emtyData())
 }
 
 export function* getContentByContentSlug() {
@@ -38,9 +42,14 @@ export function* getComments() {
   yield takeLatest(commentActionTypes.WATCH_GET_COMMENTS_BY_CONTENT_SLUG, handleGetComments);
 }
 
+export function* emtyData() {
+  yield takeLatest(commentActionTypes.EMPTY_DATA, handleEmptyingData);
+}
+
 export function* discussionSaga() {
   yield all([
     call(getContentByContentSlug),
-    call(getComments)
+    call(getComments),
+    call(emtyData)
   ]);
 }
