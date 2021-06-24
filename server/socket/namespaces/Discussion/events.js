@@ -47,8 +47,21 @@ const deleteComment = (nsp, roomName) => async (commentObj, callback) => {
   }
 }
 
+const updateCommentCount = (nsp, roomName) => async (obj, callback) => {
+  try {
+    nsp.broadcast.to(roomName).emit(discussionNsps.wsEvents.sendUpdatedCommentCount, obj)
+  } catch (error) {
+    console.log(error);
+    callback({
+      data,
+      process: false
+    });
+  }
+}
+
 module.exports = {
   addNewComment,
   updateComment,
-  deleteComment
+  deleteComment,
+  updateCommentCount
 };

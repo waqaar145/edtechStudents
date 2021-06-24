@@ -145,7 +145,6 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
       }
 
     case commentActionTypes.EMPTY_ALL_DATA:
-      console.log('action.data');
       return {
         ...state
       };
@@ -179,6 +178,34 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
           }),
         };
       }
+
+      case commentActionTypes.UPDATE_COMMENT_COUNT:
+        if (action.data.parent_id) {
+          return {
+            ...state,
+            comments: state.comments.map((comment) => {
+              if (comment.id === action.data.parent_id) {
+                comment.childComment = comment.childComment.map((child) => {
+                  if (child.id === action.data.id) {
+                    child.total_likes = action.data.total_likes
+                  }
+                  return child;
+                });
+              }
+              return comment;
+            }),
+          };
+        } else {
+          return {
+            ...state,
+            comments: state.comments.map((comment) => {
+              if (comment.id === action.data.id) {
+                comment.total_likes = action.data.total_likes
+              }
+              return comment;
+            }),
+          };
+        }
 
     default:
       return state;

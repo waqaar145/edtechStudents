@@ -115,6 +115,13 @@ const Discussion = () => {
       });
     });
 
+    socket.on(discussionNsps.wsEvents.sendUpdatedCommentCount, (comment) => {
+      dispatch({
+        type: commentActionTypes.UPDATE_COMMENT_COUNT,
+        data: comment,
+      });
+    });
+
     return () => dispatch({type: commentActionTypes.EMPTY_DATA})
   }, []);
 
@@ -278,6 +285,7 @@ const Discussion = () => {
         total_likes
       }
       dispatch({type: commentActionTypes.CHANGE_COMMENT_REACTION, data: obj});
+      socket.emit(discussionNsps.wsEvents.updatedCommentCount, {id, parent_id: data.parent_id, total_likes });
     } catch (error) {
       console.log(error)
     }

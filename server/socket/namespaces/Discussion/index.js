@@ -35,6 +35,7 @@ const onConnection = (socket) => {
   socket.on(discussionNsps['wsEvents']['addNewComment'], events.addNewComment(socket, roomName))
   socket.on(discussionNsps['wsEvents']['updateComment'], events.updateComment(socket, roomName))
   socket.on(discussionNsps['wsEvents']['deleteComment'], events.deleteComment(socket, roomName))
+  socket.on(discussionNsps['wsEvents']['updatedCommentCount'], events.updateCommentCount(socket, roomName))
 
   socket.on("disconnect", async () => {
     try {
