@@ -20,9 +20,6 @@ const initalState = {
   },
   chapters: [],
   contents: [],
-  discussion: {
-    content: []
-  }
 }
 
 export const Content  = (state = initalState, action = {}) => {
@@ -69,6 +66,12 @@ export const Content  = (state = initalState, action = {}) => {
     return {
       ...state,
       contents: action.data
+    }
+
+  case contentActionTypes.CHANGE_CONTENT_REACTION:
+    return {
+      ...state,
+
     }
 
   default:

@@ -2,9 +2,9 @@ import { HTTPClient } from './http.service';
 const queryString = require('query-string');
 
 export const commentService = {
-  async getContentByContentSlug (content_slug) {
+  async getContentByContentSlug (content_slug, cookie) {
     try {
-      let result = await HTTPClient.get(`/api/v1/discussion/content/${content_slug}`);
+      let result = await HTTPClient.get(`/api/v1/discussion/content/${content_slug}`, cookie ? {headers: {Cookie: cookie}} : {});
       return result;
     } catch(error) {
       throw error;

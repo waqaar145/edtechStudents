@@ -207,6 +207,21 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
           };
         }
 
+    case commentActionTypes.CHANGE_DISCUSSION_CONTENT_REACTION:
+      return {
+        ...state,
+        content: state.content.map(c => {
+          if (c.id === action.data.id) {
+            return {
+              ...c,
+              liked: action.data.liked,
+              total_likes: action.data.total_likes
+            }
+          }
+          return c;
+        })
+      }
+
     default:
       return state;
   }

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import useDimensions from "./../hooks/useDimensions";
-import { useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import ContentComponent from "./../components/ContentComponent";
 import {
   AiOutlineDoubleRight,
@@ -11,12 +11,15 @@ import {
 } from "react-icons/ai";
 import { ToastContainer, Zoom } from 'react-toastify';
 import ContentShimmer from './../components/Shimmer/Content'
+import {contentService} from './../services'
+import { commentActionTypes } from "../store/discussion/discussion.actiontype";
 
 import "./../assets/styles/subject/discussion/discussion.module.css";
 let showNumberOfActiveUser = 3;
 
 const Discussion = ({ children }) => {
   const discussionTopRef = useRef();
+  const dispatch = useDispatch();
   const size = useDimensions(discussionTopRef);
   const loading = useSelector(
     (state) => state.ContentDiscussion.loading
@@ -42,6 +45,20 @@ const Discussion = ({ children }) => {
 
   let slicedUsersInRoom = allUsersInRoom.slice(0, showNumberOfActiveUser);
 
+  const handleContentReaction = async ({id}) => {
+    try {
+      let {data: {data: {content_id, liked, total_likes}}} = await contentService.likeContent({id});
+      let obj ={
+        id: content_id,
+        liked,
+        total_likes
+      }
+      dispatch({type: commentActionTypes.CHANGE_DISCUSSION_CONTENT_REACTION, data:obj});
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
   return (
     <div className="discussion-wrapper">
       <div className="content-left-wrapper">
@@ -62,6 +79,7 @@ const Discussion = ({ children }) => {
                   key={i}
                   className="discussion-content"
                   removeDiscussionButton={true}
+                  handleContentReaction={handleContentReaction}
                 />
               );
             })}

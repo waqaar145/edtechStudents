@@ -1,5 +1,5 @@
 import {
-  MdThumbUp,
+  MdFavorite,
   MdMoreVert,
   MdSearch,
   MdAccountBalance,
@@ -13,7 +13,7 @@ import { Dropdown } from "react-bootstrap";
 import ReactHtmlParser from "react-html-parser";
 import BasicButton from "./Button/Basic";
 
-const ContentComponent = ({ content, className, removeDiscussionButton }) => {
+const ContentComponent = ({ content, className, removeDiscussionButton, handleContentReaction }) => {
   const router = useRouter();
   const { subject_slug, chapter_slug } = router.query;
 
@@ -29,11 +29,11 @@ const ContentComponent = ({ content, className, removeDiscussionButton }) => {
         </div>
       </div>
       <div className="content-footer">
-        <div className="user-interacted">
-          <div className="icon">
-            <MdThumbUp />
+        <div className="user-interacted quick-actions ">
+          <div className={`heart ${content.liked ? 'heart-active' : ''}`}>
+            <MdFavorite onClick={() => handleContentReaction(content)}/>
           </div>
-          <div className="count">123</div>
+          <div className="total-heart">{content.total_likes}</div>
         </div>
         <div className="user-actions">
           <div className="text">

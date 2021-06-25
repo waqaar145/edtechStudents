@@ -377,6 +377,7 @@ Discussion.getInitialProps = async ({ store, query, req }) => {
         subject_slug: query.subject_slug,
         chapter_slug: query.chapter_slug,
         content_slug: query.content_slug,
+        cookie: isServer ? req.headers.cookie : null
       },
     });
     await store.dispatch({

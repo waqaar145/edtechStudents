@@ -3,12 +3,12 @@ import { commentActionTypes } from "./discussion.actiontype";
 import { commentService } from "../../services";
 import { actions } from "./discussion.action";
 
-export function* handleGetContentByContentSlug({ data: { content_slug } }) {
+export function* handleGetContentByContentSlug({ data: { content_slug, cookie } }) {
   try {
     yield put(actions.request());
     const {
       data: { data },
-    } = yield commentService.getContentByContentSlug(content_slug);
+    } = yield commentService.getContentByContentSlug(content_slug, cookie);
     yield put(actions.setDiscussionContent(data.content));
     yield put(actions.complete());
   } catch (error) {

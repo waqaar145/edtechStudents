@@ -370,3 +370,97 @@ module.exports.getContentByChapterSlug = async (req, res) => {
       );
   }
 };
+
+module.exports.likeContent = async (req, res) => {
+  await check("id").isNumeric().withMessage("Id is required.").run(req);
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).send({
+      message: "Fields are missing",
+      data: errors.array(),
+    });
+  }
+
+  try {
+    const { id } = req.body;
+    let total_likes = 0;
+    let likedResultObj;
+    let checkIfLiked = await knex("ed_content_likes")
+      .select("id")
+      .where({ content_id: id, user_id: req.user.uid })
+      .first();
+    if (!checkIfLiked) {
+      let likedResult = await knex("ed_content_likes")
+        .insert({ content_id: id, user_id: req.user.uid })
+        .returning("*");
+      likedResultObj = likedResult[0];
+      if (likedResultObj) {
+        total_likes = await totalContentLikesCount(id, true);
+        return res.status(200).send({
+          message: "Your status has been updated.",
+          data: {
+            content_id: id,
+            liked: true,
+            total_likes
+          },
+        });
+      }
+    } else {
+      let deleteLikedResult = await knex("ed_content_likes")
+        .where({ content_id: id, user_id: req.user.uid })
+        .del()
+        .returning("*");
+      likedResultObj = deleteLikedResult;
+      if (likedResultObj) {
+        total_likes = await totalContentLikesCount(id, false);
+        return res.status(200).send({
+          message: "Your status has been updated.",
+          data: {
+            content_id: id,
+            liked: false,
+            total_likes
+          },
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(422)
+      .send(
+        unExpectedError(
+          "Something went wrong, please try to fetch again",
+          "Something went wrong, please try to fetch again",
+          "semester"
+        )
+      );
+  }
+};
+
+const totalContentLikesCount = async (content_id, bool) => {
+  try {
+    let data = [];
+    if (bool) {
+      data =  await knex("ed_contents")
+        .select('cn_total_likes')
+        .where("cn_id", "=", content_id)
+        .increment({
+          cn_total_likes: 1,
+        })
+        .returning('*');
+      return data[0].cn_total_likes
+    } else {
+      data = await knex("ed_contents")
+        .select('cn_total_likes')
+        .where("cn_id", "=", content_id)
+        .decrement({
+          cn_total_likes: 1,
+        })
+        .returning('*');
+      return data[0].cn_total_likes
+    }
+  } catch (err) {
+    console.log(err);
+    return;
+  }
+};

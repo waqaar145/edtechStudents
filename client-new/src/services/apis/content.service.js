@@ -33,4 +33,12 @@ export const contentService = {
       throw error;
     }
   },
+  async likeContent (data) {
+    try {
+      let result = await HTTPClient.post('/api/v1/content/like', data);
+      return result;
+    } catch(error) {
+      throw error;
+    }
+  }
 }
