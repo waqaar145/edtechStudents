@@ -17,6 +17,14 @@ export const contentService = {
       throw error;
     }
   },
+  async getChaptersListBasicDetailsBySubjectSlug(subject_slug, chapter_slug) {
+    try {
+      let result = await HTTPClient.get(`/api/v1/content/subject/${subject_slug}/chapter/${chapter_slug}/all`);
+      return result;
+    } catch(error) {
+      throw error;
+    }
+  },
   async getCountsByChapterSlug(chapter_slug) {
     try {
       let result = await HTTPClient.get(`/api/v1/content/chapter/${chapter_slug}/counts`);
@@ -26,6 +34,14 @@ export const contentService = {
     }
   },
   async getContentByChapterSlug(chapter_slug, content_type) {
+    try {
+      let result = await HTTPClient.get(`/api/v1/content/chapter/${chapter_slug}?content_type=${content_type}`);
+      return result;
+    } catch(error) {
+      throw error;
+    }
+  },
+  async getContentListBasicDetailsByChapterSlug(chapter_slug, content_type) {
     try {
       let result = await HTTPClient.get(`/api/v1/content/chapter/${chapter_slug}?content_type=${content_type}`);
       return result;

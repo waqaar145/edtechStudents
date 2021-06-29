@@ -4,6 +4,7 @@ import { Spinner } from "react-bootstrap";
 import { useRouter } from "next/router";
 import socketIOClient from "socket.io-client";
 import { commentActionTypes } from "./../src/store/discussion/discussion.actiontype";
+import { contentActionTypes } from "./../src/store/content/content.actiontype";
 import useDimensions from "./../src/hooks/useDimensions";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import DiscussionLayout from "./../src/layouts/Discussion";
@@ -291,8 +292,38 @@ const Discussion = () => {
     }
   }
 
+    // handle Chapter list, content List for prev, next functionality
+    const chaptersBasic = useSelector((state) => state.Content.chaptersBasic);
+    const contentsBasic = useSelector((state) => state.Content.contentsBasic);
+
+    useEffect(() => {
+      const {
+        chapter_slug,
+        subject_slug
+      } = router.query;
+
+      if (chaptersBasic.length === 0) {
+        dispatch({
+          type: contentActionTypes.WATCH_GET_DISCUSSION_CHAPTERS,
+          data: {
+            subject_slug,
+            chapter_slug
+          },
+        });
+      }
+      if (contentsBasic.length === 0) {
+        dispatch({
+          type: contentActionTypes.WATCH_GET_DISCUSSION_CONTENT,
+          data: {
+            chapter_slug,
+            content_type: 'all'
+          },
+        });
+      }
+    }, [router])
+
   return (
-    <DiscussionLayout>
+    <DiscussionLayout socket={socket}>
       <div className="discussion-wrapper-bodysadf">
         <div className="discussion-wrapper-body1">
           {(loadingComment && comments.length > 0) && (

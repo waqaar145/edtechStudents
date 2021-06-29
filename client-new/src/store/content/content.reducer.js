@@ -8,6 +8,12 @@ const initalState = {
     description: '',
     thumbnail: ''
   },
+  subjectBasic: {
+    id: null,
+    subject_name: '',
+    description: '',
+    thumbnail: ''
+  },
   current_chapters_stats: {
     id: null,
     chapter_name: '',
@@ -20,6 +26,8 @@ const initalState = {
   },
   chapters: [],
   contents: [],
+  chaptersBasic: [],
+  contentsBasic: [],
 }
 
 export const Content  = (state = initalState, action = {}) => {
@@ -47,10 +55,25 @@ export const Content  = (state = initalState, action = {}) => {
       }
     }
 
+  case contentActionTypes.GET_SUBJECT_BASIC_LIST:
+    return {
+      ...state,
+      subjectBasic: {
+        ...state.subject,
+        ...action.data
+      }
+    }
+
   case contentActionTypes.GET_CHAPTERS:
     return {
       ...state,
       chapters: action.data
+    }
+
+  case contentActionTypes.GET_CHAPTERS_BASIC_LIST:
+    return {
+      ...state,
+      chaptersBasic: action.data
     }
 
   case contentActionTypes.GET_COUNTS:
@@ -66,6 +89,12 @@ export const Content  = (state = initalState, action = {}) => {
     return {
       ...state,
       contents: action.data
+    }
+
+  case contentActionTypes.GET_CONTENTS_BASIC_LIST:
+    return {
+      ...state,
+      contentsBasic: action.data
     }
 
   case contentActionTypes.CHANGE_CONTENT_REACTION:

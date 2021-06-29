@@ -222,6 +222,21 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
         })
       }
 
+    case commentActionTypes.SEND_UPDATED_CONTENT_LIKE_COUNT:
+      console.log(action.data)
+      return {
+        ...state,
+        content: state.content.map(c => {
+          if (c.id === action.data.id) {
+            return {
+              ...c,
+              total_likes: action.data.total_likes
+            }
+          }
+          return c;
+        })
+      }
+
     default:
       return state;
   }

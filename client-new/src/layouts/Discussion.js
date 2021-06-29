@@ -3,6 +3,7 @@ import dynamic from "next/dynamic";
 import useDimensions from "./../hooks/useDimensions";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import ContentComponent from "./../components/ContentComponent";
+import {useRouter} from 'next/router';
 import {
   AiOutlineDoubleRight,
   AiOutlineDoubleLeft,
@@ -13,11 +14,20 @@ import { ToastContainer, Zoom } from 'react-toastify';
 import ContentShimmer from './../components/Shimmer/Content'
 import {contentService} from './../services'
 import { commentActionTypes } from "../store/discussion/discussion.actiontype";
+import { discussionNsps } from "../sockets/namespaces/Discussion/constants/discussionNamespaces";
 
 import "./../assets/styles/subject/discussion/discussion.module.css";
 let showNumberOfActiveUser = 3;
 
-const Discussion = ({ children }) => {
+const Discussion = (props) => {
+  const {
+    children,
+    socket
+  } = props
+
+  const router = useRouter();
+  const { content_slug } = router.query;
+
   const discussionTopRef = useRef();
   const dispatch = useDispatch();
   const size = useDimensions(discussionTopRef);
@@ -43,6 +53,14 @@ const Discussion = ({ children }) => {
     }
   }, [size]);
 
+  useEffect(() => {
+    if (socket) {
+      socket.on(discussionNsps.wsEvents.sendUpdatedContentLikeCount, (data) => {
+        dispatch({type: commentActionTypes.SEND_UPDATED_CONTENT_LIKE_COUNT, data});
+      });
+    }
+  }, [socket]);
+
   let slicedUsersInRoom = allUsersInRoom.slice(0, showNumberOfActiveUser);
 
   const handleContentReaction = async ({id}) => {
@@ -54,6 +72,7 @@ const Discussion = ({ children }) => {
         total_likes
       }
       dispatch({type: commentActionTypes.CHANGE_DISCUSSION_CONTENT_REACTION, data:obj});
+      socket.emit(discussionNsps.wsEvents.updateContentLikesCount, obj);
     } catch (error) {
       console.log(error)
     }

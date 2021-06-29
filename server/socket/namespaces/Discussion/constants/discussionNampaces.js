@@ -11,6 +11,8 @@ module.exports.discussionNsps = {
     disconnect: "DISCONNECT",
     allUsersInRoom: "WS_ALL_USERS_IN_ROOM",
     updatedCommentCount: "UPDATED_COMMENT_COUNT",
-    sendUpdatedCommentCount: "SEND_UPDATED_COMMENT_COUNT"
+    sendUpdatedCommentCount: "SEND_UPDATED_COMMENT_COUNT",
+    updateContentLikesCount: "UPDATE_CONTENT_LIKES_COUNT",
+    sendUpdatedContentLikeCount: "SEND_UPDATED_CONTENT_LIKE_COUNT"
   }
 }
