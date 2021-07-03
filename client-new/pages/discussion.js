@@ -402,7 +402,7 @@ const Discussion = () => {
                 <div className="image">
                   <img src="https://image.flaticon.com/icons/png/512/619/619054.png" />
                 </div>
-                <div className="text">This is very beginning of the discussion, please be very simple and explanatory</div>
+                <div className="text">This is very beginning of the discussion, please be very simple and explainatory.</div>
               </div>
             )}
           </div>

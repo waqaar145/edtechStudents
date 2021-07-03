@@ -267,8 +267,8 @@
 
 .no-comments .text{
   padding: 10px;
-  font-size: 1.2rem;
-  color: var(--gray-70);
+  font-size: 0.9rem;
+  color: var(--gray-60);
 }
 
 .more-comment-loader {
