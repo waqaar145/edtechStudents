@@ -87,7 +87,7 @@ const Content = ({ children }) => {
       <div className="engg-sidebar">
         <div className="sidebar-header">
           <div className="icon">
-            <span className="back-button" onClick={() => router.back()}>
+            <span className="back-button go-back" onClick={() => router.back()}>
               <MdArrowBack />
             </span>
           </div>

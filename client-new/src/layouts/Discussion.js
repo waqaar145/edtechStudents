@@ -10,11 +10,13 @@ import {
   AiOutlineRight,
   AiOutlineLeft,
 } from "react-icons/ai";
+import { MdArrowBack } from "react-icons/md";
 import { ToastContainer, Zoom } from 'react-toastify';
 import ContentShimmer from './../components/Shimmer/Content'
 import {contentService} from './../services'
 import { commentActionTypes } from "../store/discussion/discussion.actiontype";
 import { discussionNsps } from "../sockets/namespaces/Discussion/constants/discussionNamespaces";
+import Link from "next/link";
 
 import "./../assets/styles/subject/discussion/discussion.module.css";
 let showNumberOfActiveUser = 3;
@@ -22,7 +24,9 @@ let showNumberOfActiveUser = 3;
 const Discussion = (props) => {
   const {
     children,
-    socket
+    socket,
+    chapterUrls,
+    contentUrls
   } = props
 
   const router = useRouter();
@@ -78,10 +82,18 @@ const Discussion = (props) => {
     }
   }
 
+  console.log(chapterUrls)
+
   return (
     <div className="discussion-wrapper">
       <div className="content-left-wrapper">
-        <div className="content-basic-details-l">this is test</div>
+        <div className="content-basic-details-l">
+          <div className="chapter-details">
+            <span className="back-button go-back" onClick={() => router.back()}>
+              <MdArrowBack />
+            </span><span className="chapter-name">{contents.length > 0 ? contents[0].chapter_name : ''}</span>{contents.length > 0 && <span className="subject-name">({contents.length > 0 ? contents[0].subject_name : ''})</span>}
+          </div>
+        </div>
         <div className="content-wrapper-w-b">
           {
             loading
@@ -107,18 +119,12 @@ const Discussion = (props) => {
           <div className="quick-link-icons">
             <div className="left">
               <div className="icon2">
-                <AiOutlineDoubleLeft />
-              </div>
-              <div className="icon1">
-                <AiOutlineLeft />
+                <AiOutlineLeft/>
               </div>
             </div>
             <div className="left">
-              <div className="icon1">
-                <AiOutlineRight />
-              </div>
               <div className="icon2">
-                <AiOutlineDoubleRight />
+                <AiOutlineRight />
               </div>
             </div>
           </div>

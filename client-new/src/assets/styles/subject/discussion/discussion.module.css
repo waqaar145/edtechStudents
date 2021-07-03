@@ -55,12 +55,14 @@
   z-index: 1007;
   top: 0;
   position: sticky;
+  height: 50px;
 }
 
 .content-basic-details-l {
   z-index: 1007;
   top: 0;
   position: sticky;
+  height: 50px;
 }
 .content-basic-details-l {
   padding: 0.8rem;
@@ -247,7 +249,6 @@
 }
 
 .no-comments{
-  background-color: var(--bg-color-1);
   padding: 10px;
   text-align: center;
 }
@@ -293,4 +294,20 @@
 .quick-actions .heart-active {
   color: var(--danger);
   animation: miniBounce 0.4s ease-in-out; 
+}
+
+.chapter-details {
+  display: flex;
+  align-items: center;
+}
+
+.chapter-details .chapter-name{
+  font-size: 1.1rem;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.chapter-details .subject-name {
+  font-size: 0.8rem;
+  color: var(--gray-60);
 }

@@ -12,6 +12,7 @@ import Router, { useRouter } from "next/router";
 import { Dropdown } from "react-bootstrap";
 import ReactHtmlParser from "react-html-parser";
 import BasicButton from "./Button/Basic";
+import Moment from 'react-moment';
 
 const ContentComponent = ({ content, className, removeDiscussionButton, handleContentReaction }) => {
   const router = useRouter();
@@ -25,7 +26,11 @@ const ContentComponent = ({ content, className, removeDiscussionButton, handleCo
       <div className="content-body">
         {ReactHtmlParser(content.description)}
         <div className="last-updated-at">
-          Last updated at <span className="text">12th July 2021</span>
+          Last updated at <span className="text">
+            <Moment format="Do MMMM, YYYY h:mm a">
+                {content.updated_at}
+            </Moment>
+          </span>
         </div>
       </div>
       <div className="content-footer">

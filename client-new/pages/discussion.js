@@ -13,6 +13,7 @@ import { discussionNsps } from "./../src/sockets/namespaces/Discussion/constants
 import { soundUrls } from "./../src/utils/soundUrls";
 import { commentService } from "./../src/services";
 import { ReactToastifyEmitter } from "./../src/utils/reactToasify";
+import { prevNextFinder } from './../src/utils/utils';
 
 const MyEditor = dynamic(
   () => import("./../src/layouts/components/Discussion/Editor"),
@@ -52,7 +53,11 @@ const Discussion = () => {
   const size = useDimensions(discussionRef);
 
   const router = useRouter();
-  const { content_slug } = router.query;
+  const {
+    chapter_slug,
+    subject_slug,
+    content_slug
+  } = router.query;
 
   const [currentParentCommentId, setCurrentParentCommentId] = useState(0);
   const [currentChildCommentId, setCurrentChildCommentId] = useState(0);
@@ -296,34 +301,62 @@ const Discussion = () => {
     const chaptersBasic = useSelector((state) => state.Content.chaptersBasic);
     const contentsBasic = useSelector((state) => state.Content.contentsBasic);
 
+    const [chapterPrevNexActions, setChapterPrevNexActions] = useState({prev: null, next: null});
+    const [contentPrevNexActions, setContentPrevNexActions] = useState({prev: null, next: null});
+    
     useEffect(() => {
-      const {
-        chapter_slug,
-        subject_slug
-      } = router.query;
-
-      if (chaptersBasic.length === 0) {
-        dispatch({
-          type: contentActionTypes.WATCH_GET_DISCUSSION_CHAPTERS,
-          data: {
-            subject_slug,
-            chapter_slug
-          },
-        });
+      async function ChapterContentBasicDetails() {
+        if (chaptersBasic.length === 0) {
+          dispatch({
+            type: contentActionTypes.WATCH_GET_DISCUSSION_CHAPTERS,
+            data: {
+              subject_slug,
+              chapter_slug
+            },
+          });
+        }
+        if (contentsBasic.length === 0) {
+          dispatch({
+            type: contentActionTypes.WATCH_GET_DISCUSSION_CONTENT,
+            data: {
+              chapter_slug,
+              content_type: 'all'
+            },
+          });
+        }
       }
-      if (contentsBasic.length === 0) {
-        dispatch({
-          type: contentActionTypes.WATCH_GET_DISCUSSION_CONTENT,
-          data: {
-            chapter_slug,
-            content_type: 'all'
-          },
-        });
-      }
+      ChapterContentBasicDetails()
     }, [router])
 
+    useEffect(() => {
+      // let prevNextChaptersResult = prevNextFinder(chaptersBasic, 'slug', chapter_slug)
+      let prevNextContentResult = prevNextFinder(contentsBasic, 'slug', content_slug)
+
+      // let chapter = {
+      //   prev: prevNextChaptersResult.prev ? {subject_slug, chapter_slug: prevNextChaptersResult.prev.slug} : null,
+      //   next: prevNextChaptersResult.next ? {subject_slug, chapter_slug: prevNextChaptersResult.next.slug} : null
+      // }
+
+      let content = {
+        prev: prevNextContentResult.prev ? { subject_slug, chapter_slug, content_slug: prevNextContentResult.prev.slug } : null,
+        next: prevNextContentResult.next ? { subject_slug, chapter_slug, content_slug: prevNextContentResult.next.slug } : null,
+      }
+
+      // setChapterPrevNexActions({
+      //   ...chapterPrevNexActions,
+      //   ...chapter
+      // })
+
+      setContentPrevNexActions({
+        ...contentPrevNexActions,
+        ...content
+      })
+    }, [router, 
+    // chaptersBasic, 
+    contentsBasic])
+
   return (
-    <DiscussionLayout socket={socket}>
+    <DiscussionLayout socket={socket} chapterUrls={chapterPrevNexActions} contentUrls={contentPrevNexActions}>
       <div className="discussion-wrapper-bodysadf">
         <div className="discussion-wrapper-body1">
           {(loadingComment && comments.length > 0) && (
