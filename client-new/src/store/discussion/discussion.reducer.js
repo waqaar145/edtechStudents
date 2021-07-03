@@ -44,12 +44,12 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
       };
 
     case commentActionTypes.GET_COMMENTS:
-      const { comments, totalEntries } = action.data;
+      const { comments, totalEntries, concat } = action.data;
       return {
         ...state,
-        currentPage: state.currentPage + 1,
-        comments: [...state.comments, ...comments],
-        totalEntries,
+        currentPage: concat ? state.currentPage + 1 : 1,
+        comments: concat ? [...state.comments, ...comments] : comments,
+        totalEntries
       };
 
     case commentActionTypes.ADD_NEW_COMMENT:
@@ -223,7 +223,6 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
       }
 
     case commentActionTypes.SEND_UPDATED_CONTENT_LIKE_COUNT:
-      console.log(action.data)
       return {
         ...state,
         content: state.content.map(c => {

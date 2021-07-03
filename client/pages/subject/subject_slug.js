@@ -101,7 +101,7 @@ const AllContent = (props) => {
                   <EmptyData 
                     heading="Nothing found" 
                     subHeading="There is no content" 
-                    image=""
+                    image="https://image.flaticon.com/icons/png/512/619/619054.png"
                     />
                 </div>
             }

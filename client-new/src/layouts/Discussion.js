@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import useDimensions from "./../hooks/useDimensions";
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import ContentComponent from "./../components/ContentComponent";
 import {useRouter} from 'next/router';
 import {
-  AiOutlineDoubleRight,
-  AiOutlineDoubleLeft,
+  // AiOutlineDoubleRight,
+  // AiOutlineDoubleLeft,
   AiOutlineRight,
   AiOutlineLeft,
 } from "react-icons/ai";
@@ -25,7 +25,6 @@ const Discussion = (props) => {
   const {
     children,
     socket,
-    chapterUrls,
     contentUrls
   } = props
 
@@ -82,8 +81,6 @@ const Discussion = (props) => {
     }
   }
 
-  console.log(chapterUrls)
-
   return (
     <div className="discussion-wrapper">
       <div className="content-left-wrapper">
@@ -119,12 +116,32 @@ const Discussion = (props) => {
           <div className="quick-link-icons">
             <div className="left">
               <div className="icon2">
-                <AiOutlineLeft/>
+                {
+                  contentUrls.prev ?
+                  <Link
+                    href={`/discussion?subject_slug=${contentUrls.prev.subject_slug}&chapter_slug=${contentUrls.prev.chapter_slug}&content_slug=${contentUrls.prev.content_slug}`}
+                    as={`/${contentUrls.prev.subject_slug}/${contentUrls.prev.chapter_slug}/discussion/${contentUrls.prev.content_slug}`}
+                    >
+                    <AiOutlineLeft/>
+                  </Link>
+                  :
+                  <span className="icon-color"><AiOutlineLeft/></span>
+                }
               </div>
             </div>
             <div className="left">
               <div className="icon2">
-                <AiOutlineRight />
+                {
+                  contentUrls.next ?
+                  <Link
+                    href={`/discussion?subject_slug=${contentUrls.next.subject_slug}&chapter_slug=${contentUrls.next.chapter_slug}&content_slug=${contentUrls.next.content_slug}`}
+                    as={`/${contentUrls.next.subject_slug}/${contentUrls.next.chapter_slug}/discussion/${contentUrls.next.content_slug}`}
+                    >
+                    <AiOutlineRight />
+                  </Link>
+                  :
+                  <span className="icon-color"><AiOutlineRight /></span>
+                }
               </div>
             </div>
           </div>

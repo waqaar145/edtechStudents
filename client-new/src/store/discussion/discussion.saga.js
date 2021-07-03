@@ -16,11 +16,11 @@ export function* handleGetContentByContentSlug({ data: { content_slug, cookie } 
   }
 }
 
-export function* handleGetComments({ data: { content_slug, query, cookie } }) {
+export function* handleGetComments({ data: { content_slug, query, cookie, concat } }) {
   try {
     yield put(actions.requestComment());
     let {data: {data: {comments, totalEntries}}} = yield commentService.getDiscussionByContentSlug(content_slug, query, cookie);
-    yield put(actions.getComments({comments, totalEntries}))
+    yield put(actions.getComments({comments, totalEntries, concat}))
     yield put(actions.completeComment());
   } catch (error) {
     console.log("Error", error);
