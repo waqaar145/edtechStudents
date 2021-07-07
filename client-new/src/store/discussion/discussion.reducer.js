@@ -47,8 +47,8 @@ export const ContentDiscussion = (state = initalState, action = {}) => {
       const { comments, totalEntries, concat } = action.data;
       return {
         ...state,
-        currentPage: concat ? state.currentPage + 1 : 1,
-        comments: concat ? [...state.comments, ...comments] : comments,
+        currentPage: concat === undefined || !concat ? 2 : state.currentPage + 1,
+        comments: concat === undefined || !concat ? comments : [...state.comments, ...comments],
         totalEntries
       };
 

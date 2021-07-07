@@ -260,13 +260,13 @@ const Discussion = () => {
     }
   };
 
-  const onScroll = (e) => {
+  const onScroll = async (e) => {
     if (comments.length > 0 && e.target.scrollHeight - Math.abs(e.target.scrollTop) === size.height && totalEntries > comments.length) {
       let query = {
         ...queryParams,
         pageNo: currentPage
       }
-      dispatch({
+      await dispatch({
         type: commentActionTypes.WATCH_GET_COMMENTS_BY_CONTENT_SLUG,
         data: {
           content_slug,
@@ -397,7 +397,7 @@ const Discussion = () => {
                   />
                 );
               })}
-            {Array.isArray(comments) && comments.length === 0 && (
+            {Array.isArray(comments) && comments.length === 0 && !loadingComment && (
               <div className="no-comments">
                 <div className="image">
                   <img src="https://image.flaticon.com/icons/png/512/619/619054.png" />

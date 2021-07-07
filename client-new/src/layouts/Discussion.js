@@ -21,6 +21,14 @@ import Link from "next/link";
 import "./../assets/styles/subject/discussion/discussion.module.css";
 let showNumberOfActiveUser = 3;
 
+
+const CustomLinkWrapper = React.forwardRef(({ children }, ref) => (
+  <a ref={ref}>
+    {children}
+  </a>
+));
+
+
 const Discussion = (props) => {
   const {
     children,
@@ -69,7 +77,7 @@ const Discussion = (props) => {
   const handleContentReaction = async ({id}) => {
     try {
       let {data: {data: {content_id, liked, total_likes}}} = await contentService.likeContent({id});
-      let obj ={
+      let obj = {
         id: content_id,
         liked,
         total_likes
@@ -122,7 +130,7 @@ const Discussion = (props) => {
                     href={`/discussion?subject_slug=${contentUrls.prev.subject_slug}&chapter_slug=${contentUrls.prev.chapter_slug}&content_slug=${contentUrls.prev.content_slug}`}
                     as={`/${contentUrls.prev.subject_slug}/${contentUrls.prev.chapter_slug}/discussion/${contentUrls.prev.content_slug}`}
                     >
-                    <AiOutlineLeft/>
+                    <CustomLinkWrapper><AiOutlineLeft/></CustomLinkWrapper>
                   </Link>
                   :
                   <span className="icon-color"><AiOutlineLeft/></span>
@@ -137,7 +145,7 @@ const Discussion = (props) => {
                     href={`/discussion?subject_slug=${contentUrls.next.subject_slug}&chapter_slug=${contentUrls.next.chapter_slug}&content_slug=${contentUrls.next.content_slug}`}
                     as={`/${contentUrls.next.subject_slug}/${contentUrls.next.chapter_slug}/discussion/${contentUrls.next.content_slug}`}
                     >
-                    <AiOutlineRight />
+                    <CustomLinkWrapper><AiOutlineRight/></CustomLinkWrapper>
                   </Link>
                   :
                   <span className="icon-color"><AiOutlineRight /></span>
