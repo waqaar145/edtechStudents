@@ -33,9 +33,9 @@ export const contentService = {
       throw error;
     }
   },
-  async getContentByChapterSlug(chapter_slug, content_type) {
+  async getContentByChapterSlug(chapter_slug, content_type, cookie) {
     try {
-      let result = await HTTPClient.get(`/api/v1/content/chapter/${chapter_slug}?content_type=${content_type}`);
+      let result = await HTTPClient.get(`/api/v1/content/chapter/${chapter_slug}?content_type=${content_type}`, cookie ? {headers: {Cookie: cookie}} : {});
       return result;
     } catch(error) {
       throw error;

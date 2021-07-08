@@ -277,7 +277,9 @@ module.exports.getContentByChapterSlug = async (req, res) => {
   }
 
   try {
-    let result = await knex
+    let result = [];
+    if (req.user) {
+      result = await knex
       .select(
         "ed_contents.cn_id as id",
         "ed_contents.cn_type as content_type",
@@ -285,6 +287,42 @@ module.exports.getContentByChapterSlug = async (req, res) => {
         "ed_contents.cn_name as name",
         "ed_contents.cn_slug as slug",
         "ed_contents.cn_description as description",
+        "ed_contents.cn_total_likes as total_likes",
+        "ed_contents.cn_total_comments as total_comments",
+        "ed_contents.cn_is_active as is_active",
+        "ed_contents.cn_created_at as created_at",
+        "ed_contents.cn_updated_at as updated_at",
+        "ed_content_likes.content_id as liked",
+
+        "ed_admins.a_name as admin_name",
+        "ed_admins.a_slug as admin_slug"
+      )
+      .from("ed_contents")
+      .innerJoin("ed_admins", "ed_admins.a_id", "ed_contents.cn_admin_id")
+      .innerJoin(
+        "ed_chapters",
+        "ed_chapters.cp_id",
+        "ed_contents.cn_chapter_id"
+      )
+      .leftJoin("ed_content_likes", function (builder) {
+        builder
+          .on("ed_content_likes.content_id", "ed_contents.cn_id")
+          .on("ed_content_likes.user_id", req.user.uid);
+      })
+      .where("ed_contents.cn_is_deleted", false)
+      .where("ed_chapters.cp_slug", chapter_slug)
+      .whereIn("ed_contents.cn_type", content_type_arr)
+      .orderBy("ed_contents.cn_id", "DESC");
+    } else {
+      result = await knex
+      .select(
+        "ed_contents.cn_id as id",
+        "ed_contents.cn_type as content_type",
+        "ed_contents.cn_difficulty_level as difficulty_level",
+        "ed_contents.cn_name as name",
+        "ed_contents.cn_slug as slug",
+        "ed_contents.cn_description as description",
+        "ed_contents.cn_total_likes as total_likes",
         "ed_contents.cn_total_comments as total_comments",
         "ed_contents.cn_is_active as is_active",
         "ed_contents.cn_created_at as created_at",
@@ -304,6 +342,7 @@ module.exports.getContentByChapterSlug = async (req, res) => {
       .where("ed_chapters.cp_slug", chapter_slug)
       .whereIn("ed_contents.cn_type", content_type_arr)
       .orderBy("ed_contents.cn_id", "DESC");
+    }
 
     let ids = []; // collecting all content_ids
     for (let cn of result) {

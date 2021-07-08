@@ -13,7 +13,7 @@ import { discussionNsps } from "./../src/sockets/namespaces/Discussion/constants
 import { soundUrls } from "./../src/utils/soundUrls";
 import { commentService } from "./../src/services";
 import { ReactToastifyEmitter } from "./../src/utils/reactToasify";
-import { prevNextFinder } from './../src/utils/utils';
+import { prevNextFinder } from "./../src/utils/utils";
 
 const MyEditor = dynamic(
   () => import("./../src/layouts/components/Discussion/Editor"),
@@ -26,7 +26,6 @@ const ConfirmDeleteModal = dynamic(
 
 let editorWrapperClassName = "discussion-comment-box-wrapper-class";
 const ENDPOINT = `${process.env.NEXT_PUBLIC_API_URL}/${discussionNsps.nspPrefix}`;
-
 let socket;
 
 let queryParams = {
@@ -40,10 +39,19 @@ const Discussion = () => {
   const dispatch = useDispatch();
 
   const comments = useSelector((state) => state.ContentDiscussion.comments);
-  const content = useSelector((state) => state.ContentDiscussion.content[0],shallowEqual);
-  const currentPage = useSelector((state) => state.ContentDiscussion.currentPage);
-  const totalEntries = useSelector((state) => state.ContentDiscussion.totalEntries);
-  const loadingComment = useSelector((state) => state.ContentDiscussion.loadingComment);
+  const content = useSelector(
+    (state) => state.ContentDiscussion.content[0],
+    shallowEqual
+  );
+  const currentPage = useSelector(
+    (state) => state.ContentDiscussion.currentPage
+  );
+  const totalEntries = useSelector(
+    (state) => state.ContentDiscussion.totalEntries
+  );
+  const loadingComment = useSelector(
+    (state) => state.ContentDiscussion.loadingComment
+  );
 
   const auth = useSelector((state) => state.Auth, shallowEqual);
 
@@ -53,20 +61,15 @@ const Discussion = () => {
   const size = useDimensions(discussionRef);
 
   const router = useRouter();
-  const {
-    chapter_slug,
-    subject_slug,
-    content_slug
-  } = router.query;
+  const { chapter_slug, subject_slug, content_slug } = router.query;
 
   const [currentParentCommentId, setCurrentParentCommentId] = useState(0);
   const [currentChildCommentId, setCurrentChildCommentId] = useState(0);
 
   const [replyingToComments, setReplyingToComments] = useState([]);
   const [currentEditingComment, setCurrentEditingComment] = useState(0);
-  const [currentCommentEditingData, setCurrentCommentEditingData] = useState(
-    ""
-  );
+  const [currentCommentEditingData, setCurrentCommentEditingData] =
+    useState("");
   const [editComment, setEditComment] = useState([]);
 
   // Socket connection
@@ -128,7 +131,7 @@ const Discussion = () => {
       });
     });
 
-    return () => dispatch({type: commentActionTypes.EMPTY_DATA})
+    return () => dispatch({ type: commentActionTypes.EMPTY_DATA });
   }, []);
 
   const playSound = () => {
@@ -261,106 +264,142 @@ const Discussion = () => {
   };
 
   const onScroll = async (e) => {
-    if (comments.length > 0 && e.target.scrollHeight - Math.abs(e.target.scrollTop) === size.height && totalEntries > comments.length) {
+    if (
+      comments.length > 0 &&
+      e.target.scrollHeight - Math.abs(e.target.scrollTop) === size.height &&
+      totalEntries > comments.length
+    ) {
       let query = {
         ...queryParams,
-        pageNo: currentPage
-      }
+        pageNo: currentPage,
+      };
       await dispatch({
         type: commentActionTypes.WATCH_GET_COMMENTS_BY_CONTENT_SLUG,
         data: {
           content_slug,
           query,
-          concat: true
+          concat: true,
         },
       });
     }
   };
 
   const handleHeartAction = async (data) => {
-    const {id} = data
+    const { id } = data;
     let dataObj = {
       id,
-      liked: false
-    }
+      liked: false,
+    };
     try {
-      let {data: {data: {liked, total_likes}}} = await commentService.likeComment(dataObj);
+      let {
+        data: {
+          data: { liked, total_likes },
+        },
+      } = await commentService.likeComment(dataObj);
       let obj = {
         id,
         parent_id: data.parent_id,
         liked,
-        total_likes
-      }
-      dispatch({type: commentActionTypes.CHANGE_COMMENT_REACTION, data: obj});
-      socket.emit(discussionNsps.wsEvents.updatedCommentCount, {id, parent_id: data.parent_id, total_likes });
+        total_likes,
+      };
+      dispatch({ type: commentActionTypes.CHANGE_COMMENT_REACTION, data: obj });
+      socket.emit(discussionNsps.wsEvents.updatedCommentCount, {
+        id,
+        parent_id: data.parent_id,
+        total_likes,
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
-    // handle Chapter list, content List for prev, next functionality
-    const chaptersBasic = useSelector((state) => state.Content.chaptersBasic);
-    const contentsBasic = useSelector((state) => state.Content.contentsBasic);
+  // handle Chapter list, content List for prev, next functionality
+  const chaptersBasic = useSelector((state) => state.Content.chaptersBasic);
+  const contentsBasic = useSelector((state) => state.Content.contentsBasic);
 
-    const [chapterPrevNexActions, setChapterPrevNexActions] = useState({prev: null, next: null});
-    const [contentPrevNexActions, setContentPrevNexActions] = useState({prev: null, next: null});
-    
-    useEffect(() => {
-      async function ChapterContentBasicDetails() {
-        if (chaptersBasic.length === 0) {
-          dispatch({
-            type: contentActionTypes.WATCH_GET_DISCUSSION_CHAPTERS,
-            data: {
-              subject_slug,
-              chapter_slug
-            },
-          });
-        }
-        if (contentsBasic.length === 0) {
-          dispatch({
-            type: contentActionTypes.WATCH_GET_DISCUSSION_CONTENT,
-            data: {
-              chapter_slug,
-              content_type: 'all'
-            },
-          });
-        }
+  const [chapterPrevNexActions, setChapterPrevNexActions] = useState({
+    prev: null,
+    next: null,
+  });
+  const [contentPrevNexActions, setContentPrevNexActions] = useState({
+    prev: null,
+    next: null,
+  });
+
+  useEffect(() => {
+    async function ChapterContentBasicDetails() {
+      if (chaptersBasic.length === 0) {
+        dispatch({
+          type: contentActionTypes.WATCH_GET_DISCUSSION_CHAPTERS,
+          data: {
+            subject_slug,
+            chapter_slug,
+          },
+        });
       }
-      ChapterContentBasicDetails()
-    }, [router])
-
-    useEffect(() => {
-      // let prevNextChaptersResult = prevNextFinder(chaptersBasic, 'slug', chapter_slug)
-      let prevNextContentResult = prevNextFinder(contentsBasic, 'slug', content_slug)
-
-      // let chapter = {
-      //   prev: prevNextChaptersResult.prev ? {subject_slug, chapter_slug: prevNextChaptersResult.prev.slug} : null,
-      //   next: prevNextChaptersResult.next ? {subject_slug, chapter_slug: prevNextChaptersResult.next.slug} : null
-      // }
-
-      let content = {
-        prev: prevNextContentResult.prev ? { subject_slug, chapter_slug, content_slug: prevNextContentResult.prev.slug } : null,
-        next: prevNextContentResult.next ? { subject_slug, chapter_slug, content_slug: prevNextContentResult.next.slug } : null,
+      if (contentsBasic.length === 0) {
+        dispatch({
+          type: contentActionTypes.WATCH_GET_DISCUSSION_CONTENT,
+          data: {
+            chapter_slug,
+            content_type: "all",
+          },
+        });
       }
+    }
+    ChapterContentBasicDetails();
+  }, [router]);
 
-      // setChapterPrevNexActions({
-      //   ...chapterPrevNexActions,
-      //   ...chapter
-      // })
+  useEffect(() => {
+    // let prevNextChaptersResult = prevNextFinder(chaptersBasic, 'slug', chapter_slug)
+    let prevNextContentResult = prevNextFinder(
+      contentsBasic,
+      "slug",
+      content_slug
+    );
 
-      setContentPrevNexActions({
-        ...contentPrevNexActions,
-        ...content
-      })
-    }, [router, 
-    // chaptersBasic, 
-    contentsBasic])
+    // let chapter = {
+    //   prev: prevNextChaptersResult.prev ? {subject_slug, chapter_slug: prevNextChaptersResult.prev.slug} : null,
+    //   next: prevNextChaptersResult.next ? {subject_slug, chapter_slug: prevNextChaptersResult.next.slug} : null
+    // }
+
+    let content = {
+      prev: prevNextContentResult.prev
+        ? {
+            subject_slug,
+            chapter_slug,
+            content_slug: prevNextContentResult.prev.slug,
+          }
+        : null,
+      next: prevNextContentResult.next
+        ? {
+            subject_slug,
+            chapter_slug,
+            content_slug: prevNextContentResult.next.slug,
+          }
+        : null,
+    };
+
+    // setChapterPrevNexActions({
+    //   ...chapterPrevNexActions,
+    //   ...chapter
+    // })
+
+    setContentPrevNexActions({
+      ...contentPrevNexActions,
+      ...content,
+    });
+  }, [
+    router,
+    // chaptersBasic,
+    contentsBasic,
+  ]);
 
   return (
     <DiscussionLayout socket={socket} contentUrls={contentPrevNexActions}>
       <div className="discussion-wrapper-bodysadf">
         <div className="discussion-wrapper-body1">
-          {(loadingComment && comments.length > 0) && (
+          {loadingComment && comments.length > 0 && (
             <div className="more-comment-loader">
               <Spinner animation="border" variant="primary" />
             </div>
@@ -397,14 +436,19 @@ const Discussion = () => {
                   />
                 );
               })}
-            {Array.isArray(comments) && comments.length === 0 && !loadingComment && (
-              <div className="no-comments">
-                <div className="image">
-                  <img src="https://image.flaticon.com/icons/png/512/619/619054.png" />
+            {Array.isArray(comments) &&
+              comments.length === 0 &&
+              !loadingComment && (
+                <div className="no-comments">
+                  <div className="image">
+                    <img src="https://image.flaticon.com/icons/png/512/619/619054.png" />
+                  </div>
+                  <div className="text">
+                    This is very beginning of the discussion, please be very
+                    simple and explainatory.
+                  </div>
                 </div>
-                <div className="text">This is very beginning of the discussion, please be very simple and explainatory.</div>
-              </div>
-            )}
+              )}
           </div>
         </div>
         <div className="discussion-footer">
@@ -442,7 +486,7 @@ Discussion.getInitialProps = async ({ store, query, req }) => {
         subject_slug: query.subject_slug,
         chapter_slug: query.chapter_slug,
         content_slug: query.content_slug,
-        cookie: isServer ? req.headers.cookie : null
+        cookie: isServer ? req.headers.cookie : null,
       },
     });
     await store.dispatch({
@@ -450,7 +494,7 @@ Discussion.getInitialProps = async ({ store, query, req }) => {
       data: {
         content_slug: query.content_slug,
         query: queryParams,
-        cookie: isServer ? req.headers.cookie : null
+        cookie: isServer ? req.headers.cookie : null,
       },
     });
     return {};

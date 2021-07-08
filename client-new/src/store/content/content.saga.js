@@ -22,7 +22,7 @@ export function* handleGetChapters({ data: { subject_slug, chapter_slug } }) {
   }
 }
 
-export function* handleGetContents({ data: { chapter_slug, content_type } }) {
+export function* handleGetContents({ data: { chapter_slug, content_type, cookie } }) {
   try {
     yield put(actions.request());
     const {
@@ -33,7 +33,8 @@ export function* handleGetContents({ data: { chapter_slug, content_type } }) {
       },
     } = yield contentService.getContentByChapterSlug(
       chapter_slug,
-      content_type
+      content_type,
+      cookie
     );
     yield put(actions.setContents(contents));
     yield put(actions.complete());

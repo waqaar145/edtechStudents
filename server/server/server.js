@@ -11,6 +11,7 @@ const config = require("./../config/config");
 const cors = require("cors");
 var morgan = require("morgan");
 const discussionNsp = require("./../socket/namespaces/Discussion/index");
+const contentNsp = require("./../socket/namespaces/Content/index");
 
 var app = express();
 const io = (app.io = require("socket.io")());
@@ -60,5 +61,6 @@ app.get("*", function (req, res) {
 });
 
 discussionNsp.createNamespace(io);
+contentNsp.createNamespace(io);
 
 module.exports = app;

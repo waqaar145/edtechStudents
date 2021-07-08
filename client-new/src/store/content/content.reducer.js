@@ -100,7 +100,30 @@ export const Content  = (state = initalState, action = {}) => {
   case contentActionTypes.CHANGE_CONTENT_REACTION:
     return {
       ...state,
+      contents: state.contents.map(c => {
+        if (c.id === action.data.id) {
+          return {
+            ...c,
+            liked: action.data.liked,
+            total_likes: action.data.total_likes
+          }
+        }
+        return c;
+      })
+    }
 
+  case contentActionTypes.SEND_UPDATED_CONTENT_LIKE_COUNT:
+    return {
+      ...state,
+      contents: state.contents.map(c => {
+        if (c.id === action.data.id) {
+          return {
+            ...c,
+            total_likes: action.data.total_likes
+          }
+        }
+        return c;
+      })
     }
 
   default:
