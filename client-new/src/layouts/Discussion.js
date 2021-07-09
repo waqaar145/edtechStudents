@@ -11,7 +11,7 @@ import {
   AiOutlineLeft,
 } from "react-icons/ai";
 import { MdArrowBack } from "react-icons/md";
-import { ToastContainer, Zoom } from 'react-toastify';
+import { ToastContainer, Slide } from 'react-toastify';
 import ContentShimmer from './../components/Shimmer/Content'
 import {contentService} from './../services'
 import { commentActionTypes } from "../store/discussion/discussion.actiontype";
@@ -180,8 +180,8 @@ const Discussion = (props) => {
         {children}
       </div>
       <ToastContainer 
-        autoClose={2500}
-        transition={Zoom}
+        autoClose={2000}
+        transition={Slide}
         />
     </div>
   );
