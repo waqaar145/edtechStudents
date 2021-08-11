@@ -1,0 +1,158 @@
+.sb-header {
+  display: grid;
+  grid-template-columns: 1fr 5fr;
+  grid-template-areas:
+    "sb-left-actions sb-left-actions";
+  grid-row-gap: 0.5rem;
+}
+
+.sb-header {
+}
+
+.sub-top-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.sub-top-header .icon{
+  margin-right: 10px;
+  background-color: var(--bg-color-1);
+    display: flex;
+    justify-content: center;
+    padding-top: 2px;
+    border-radius: 50%;
+    padding: 5px;
+    color: var(--gray-90);
+    cursor: pointer;
+    font-size: 1.1rem;
+}
+
+.sb-header .sb-left-actions {
+  border-right: 1px solid var(--gray-20);
+}
+
+.sb-header .sb-left-actions {
+  height: 100vh;
+  overflow-y: scroll;
+  background-color: var(--bg-color-2);
+  box-shadow: var(--box-shadow-1);
+}
+
+.sb-header .sb-right-actions {
+  height: 100vh;
+  overflow-y: scroll;
+  background-color: var(--bg-color-2);
+}
+
+.sb-header .sb-left-actions .sub-top-header {
+  height: 40px;
+  padding: 0.8rem;
+  background-color: var(--bg-color-2);
+  margin-bottom: 5px;
+  box-shadow: var(--box-shadow-1);
+  z-index: 1007;
+  top: 0;
+  position: sticky;
+}
+
+.sb-right-actions .sub-top-header {
+  height: 40px;
+  padding: 0.8rem;
+  background-color: var(--bg-color-2);
+  margin-bottom: 5px;
+  box-shadow: var(--box-shadow-1);
+  z-index: 1007;
+  top: 0;
+  position: sticky;
+}
+
+.message-type {
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-bottom: 5px;
+}
+
+.message-type .body{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.message-type ul li {
+  list-style: none;
+}
+
+.message-type ul li a{
+  list-style: none;
+  text-decoration: none;
+  color: var(--gray-70);
+  font-size: 0.9rem;
+}
+
+.message-type .header {
+  /* display: flex;
+  justify-content: space-between;
+  align-items: center; */
+  /* cursor: pointer; */
+  background-color: var(--bg-color-1);
+  padding: 5px;
+}
+
+.message-type .collapsable-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message-type .header .icon{
+  font-size: 1rem;
+  margin-right: 5px;
+}
+
+.message-type .header .name{
+  font-size: 1rem;
+  color: var(--gray-90);
+}
+
+.message-type .hash{
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.user-status {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.user-status .dot {
+  height: 10px;
+  width: 10px;
+  background-color: green;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 10px;
+  box-shadow: var(--box-shadow-1);
+}
+
+.show-body {
+  display: block;
+  transition: all 0.4s ease-out;
+}
+
+.hide-body {
+  display: none;
+  transition: all 0.4s ease-out;
+}
+
+.message-type .rotate-icon {
+  transform: rotate(90deg);
+  transition: all 0.4s ease-out;
+}
+
+.title-action-group {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  cursor: pointer;
+}

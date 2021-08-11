@@ -397,15 +397,15 @@ const Discussion = () => {
 
   return (
     <DiscussionLayout socket={socket} contentUrls={contentPrevNexActions}>
-      <div className="discussion-wrapper-bodysadf">
-        <div className="discussion-wrapper-body1">
+      <div className="discussion-wrapper-main">
+        <div className="discussion-wrapper-main-body">
           {loadingComment && comments.length > 0 && (
             <div className="more-comment-loader">
               <Spinner animation="border" variant="primary" />
             </div>
           )}
           <div
-            className="discussion-wrapper-body2"
+            className="discussion-wrapper-inner-body"
             onScroll={onScroll}
             ref={discussionRef}
           >

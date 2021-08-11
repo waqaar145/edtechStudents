@@ -1,7 +1,0 @@
-export const authActionTypes = {
-  WATCH_LOGGED_IN_USER: 'WATCH_LOGGED_IN_USER',
-
-
-  LOGGED_IN_USER: 'LOGGED_IN_USER',
-  LOGOUT: 'LOGOUT'
-}

@@ -71,17 +71,17 @@
   box-shadow: var(--box-shadow-1);
 }
 
-.discussion-wrapper-body1 p {
+.discussion-wrapper-main-body p {
   margin-bottom: 0 !important;
 }
 
-.discussion-wrapper-body1 {
+.discussion-wrapper-main-body {
   background-color: var(--bg-color-2);
   position: relative;
   overflow-y: auto;
 }
 
-.discussion-wrapper-body2 {
+.discussion-wrapper-inner-body {
   height: calc(100vh - 9.585rem);
   background-color: var(--bg-color-2);
   position: relative;
@@ -121,29 +121,29 @@
   padding-left: 5px;
 }
 
-.discussion-wrapper-body1 img{
+.discussion-wrapper-main-body img{
   /* box-shadow: var(--box-shadow-2); */
   border-radius: 5px;
 }
 
-.discussion-wrapper-body1 .profile-user-wrapper {
+.discussion-wrapper-main-body .profile-user-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.discussion-wrapper-body1 .profile-username{
+.discussion-wrapper-main-body .profile-username{
   color: var(--gray-80);
   font-weight: 500;
 }
 
-.discussion-wrapper-body1 .profile-user-wrapper .time{
+.discussion-wrapper-main-body .profile-user-wrapper .time{
   margin-left: 5px;
   font-size: 13px;
   color: var(--gray-60);;
 }
 
-.discussion-wrapper-body1 .profile-comment{
+.discussion-wrapper-main-body .profile-comment{
   color: var(--gray-70);
 }
 

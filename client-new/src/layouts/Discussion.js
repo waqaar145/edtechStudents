@@ -130,7 +130,7 @@ const Discussion = (props) => {
                     href={`/discussion?subject_slug=${contentUrls.prev.subject_slug}&chapter_slug=${contentUrls.prev.chapter_slug}&content_slug=${contentUrls.prev.content_slug}`}
                     as={`/${contentUrls.prev.subject_slug}/${contentUrls.prev.chapter_slug}/discussion/${contentUrls.prev.content_slug}`}
                     >
-                    <CustomLinkWrapper><AiOutlineLeft/></CustomLinkWrapper>
+                    <AiOutlineLeft/>
                   </Link>
                   :
                   <span className="icon-color"><AiOutlineLeft/></span>
@@ -145,7 +145,7 @@ const Discussion = (props) => {
                     href={`/discussion?subject_slug=${contentUrls.next.subject_slug}&chapter_slug=${contentUrls.next.chapter_slug}&content_slug=${contentUrls.next.content_slug}`}
                     as={`/${contentUrls.next.subject_slug}/${contentUrls.next.chapter_slug}/discussion/${contentUrls.next.content_slug}`}
                     >
-                    <CustomLinkWrapper><AiOutlineRight/></CustomLinkWrapper>
+                    <AiOutlineRight/>
                   </Link>
                   :
                   <span className="icon-color"><AiOutlineRight /></span>

@@ -48,6 +48,14 @@ app
     });
 
     server.get(
+      "/subject/:subject_slug", (req, res) => {
+        return app.render(req, res, "/subject_discussion", {
+          subject_slug: req.params.subject_slug
+        });
+      }
+    );
+
+    server.get(
       "/:subject_slug/:chapter_slug/:content_type?", (req, res) => {
         return app.render(req, res, "/content", {
           subject_slug: req.params.subject_slug,

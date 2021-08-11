@@ -100,6 +100,7 @@ const Content = () => {
 
 Content.getInitialProps = async ({ store, query, req }) => {
   try {
+    console.log(query)
     const isServer = !!req;
     await store.dispatch({
       type: contentActionTypes.WATCH_GET_CHAPTERS,

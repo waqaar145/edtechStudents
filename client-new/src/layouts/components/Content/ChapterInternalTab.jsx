@@ -5,7 +5,7 @@ const ChapterInternalTab = ({chapter_slug, subject_slug, content_type, total, th
       <li className={content_type === "all" ? "active" : ""}>
         <Link
           href={`/content?subject_slug=${subject_slug}&chapter_slug=${chapter_slug}&content_type=all`}
-          as={`/${subject_slug}/${chapter_slug}/all`}
+          as={`/${subject_slug}/${chapter_slug}/all?data=123`}
         >
           <a className="text-links">All ({total})</a>
         </Link>
